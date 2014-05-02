@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns:orx="http://openrosa.org/jr/xforms" xmlns="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
+<h:html xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:orx="http://openrosa.org/jr/xforms"
+        xmlns="http://www.w3.org/2002/xforms"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:jr="http://openrosa.org/javarosa">
+
+  <!-- TODO Actually record the disbursement_location -->
   <h:head>
     <h:title>Stock Card</h:title>
     <model>
       <instance>
-        <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms" xmlns="http://openrosa.org/formdesigner/D48F4F44-56D1-49AA-AA9C-8EBD8B199FAE" uiVersion="1" version="1" name="Stock Card">
+        <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms"
+              xmlns="http://openrosa.org/formdesigner/D48F4F44-56D1-49AA-AA9C-8EBD8B199FAE"
+              uiVersion="1" version="1" name="Stock Card">
           <transaction_type/>
 
           <units_added/>
@@ -15,6 +23,12 @@
 
           <adjustment_direction/>
           <units_adjusted/>
+
+          <!-- CommTrack -->
+          <transfer xmlns="http://commcarehq.org/ledger/v1" src="" dest="" type="" date="" section-id="stock">
+            <entry id="" quantity=""/>
+          </transfer>
+          <!-- /CommTrack -->
 
         </data>
 
@@ -30,6 +44,31 @@
 
       <bind nodeset="/data/adjustment_direction" relevant="/data/transaction_type = 'adjustment'" required="true()"/>
       <bind nodeset="/data/units_adjusted" type="xsd:int" relevant="/data/transaction_type = 'adjustment'" required="true()"/>
+
+      <!-- CommTrack -->
+      <bind nodeset="/data/transfer/@type" calculate="concat('stock-card-', /data/transaction_type)"/>
+      <bind nodeset="/data/transfer/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+
+      <!-- Is the value being added or subtracted? -->
+      <bind nodeset="/data/transfer/@dest"
+            relevant="(/data/transaction_type = 'entry') or
+                      (/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'positive')"
+            calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/transfer/@src"
+            relevant="(/data/transaction_type = 'disbursement') or
+                      (/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'negative')"
+            calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+
+      <!-- What is the magnitude of the change? -->
+      <bind nodeset="/data/transfer/entry/@quantity"
+            calculate="
+                if(/data/transaction_type = 'entry', /data/units_added,
+                if(/data/transaction_type = 'disbursement', /data/units_disbursed,
+                /data/units_adjusted
+                ))
+            "/>
+      <!-- /CommTrack -->
 
       <itext>
         <translation lang="en" default="">
