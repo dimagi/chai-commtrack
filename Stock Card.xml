@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns:orx="http://openrosa.org/jr/xforms" xmlns="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
+  <h:head>
+    <h:title>Stock Card</h:title>
+    <model>
+      <instance>
+        <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms" xmlns="http://openrosa.org/formdesigner/D48F4F44-56D1-49AA-AA9C-8EBD8B199FAE" uiVersion="1" version="1" name="Stock Card">
+          <transaction_type/>
+
+          <units_added/>
+          <expiry/>
+
+          <disbursement_location/>
+          <units_disbursed/>
+
+          <adjustment_direction/>
+          <units_adjusted/>
+
+        </data>
+
+      </instance>
+
+      <bind nodeset="/data/transaction_type" required="true()"/>
+
+      <bind nodeset="/data/units_added" type="xsd:int" relevant="/data/transaction_type = 'entry'" required="true()"/>
+      <bind nodeset="/data/expiry" type="xsd:date" relevant="/data/transaction_type = 'entry'" required="true()"/>
+
+      <bind nodeset="/data/disbursement_location" relevant="/data/transaction_type = 'disbursement'" required="true()"/>
+      <bind nodeset="/data/units_disbursed" type="xsd:int" relevant="/data/transaction_type = 'disbursement'" required="true()"/>
+
+      <bind nodeset="/data/adjustment_direction" relevant="/data/transaction_type = 'adjustment'" required="true()"/>
+      <bind nodeset="/data/units_adjusted" type="xsd:int" relevant="/data/transaction_type = 'adjustment'" required="true()"/>
+
+      <itext>
+        <translation lang="en" default="">
+
+          <text id="transaction_type-label">
+            <value>What type of transaction is this?</value>
+          </text>
+          <text id="transaction_type-entry-label">
+            <value>Entry</value>
+          </text>
+          <text id="transaction_type-disbursement-label">
+            <value>Disbursement</value>
+          </text>
+          <text id="transaction_type-adjustment-label">
+            <value>Adjustment</value>
+          </text>
+
+          <text id="units_added-label">
+            <value>How many units are being added?</value>
+          </text>
+          <text id="expiry-label">
+            <value>What is the earliest expiration date of the items being added?</value>
+          </text>
+
+          <text id="disbursement_location-label">
+            <value>What is this being disbursed to?</value>
+          </text>
+          <text id="disbursement_location-pharmacy-label">
+            <value>Pharmacy</value>
+          </text>
+          <text id="disbursement_location-maternity-label">
+            <value>Maternity</value>
+          </text>
+          <text id="disbursement_location-other_us-label">
+            <value>Another health center</value>
+          </text>
+          <text id="units_disbursed-label">
+            <value>How many units are being disbursed?</value>
+          </text>
+
+          <text id="adjustment_direction-label">
+            <value>Is this a positive or negative adjustment?</value>
+          </text>
+          <text id="adjustment_direction-positive-label">
+            <value>Positive</value>
+          </text>
+          <text id="adjustment_direction-negative-label">
+            <value>Negative</value>
+          </text>
+          <text id="units_adjusted-label">
+              <value>How many units are being <output value="if(/data/adjustment_direction = 'positive', 'added', 'deducted')"/>?</value>
+          </text>
+
+
+        </translation>
+      </itext>
+
+    </model>
+  </h:head>
+
+  <h:body>
+
+    <select1 ref="/data/transaction_type">
+      <label ref="jr:itext('transaction_type-label')"/>
+      <item>
+        <label ref="jr:itext('transaction_type-entry-label')"/>
+        <value>entry</value>
+      </item>
+      <item>
+        <label ref="jr:itext('transaction_type-disbursement-label')"/>
+        <value>disbursement</value>
+      </item>
+    </select1>
+
+    <input ref="/data/units_added">
+      <label ref="jr:itext('units_added-label')"/>
+    </input>
+
+    <input ref="/data/expiry">
+        <label ref="jr:itext('expiry-label')"/>
+    </input>
+
+    <select1 ref="/data/disbursement_location">
+      <label ref="jr:itext('disbursement_location-label')"/>
+      <item>
+        <label ref="jr:itext('disbursement_location-pharmacy-label')"/>
+        <value>pharmacy</value>
+      </item>
+      <item>
+        <label ref="jr:itext('disbursement_location-maternity-label')"/>
+        <value>maternity</value>
+      </item>
+      <item>
+        <label ref="jr:itext('disbursement_location-other_us-label')"/>
+        <value>other_us</value>
+      </item>
+    </select1>
+
+    <input ref="/data/units_disbursed">
+      <label ref="jr:itext('units_disbursed-label')"/>
+    </input>
+
+    <select1 ref="/data/adjustment_direction">
+      <label ref="jr:itext('adjustment_direction-label')"/>
+      <item>
+        <label ref="jr:itext('adjustment_direction-positive-label')"/>
+        <value>positive</value>
+      </item>
+      <item>
+        <label ref="jr:itext('adjustment_direction-negative-label')"/>
+        <value>negative</value>
+      </item>
+    </select1>
+
+    <input ref="/data/units_adjusted">
+      <label ref="jr:itext('units_adjusted-label')"/>
+    </input>
+
+  </h:body>
+</h:html>
