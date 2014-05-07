@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:orx="http://openrosa.org/jr/xforms"
+        xmlns="http://www.w3.org/2002/xforms"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:jr="http://openrosa.org/javarosa">
+  <h:head>
+    <h:title>Monthly Inventory</h:title>
+    <model>
+      <instance>
+        <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms"
+              xmlns="http://openrosa.org/formdesigner/e12041b9ce7726b571cf79aaca581ed031c1427f"
+              uiVersion="1" version="1" name="Monthly Inventory">
+
+          <inventory_amount/>
+          <validity_date/>
+
+          <!-- CommTrack -->
+          <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="stock">
+            <entry id="" quantity=""/>
+          </balance>
+          <!-- /CommTrack -->
+
+        </data>
+      </instance>
+      <bind nodeset="/data/inventory_amount" type="xsd:int"/>
+      <bind nodeset="/data/validity_date" type="xsd:date"/>
+
+      <!-- CommTrack -->
+      <bind nodeset="/data/balance/entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <bind nodeset="/data/balance/entry/@quantity" calculate="/data/inventory_amount"/>
+      <!-- /CommTrack -->
+
+      <itext>
+
+        <translation lang="en" default="">
+          <text id="inventory_amount-label">
+            <value>Monthly Inventory</value>
+          </text>
+          <text id="validity_date-label">
+            <value>Valididty</value>
+          </text>
+        </translation>
+
+        <translation lang="por">
+          <text id="inventory_amount-label">
+            <value>Monthly Inventory</value>
+          </text>
+          <text id="validity_date-label">
+            <value>Valididty</value>
+          </text>
+        </translation>
+
+      </itext>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/data/inventory_amount">
+      <label ref="jr:itext('inventory_amount-label')"/>
+    </input>
+    <input ref="/data/validity_date">
+      <label ref="jr:itext('validity_date-label')"/>
+    </input>
+  </h:body>
+</h:html>
