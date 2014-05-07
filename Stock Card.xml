@@ -25,9 +25,17 @@
           <units_adjusted/>
 
           <!-- CommTrack -->
-          <transfer xmlns="http://commcarehq.org/ledger/v1" src="" dest="" type="" date="" section-id="stock">
-            <entry id="" quantity=""/>
-          </transfer>
+          <receiving>
+            <transfer xmlns="http://commcarehq.org/ledger/v1" dest="" type="" date="" section-id="stock">
+              <entry id="" quantity=""/>
+            </transfer>
+          </receiving>
+
+          <disbursing>
+            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" type="" date="" section-id="stock">
+              <entry id="" quantity=""/>
+            </transfer>
+          </disbursing>
           <!-- /CommTrack -->
 
         </data>
@@ -46,22 +54,33 @@
       <bind nodeset="/data/units_adjusted" type="xsd:int" relevant="/data/transaction_type = 'adjustment'" required="true()"/>
 
       <!-- CommTrack -->
-      <bind nodeset="/data/transfer/@type" calculate="concat('stock-card-', /data/transaction_type)"/>
-      <bind nodeset="/data/transfer/@date" calculate="/data/meta/timeEnd"/>
-      <bind nodeset="/data/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <bind nodeset="/data/receiving/transfer/@type" calculate="concat('stock-card-', /data/transaction_type)"/>
+      <bind nodeset="/data/disbursing/transfer/@type" calculate="concat('stock-card-', /data/transaction_type)"/>
+      <bind nodeset="/data/receiving/transfer/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/disbursing/transfer/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/receiving/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <bind nodeset="/data/disbursing/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
 
       <!-- Is the value being added or subtracted? -->
-      <bind nodeset="/data/transfer/@dest"
+      <bind nodeset="/data/receiving"
             relevant="(/data/transaction_type = 'entry') or
-                      (/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'positive')"
-            calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
-      <bind nodeset="/data/transfer/@src"
+                      (/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'positive')"/>
+      <bind nodeset="/data/receiving/transfer/@dest" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+
+      <bind nodeset="/data/disbursing"
             relevant="(/data/transaction_type = 'disbursement') or
-                      (/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'negative')"
-            calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+                      (/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'negative')"/>
+      <bind nodeset="/data/disbursing/transfer/@src" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
 
       <!-- What is the magnitude of the change? -->
-      <bind nodeset="/data/transfer/entry/@quantity"
+      <bind nodeset="/data/receiving/transfer/entry/@quantity"
+            calculate="
+                if(/data/transaction_type = 'entry', /data/units_added,
+                if(/data/transaction_type = 'disbursement', /data/units_disbursed,
+                /data/units_adjusted
+                ))
+            "/>
+      <bind nodeset="/data/disbursing/transfer/entry/@quantity"
             calculate="
                 if(/data/transaction_type = 'entry', /data/units_added,
                 if(/data/transaction_type = 'disbursement', /data/units_disbursed,
@@ -140,6 +159,10 @@
       <item>
         <label ref="jr:itext('transaction_type-disbursement-label')"/>
         <value>disbursement</value>
+      </item>
+      <item>
+        <label ref="jr:itext('transaction_type-adjustment-label')"/>
+        <value>adjustment</value>
       </item>
     </select1>
 
