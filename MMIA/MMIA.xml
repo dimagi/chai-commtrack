@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:orx="http://openrosa.org/jr/xforms"
+        xmlns="http://www.w3.org/2002/xforms"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:vellum="http://commcarehq.org/xforms/vellum">
+  <h:head>
+    <h:title>MMIA</h:title>
+    <model>
+      <instance>
+        <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms"
+              xmlns="http://openrosa.org/formdesigner/09p76gpqh7xto60pz51k1bnxppgs3bu7rsj3xur4"
+              uiVersion="1" version="1" name="Confirm MMIA">
+
+          <!-- Confirm MMIA -->
+          <initial_stock_mmia/>
+          <entries_mmia/>
+          <exits_mmia/>
+          <losses_mmia/>
+          <inventory_mmia/>
+          <validity_mmia/>
+
+          <!-- Exits -->
+          <exits_LRDA/>
+
+          <!-- Regimens -->
+
+          <!-- CommTrack -->
+          <!-- /CommTrack -->
+        </data>
+      </instance>
+      <!-- Confirm MMIA -->
+      <bind nodeset="/data/initial_stock_mmia" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/entries_mmia" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/exits_mmia" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/losses_mmia" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/inventory_mmia" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/validity_mmia" type="xsd:date" relevant="/data/inventory_mmia != 0" required="true()"/>
+
+      <!-- Exits -->
+      <bind nodeset="/data/exits_LRDA" type="xsd:int"/>
+
+      <!-- Regimens -->
+
+      <!-- CommTrack -->
+      <!-- /CommTrack -->
+
+      <itext>
+
+        <translation lang="en" default="">
+          <!-- Confirm MMIA -->
+          <text id="initial_stock_mmia-label">
+            <value>Initial Stock:</value>
+          </text>
+          <text id="entries_mmia-label">
+            <value>Entries:</value>
+          </text>
+          <text id="exits_mmia-label">
+            <value>Exits:</value>
+          </text>
+          <text id="losses_mmia-label">
+            <value>Losses and Adjustments:</value>
+          </text>
+          <text id="inventory_mmia-label">
+            <value>Inventory:</value>
+          </text>
+          <text id="validity_mmia-label">
+            <value>Expiration:</value>
+          </text>
+
+          <!-- Exits -->
+          <text id="exits_LRDA-label">
+            <value>Exits real:</value>
+          </text>
+
+          <!-- Regimens -->
+
+          <!-- CommTrack -->
+          <!-- /CommTrack -->
+        </translation>
+
+        <translation lang="por">
+          <!-- Confirm MMIA -->
+          <text id="initial_stock_mmia-label">
+            <value>Saldo Inicial</value>
+          </text>
+          <text id="entries_mmia-label">
+            <value>Entradas:</value>
+          </text>
+          <text id="exits_mmia-label">
+            <value>Saidas:</value>
+          </text>
+          <text id="losses_mmia-label">
+            <value>Perdas e ajustes:</value>
+          </text>
+          <text id="inventory_mmia-label">
+            <value>Inventario</value>
+          </text>
+          <text id="validity_mmia-label">
+            <value>Validade:</value>
+          </text>
+
+          <!-- Exits -->
+          <text id="exits_LRDA-label">
+            <value>Saidas reais:</value>
+          </text>
+
+          <!-- Regimens -->
+
+          <!-- CommTrack -->
+          <!-- /CommTrack -->
+        </translation>
+      </itext>
+    </model>
+  </h:head>
+  <h:body>
+    <!-- Confirm MMIA -->
+    <input ref="/data/initial_stock_mmia">
+      <label ref="jr:itext('initial_stock_mmia-label')"/>
+    </input>
+    <input ref="/data/entries_mmia">
+      <label ref="jr:itext('entries_mmia-label')"/>
+    </input>
+    <input ref="/data/exits_mmia">
+      <label ref="jr:itext('exits_mmia-label')"/>
+    </input>
+    <input ref="/data/losses_mmia">
+      <label ref="jr:itext('losses_mmia-label')"/>
+    </input>
+    <input ref="/data/inventory_mmia">
+      <label ref="jr:itext('inventory_mmia-label')"/>
+    </input>
+    <input ref="/data/validity_mmia">
+      <label ref="jr:itext('validity_mmia-label')"/>
+    </input>
+
+    <!-- Exits -->
+    <input ref="/data/exits_LRDA">
+      <label ref="jr:itext('exits_LRDA-label')"/>
+    </input>
+
+    <!-- Regimens -->
+
+    <!-- CommTrack -->
+    <!-- /CommTrack -->
+  </h:body>
+</h:html>
