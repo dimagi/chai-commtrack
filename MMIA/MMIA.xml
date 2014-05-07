@@ -25,23 +25,82 @@
           <exits_LRDA/>
 
           <!-- Regimens -->
+          <adultos_label/>
+          <AZT_3TC_NVP/>
+          <TDF_3TC_EFV/>
+          <AZT_3TC_EFV/>
+          <d4T_30_3TC_NVP/>
+          <d4T_30_3TC_EFV/>
+          <AZT_3TC_LPV_r/>
+          <TDF_3TC_LPV_r/>
+          <ABC_3TC_LPV_r/>
+          <AZT_3TC_ABC/>
+          <peds_label/>
+          <d4T6_3TC_NVP_DFCBab/>
+          <d4T_3TC_LPV_r_baby/>
+          <d4T_3TC_ABC_baby/>
+          <d4T6_3TC_EFV_2DFCBaby_EFV/>
+          <AZT60_3TC_NVP_3DFC/>
+          <AZT60_3TC_EFV_2DFC/>
+          <AZT_3TC_ABC_ped/>
+          <AZT_ddI400_LPV_r/>
+          <ABC_3TC_EFV/>
+          <types_of_patients/>
+          <new_patients/>
+          <maintained_patients/>
+          <altered_patients/>
+          <ptv/>
+          <ppe/>
+          <total_months/>
+          <total_patients/>
 
           <!-- CommTrack -->
           <!-- /CommTrack -->
         </data>
       </instance>
+
+      <!-- TODO - prepopulate these fields from the ledger data -->
       <!-- Confirm MMIA -->
       <bind nodeset="/data/initial_stock_mmia" type="xsd:int" required="true()"/>
       <bind nodeset="/data/entries_mmia" type="xsd:int" required="true()"/>
       <bind nodeset="/data/exits_mmia" type="xsd:int" required="true()"/>
       <bind nodeset="/data/losses_mmia" type="xsd:int" required="true()"/>
       <bind nodeset="/data/inventory_mmia" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/validity_mmia" type="xsd:date" relevant="/data/inventory_mmia != 0" required="true()"/>
+      <bind nodeset="/data/validity_mmia" type="xsd:date"
+            relevant="/data/inventory_mmia != 0" required="true()"/>
 
       <!-- Exits -->
       <bind nodeset="/data/exits_LRDA" type="xsd:int"/>
 
       <!-- Regimens -->
+      <bind nodeset="/data/adultos_label"/>
+      <bind nodeset="/data/AZT_3TC_NVP" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/TDF_3TC_EFV" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT_3TC_EFV" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/d4T_30_3TC_NVP" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/d4T_30_3TC_EFV" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT_3TC_LPV_r" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/TDF_3TC_LPV_r" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/ABC_3TC_LPV_r" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT_3TC_ABC" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/peds_label"/>
+      <bind nodeset="/data/d4T6_3TC_NVP_DFCBab" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/d4T_3TC_LPV_r_baby" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/d4T_3TC_ABC_baby" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/d4T6_3TC_EFV_2DFCBaby_EFV" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT60_3TC_NVP_3DFC" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT60_3TC_EFV_2DFC" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT_3TC_ABC_ped" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT_ddI400_LPV_r" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/ABC_3TC_EFV" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/types_of_patients"/>
+      <bind nodeset="/data/new_patients" type="xsd:int"/>
+      <bind nodeset="/data/maintained_patients" type="xsd:int"/>
+      <bind nodeset="/data/altered_patients" type="xsd:int"/>
+      <bind nodeset="/data/ptv" type="xsd:int"/>
+      <bind nodeset="/data/ppe" type="xsd:int"/>
+      <bind nodeset="/data/total_months" type="xsd:int"/>
+      <bind nodeset="/data/total_patients" type="xsd:int"/>
 
       <!-- CommTrack -->
       <!-- /CommTrack -->
@@ -49,6 +108,7 @@
       <itext>
 
         <translation lang="en" default="">
+
           <!-- Confirm MMIA -->
           <text id="initial_stock_mmia-label">
             <value>Initial Stock:</value>
@@ -75,12 +135,95 @@
           </text>
 
           <!-- Regimens -->
+          <text id="adultos_label-label">
+            <value>Total people on each therapeutic regimen: Adults</value>
+          </text>
+          <text id="AZT_3TC_NVP-label">
+            <value>AZT+3TC+NVP</value>
+          </text>
+          <text id="TDF_3TC_EFV-label">
+            <value>TDF+3TC+EFV</value>
+          </text>
+          <text id="AZT_3TC_EFV-label">
+            <value>AZT+3TC+EFV</value>
+          </text>
+          <text id="d4T_30_3TC_NVP-label">
+            <value>d4T 30+3TC+NVP</value>
+          </text>
+          <text id="d4T_30_3TC_EFV-label">
+            <value>d4T 30+3TC+EFV</value>
+          </text>
+          <text id="AZT_3TC_LPV_r-label">
+            <value>AZT+3TC+LPV/r</value>
+          </text>
+          <text id="TDF_3TC_LPV_r-label">
+            <value>TDF+3TC+LPV/r</value>
+          </text>
+          <text id="ABC_3TC_LPV_r-label">
+            <value>ABC+3TC+LPV/r</value>
+          </text>
+          <text id="AZT_3TC_ABC-label">
+            <value>AZT300+3TC+ABC</value>
+          </text>
+          <text id="peds_label-label">
+            <value>Total people on each therapeutic regimen: Pediatrics</value>
+          </text>
+          <text id="d4T6_3TC_NVP_DFCBab-label">
+            <value>d4T+3TC+NVP (3DFC Baby)</value>
+          </text>
+          <text id="d4T_3TC_LPV_r_baby-label">
+            <value>d4T+3TC+LPV/r (2DFC Baby +LPV/r)</value>
+          </text>
+          <text id="d4T_3TC_ABC_baby-label">
+            <value>d4T+3TC+ABC (2DFC Baby +ABC)</value>
+          </text>
+          <text id="d4T6_3TC_EFV_2DFCBaby_EFV-label">
+            <value>d4T 6+3TC+EFV (2DFC Baby + EFV)</value>
+          </text>
+          <text id="AZT60_3TC_NVP_3DFC-label">
+            <value>AZT60+3TC+NVP (3DFC)</value>
+          </text>
+          <text id="AZT60_3TC_EFV_2DFC-label">
+            <value>AZT 60+3TC+EFV (2DFC + EFV)</value>
+          </text>
+          <text id="AZT_3TC_ABC_ped-label">
+            <value>AZT+3TC+ABC (2DFC +ABC)</value>
+          </text>
+          <text id="AZT_ddI400_LPV_r-label">
+            <value>ABC+3TC+LPV/r</value>
+          </text>
+          <text id="ABC_3TC_EFV-label">
+            <value>ABC+3TC+EFV</value>
+          </text>
+          <text id="types_of_patients-label">
+            <value>Types of patients</value>
+          </text>
+          <text id="new_patients-label">
+            <value>New</value>
+          </text>
+          <text id="maintained_patients-label">
+            <value>Matained</value>
+          </text>
+          <text id="altered_patients-label">
+            <value>Altered</value>
+          </text>
+          <text id="ptv-label">
+            <value>PTV</value>
+          </text>
+          <text id="ppe-label">
+            <value>PPE</value>
+          </text>
+          <text id="total_months-label">
+            <value>Total months of medicine available</value>
+          </text>
+          <text id="total_patients-label">
+            <value>Total patients on TARV in US</value>
+          </text>
 
-          <!-- CommTrack -->
-          <!-- /CommTrack -->
         </translation>
 
         <translation lang="por">
+
           <!-- Confirm MMIA -->
           <text id="initial_stock_mmia-label">
             <value>Saldo Inicial</value>
@@ -107,14 +250,97 @@
           </text>
 
           <!-- Regimens -->
+          <text id="adultos_label-label">
+            <value>Total doentes em regimes terapeuticos: Adultos</value>
+          </text>
+          <text id="AZT_3TC_NVP-label">
+            <value>AZT+3TC+NVP</value>
+          </text>
+          <text id="TDF_3TC_EFV-label">
+            <value>TDF+3TC+EFV</value>
+          </text>
+          <text id="AZT_3TC_EFV-label">
+            <value>AZT+3TC+EFV</value>
+          </text>
+          <text id="d4T_30_3TC_NVP-label">
+            <value>d4T 30+3TC+NVP</value>
+          </text>
+          <text id="d4T_30_3TC_EFV-label">
+            <value>d4T 30+3TC+EFV</value>
+          </text>
+          <text id="AZT_3TC_LPV_r-label">
+            <value>AZT+3TC+LPV/r</value>
+          </text>
+          <text id="TDF_3TC_LPV_r-label">
+            <value>TDF+3TC+LPV/r</value>
+          </text>
+          <text id="ABC_3TC_LPV_r-label">
+            <value>ABC+3TC+LPV/r</value>
+          </text>
+          <text id="AZT_3TC_ABC-label">
+            <value>AZT300+3TC+ABC</value>
+          </text>
+          <text id="peds_label-label">
+            <value>Total doentes em regimes terapeuticos: Pediatricos</value>
+          </text>
+          <text id="d4T6_3TC_NVP_DFCBab-label">
+            <value>d4T+3TC+NVP (3DFC Baby)</value>
+          </text>
+          <text id="d4T_3TC_LPV_r_baby-label">
+            <value>d4T+3TC+LPV/r (2DFC Baby +LPV/r)</value>
+          </text>
+          <text id="d4T_3TC_ABC_baby-label">
+            <value>d4T+3TC+ABC (2DFC Baby +ABC)</value>
+          </text>
+          <text id="d4T6_3TC_EFV_2DFCBaby_EFV-label">
+            <value>d4T 6+3TC+EFV (2DFC Baby + EFV)</value>
+          </text>
+          <text id="AZT60_3TC_NVP_3DFC-label">
+            <value>AZT60+3TC+NVP (3DFC)</value>
+          </text>
+          <text id="AZT60_3TC_EFV_2DFC-label">
+            <value>AZT 60+3TC+EFV (2DFC + EFV)</value>
+          </text>
+          <text id="AZT_3TC_ABC_ped-label">
+            <value>AZT+3TC+ABC (2DFC +ABC)</value>
+          </text>
+          <text id="AZT_ddI400_LPV_r-label">
+            <value>ABC+3TC+LPV/r</value>
+          </text>
+          <text id="ABC_3TC_EFV-label">
+            <value>ABC+3TC+EFV</value>
+          </text>
+          <text id="types_of_patients-label">
+            <value>Tipos de doents</value>
+          </text>
+          <text id="new_patients-label">
+            <value>Novos</value>
+          </text>
+          <text id="maintained_patients-label">
+            <value>Manuten&#xE7;&#xE3;o</value>
+          </text>
+          <text id="altered_patients-label">
+            <value>Altera&#xE7;&#xE3;o</value>
+          </text>
+          <text id="ptv-label">
+            <value>PTV</value>
+          </text>
+          <text id="ppe-label">
+            <value>PPE</value>
+          </text>
+          <text id="total_months-label">
+            <value>Total de Meses de medicamentos dispensados</value>
+          </text>
+          <text id="total_patients-label">
+            <value>Total de pacientes em TARV na US</value>
+          </text>
 
-          <!-- CommTrack -->
-          <!-- /CommTrack -->
         </translation>
       </itext>
     </model>
   </h:head>
   <h:body>
+
     <!-- Confirm MMIA -->
     <input ref="/data/initial_stock_mmia">
       <label ref="jr:itext('initial_stock_mmia-label')"/>
@@ -141,8 +367,90 @@
     </input>
 
     <!-- Regimens -->
+    <trigger ref="/data/adultos_label" appearance="minimal">
+      <label ref="jr:itext('adultos_label-label')"/>
+    </trigger>
+    <input ref="/data/AZT_3TC_NVP">
+      <label ref="jr:itext('AZT_3TC_NVP-label')"/>
+    </input>
+    <input ref="/data/TDF_3TC_EFV">
+      <label ref="jr:itext('TDF_3TC_EFV-label')"/>
+    </input>
+    <input ref="/data/AZT_3TC_EFV">
+      <label ref="jr:itext('AZT_3TC_EFV-label')"/>
+    </input>
+    <input ref="/data/d4T_30_3TC_NVP">
+      <label ref="jr:itext('d4T_30_3TC_NVP-label')"/>
+    </input>
+    <input ref="/data/d4T_30_3TC_EFV">
+      <label ref="jr:itext('d4T_30_3TC_EFV-label')"/>
+    </input>
+    <input ref="/data/AZT_3TC_LPV_r">
+      <label ref="jr:itext('AZT_3TC_LPV_r-label')"/>
+    </input>
+    <input ref="/data/TDF_3TC_LPV_r">
+      <label ref="jr:itext('TDF_3TC_LPV_r-label')"/>
+    </input>
+    <input ref="/data/ABC_3TC_LPV_r">
+      <label ref="jr:itext('ABC_3TC_LPV_r-label')"/>
+    </input>
+    <input ref="/data/AZT_3TC_ABC">
+      <label ref="jr:itext('AZT_3TC_ABC-label')"/>
+    </input>
+    <trigger ref="/data/peds_label" appearance="minimal">
+      <label ref="jr:itext('peds_label-label')"/>
+    </trigger>
+    <input ref="/data/d4T6_3TC_NVP_DFCBab">
+      <label ref="jr:itext('d4T6_3TC_NVP_DFCBab-label')"/>
+    </input>
+    <input ref="/data/d4T_3TC_LPV_r_baby">
+      <label ref="jr:itext('d4T_3TC_LPV_r_baby-label')"/>
+    </input>
+    <input ref="/data/d4T_3TC_ABC_baby">
+      <label ref="jr:itext('d4T_3TC_ABC_baby-label')"/>
+    </input>
+    <input ref="/data/d4T6_3TC_EFV_2DFCBaby_EFV">
+      <label ref="jr:itext('d4T6_3TC_EFV_2DFCBaby_EFV-label')"/>
+    </input>
+    <input ref="/data/AZT60_3TC_NVP_3DFC">
+      <label ref="jr:itext('AZT60_3TC_NVP_3DFC-label')"/>
+    </input>
+    <input ref="/data/AZT60_3TC_EFV_2DFC">
+      <label ref="jr:itext('AZT60_3TC_EFV_2DFC-label')"/>
+    </input>
+    <input ref="/data/AZT_3TC_ABC_ped">
+      <label ref="jr:itext('AZT_3TC_ABC_ped-label')"/>
+    </input>
+    <input ref="/data/AZT_ddI400_LPV_r">
+      <label ref="jr:itext('AZT_ddI400_LPV_r-label')"/>
+    </input>
+    <input ref="/data/ABC_3TC_EFV">
+      <label ref="jr:itext('ABC_3TC_EFV-label')"/>
+    </input>
+    <trigger ref="/data/types_of_patients" appearance="minimal">
+      <label ref="jr:itext('types_of_patients-label')"/>
+    </trigger>
+    <input ref="/data/new_patients">
+      <label ref="jr:itext('new_patients-label')"/>
+    </input>
+    <input ref="/data/maintained_patients">
+      <label ref="jr:itext('maintained_patients-label')"/>
+    </input>
+    <input ref="/data/altered_patients">
+      <label ref="jr:itext('altered_patients-label')"/>
+    </input>
+    <input ref="/data/ptv">
+      <label ref="jr:itext('ptv-label')"/>
+    </input>
+    <input ref="/data/ppe">
+      <label ref="jr:itext('ppe-label')"/>
+    </input>
+    <input ref="/data/total_months">
+      <label ref="jr:itext('total_months-label')"/>
+    </input>
+    <input ref="/data/total_patients">
+      <label ref="jr:itext('total_patients-label')"/>
+    </input>
 
-    <!-- CommTrack -->
-    <!-- /CommTrack -->
   </h:body>
 </h:html>
