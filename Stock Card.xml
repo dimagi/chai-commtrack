@@ -5,7 +5,8 @@
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
         xmlns:jr="http://openrosa.org/javarosa">
 
-  <!-- TODO Actually record the disbursement_location -->
+  <!-- TODO Actually record the disbursement_location? -->
+  <!-- TODO change adjustments thing to one question? - transaction type? positive adjustment, negative adjustment -->
   <h:head>
     <h:title>Stock Card</h:title>
     <model>
@@ -25,6 +26,8 @@
           <units_adjusted/>
 
           <!-- CommTrack -->
+          <transaction_magnitude/>
+
           <receiving>
             <transfer xmlns="http://commcarehq.org/ledger/v1" dest="" type="" date="" section-id="stock">
               <entry id="" quantity=""/>
@@ -36,11 +39,34 @@
               <entry id="" quantity=""/>
             </transfer>
           </disbursing>
+
+          <aggregate-monthly>
+            <transfer xmlns="http://commcarehq.org/ledger/v1" dest="" section-id="">
+              <entry id="" quantity=""/>
+            </transfer>
+          </aggregate-monthly>
           <!-- /CommTrack -->
 
         </data>
 
       </instance>
+      <instance id="ledger" src="jr://instance/ledgerdb" />
+      <!-- Looks like:
+          <ledgerdb>
+            <ledger entity-id="">
+              <section section-id="">
+                <entry id="" exponent=""/>
+              </section>
+            </ledger>
+          </ledgerdb>
+          <bind nodeset="/data/products/old_stock_total"
+                calculate="coalesce(
+                  instance('ledger')/ledgerdb/
+                    ledger[@entity-id=instance('commcaresession')/session/data/case_id]/
+                    section[@section-id='stock']/
+                    entry[@id=instance('products')/products/product[position()=current()/../@index]/@id],
+                  0)" />
+      -->
 
       <bind nodeset="/data/transaction_type" required="true()"/>
 
@@ -56,10 +82,15 @@
       <!-- CommTrack -->
       <bind nodeset="/data/receiving/transfer/@type" calculate="concat('stock-card-', /data/transaction_type)"/>
       <bind nodeset="/data/disbursing/transfer/@type" calculate="concat('stock-card-', /data/transaction_type)"/>
+      <bind nodeset="/data/aggregate-monthly/transfer/@type" calculate="concat('stock-card-', /data/transaction_type)"/>
+
       <bind nodeset="/data/receiving/transfer/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/disbursing/transfer/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/aggregate-monthly/transfer/@date" calculate="/data/meta/timeEnd"/>
+
       <bind nodeset="/data/receiving/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/disbursing/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <bind nodeset="/data/aggregate-monthly/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
 
       <!-- Is the value being added or subtracted? -->
       <bind nodeset="/data/receiving"
@@ -73,20 +104,28 @@
       <bind nodeset="/data/disbursing/transfer/@src" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
 
       <!-- What is the magnitude of the change? -->
-      <bind nodeset="/data/receiving/transfer/entry/@quantity"
+      <bind nodeset="/data/transaction_magnitude"
             calculate="
                 if(/data/transaction_type = 'entry', /data/units_added,
                 if(/data/transaction_type = 'disbursement', /data/units_disbursed,
                 /data/units_adjusted
                 ))
             "/>
-      <bind nodeset="/data/disbursing/transfer/entry/@quantity"
+      <bind nodeset="/data/receiving/transfer/entry/@quantity" calculate="/data/transaction_magnitude"/>
+      <bind nodeset="/data/disbursing/transfer/entry/@quantity" calculate="/data/transaction_magnitude"/>
+      <bind nodeset="/data/aggregate-monthly/transfer/entry/@quantity" calculate="/data/transaction_magnitude"/>
+
+      <!-- Monthly aggregate info for requisition form -->
+      <bind nodeset="/data/aggregate-monthly/transfer/@dest" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/aggregate-monthly/transfer/@section-id"
             calculate="
-                if(/data/transaction_type = 'entry', /data/units_added,
-                if(/data/transaction_type = 'disbursement', /data/units_disbursed,
-                /data/units_adjusted
-                ))
+            if(/data/transaction_type = 'entry', 'entries',
+            if(/data/transaction_type = 'disbursement', 'disbursements',
+            if(/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'negative', 'neg_adjustments',
+            if(/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'positive', 'pos_adjustments',
+            ))))
             "/>
+
       <!-- /CommTrack -->
 
       <itext>
