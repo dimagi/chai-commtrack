@@ -41,7 +41,7 @@
           </disbursing>
 
           <aggregate-monthly>
-            <transfer xmlns="http://commcarehq.org/ledger/v1" dest="" section-id="">
+            <transfer xmlns="http://commcarehq.org/ledger/v1" dest="" date="" section-id="">
               <entry id="" quantity=""/>
             </transfer>
           </aggregate-monthly>
@@ -122,8 +122,8 @@
             if(/data/transaction_type = 'entry', 'entries',
             if(/data/transaction_type = 'disbursement', 'disbursements',
             if(/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'negative', 'neg_adjustments',
-            if(/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'positive', 'pos_adjustments',
-            ))))
+            'pos_adjustments'
+            )))
             "/>
 
       <!-- /CommTrack -->
