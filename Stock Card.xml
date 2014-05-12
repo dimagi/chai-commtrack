@@ -51,22 +51,6 @@
 
       </instance>
       <instance id="ledger" src="jr://instance/ledgerdb" />
-      <!-- Looks like:
-          <ledgerdb>
-            <ledger entity-id="">
-              <section section-id="">
-                <entry id="" exponent=""/>
-              </section>
-            </ledger>
-          </ledgerdb>
-          <bind nodeset="/data/products/old_stock_total"
-                calculate="coalesce(
-                  instance('ledger')/ledgerdb/
-                    ledger[@entity-id=instance('commcaresession')/session/data/case_id]/
-                    section[@section-id='stock']/
-                    entry[@id=instance('products')/products/product[position()=current()/../@index]/@id],
-                  0)" />
-      -->
 
       <bind nodeset="/data/transaction_type" required="true()"/>
 

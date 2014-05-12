@@ -14,15 +14,22 @@
               uiVersion="1" version="1" name="Confirm MMIA">
 
           <!-- Confirm MMIA -->
+          <calculated_initial_stock_mmia/>
           <initial_stock_mmia/>
-          <entries_mmia/>
-          <exits_mmia/>
-          <losses_mmia/>
-          <inventory_mmia/>
-          <validity_mmia/>
 
-          <!-- Exits -->
+          <calculated_entries_mmia/>
+          <entries_mmia/>
+
+          <calculated_exits_mmia/>
           <exits_LRDA/>
+
+          <calculated_losses_mmia/>
+          <losses_mmia/>
+
+          <calculated_inventory_mmia/>
+          <inventory_mmia/>
+
+          <validity_mmia/>
 
           <!-- Regimens -->
           <adultos_label/>
@@ -55,52 +62,144 @@
           <total_patients/>
 
           <!-- CommTrack -->
+
+          <!-- Transfers to reset monthly aggregates -->
+          <monthly-initial>
+            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" date="" section-id="monthly-initial">
+              <entry id="" quantity="0"/>
+            </transfer>
+          </monthly-initial>
+          <entries>
+            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" date="" section-id="entries">
+              <entry id="" quantity="0"/>
+            </transfer>
+          </entries>
+          <disbursements>
+            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" date="" section-id="disbursements">
+              <entry id="" quantity="0"/>
+            </transfer>
+          </disbursements>
+          <neg_adjustments>
+            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" date="" section-id="neg_adjustments">
+              <entry id="" quantity="0"/>
+            </transfer>
+          </neg_adjustments>
+          <pos_adjustments>
+            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" date="" section-id="pos_adjustments">
+              <entry id="" quantity="0"/>
+            </transfer>
+          </pos_adjustments>
+
           <!-- /CommTrack -->
         </data>
       </instance>
+      <instance id="ledger" src="jr://instance/ledgerdb" />
+      <!-- Looks like:
+          <ledgerdb>
+            <ledger entity-id="">
+              <section section-id="">
+                <entry id="" exponent=""/>
+              </section>
+            </ledger>
+          </ledgerdb>
+
+          <bind nodeset="/data/products/old_stock_total"
+                calculate="coalesce(
+                  instance('ledger')/ledgerdb/
+                    ledger[@entity-id=instance('commcaresession')/session/data/case_id]/
+                    section[@section-id='stock']/
+                    entry[@id=instance('commcaresession')/session/data/product_id],
+                  0)" />
+      -->
 
       <!-- TODO - prepopulate these fields from the ledger data -->
+      <!-- then reset the fields to zero -->
+
       <!-- Confirm MMIA -->
+      <!-- TODO make it two setvalues and a bind -->
+      <setvalue event="xforms-ready" ref="/data/calculated_initial_stock_mmia"
+        value="coalesce(
+          instance('ledger')/ledgerdb/
+          ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+          section[@section-id='monthly-initial']/
+          entry[@id=instance('commcaresession')/session/data/product_id],
+        0)" />
+      <setvalue event="xforms-ready" ref="/data/initial_stock_mmia" value="/data/calculated_initial_stock_mmia"/>
       <bind nodeset="/data/initial_stock_mmia" type="xsd:int" required="true()"/>
+
+      <setvalue event="xforms-ready" ref="/data/calculated_entries_mmia"
+        value="coalesce(
+          instance('ledger')/ledgerdb/
+          ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+          section[@section-id='entries']/
+          entry[@id=instance('commcaresession')/session/data/product_id],
+        0)" />
+      <setvalue event="xforms-ready" ref="/data/entries_mmia" value="/data/calculated_entries_mmia"/>
       <bind nodeset="/data/entries_mmia" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/exits_mmia" type="xsd:int" required="true()"/>
+
+      <setvalue event="xforms-ready" ref="/data/calculated_exits_mmia"
+        value="coalesce(
+          instance('ledger')/ledgerdb/
+          ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+          section[@section-id='exits']/
+          entry[@id=instance('commcaresession')/session/data/product_id],
+        0)" />
+      <!-- Uncomment the next line to prepopulate the exits field -->
+      <!-- <setvalue event="xforms-ready" ref="/data/exits_LRDA" value="/data/calculated_exits_mmia"/> -->
+      <bind nodeset="/data/exits_LRDA" type="xsd:int"/>
+
+      <setvalue event="xforms-ready" ref="/data/calculated_losses_mmia"
+        value="coalesce(
+          instance('ledger')/ledgerdb/
+          ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+          section[@section-id='losses']/
+          entry[@id=instance('commcaresession')/session/data/product_id],
+        0)" />
+      <setvalue event="xforms-ready" ref="/data/losses_mmia" value="/data/calculated_losses_mmia"/>
       <bind nodeset="/data/losses_mmia" type="xsd:int" required="true()"/>
+
+      <setvalue event="xforms-ready" ref="/data/calculated_inventory_mmia"
+        value="coalesce(
+          instance('ledger')/ledgerdb/
+          ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+          section[@section-id='inventory']/
+          entry[@id=instance('commcaresession')/session/data/product_id],
+        0)" />
+      <setvalue event="xforms-ready" ref="/data/inventory_mmia" value="/data/calculated_inventory_mmia"/>
       <bind nodeset="/data/inventory_mmia" type="xsd:int" required="true()"/>
+
       <bind nodeset="/data/validity_mmia" type="xsd:date"
             relevant="/data/inventory_mmia != 0" required="true()"/>
 
-      <!-- Exits -->
-      <bind nodeset="/data/exits_LRDA" type="xsd:int"/>
-
-      <!-- Regimens -->
-      <bind nodeset="/data/adultos_label"/>
-      <bind nodeset="/data/AZT_3TC_NVP" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/TDF_3TC_EFV" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/AZT_3TC_EFV" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/d4T_30_3TC_NVP" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/d4T_30_3TC_EFV" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/AZT_3TC_LPV_r" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/TDF_3TC_LPV_r" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/ABC_3TC_LPV_r" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/AZT_3TC_ABC" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/peds_label"/>
-      <bind nodeset="/data/d4T6_3TC_NVP_DFCBab" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/d4T_3TC_LPV_r_baby" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/d4T_3TC_ABC_baby" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/d4T6_3TC_EFV_2DFCBaby_EFV" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/AZT60_3TC_NVP_3DFC" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/AZT60_3TC_EFV_2DFC" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/AZT_3TC_ABC_ped" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/AZT_ddI400_LPV_r" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/ABC_3TC_EFV" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/types_of_patients"/>
-      <bind nodeset="/data/new_patients" type="xsd:int"/>
-      <bind nodeset="/data/maintained_patients" type="xsd:int"/>
-      <bind nodeset="/data/altered_patients" type="xsd:int"/>
-      <bind nodeset="/data/ptv" type="xsd:int"/>
-      <bind nodeset="/data/ppe" type="xsd:int"/>
-      <bind nodeset="/data/total_months" type="xsd:int"/>
-      <bind nodeset="/data/total_patients" type="xsd:int"/>
+      <!-- [> Regimens <] -->
+      <!-- <bind nodeset="/data/adultos_label"/> -->
+      <!-- <bind nodeset="/data/AZT_3TC_NVP" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/TDF_3TC_EFV" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/AZT_3TC_EFV" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/d4T_30_3TC_NVP" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/d4T_30_3TC_EFV" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/AZT_3TC_LPV_r" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/TDF_3TC_LPV_r" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/ABC_3TC_LPV_r" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/AZT_3TC_ABC" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/peds_label"/> -->
+      <!-- <bind nodeset="/data/d4T6_3TC_NVP_DFCBab" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/d4T_3TC_LPV_r_baby" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/d4T_3TC_ABC_baby" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/d4T6_3TC_EFV_2DFCBaby_EFV" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/AZT60_3TC_NVP_3DFC" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/AZT60_3TC_EFV_2DFC" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/AZT_3TC_ABC_ped" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/AZT_ddI400_LPV_r" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/ABC_3TC_EFV" type="xsd:int" required="true()"/> -->
+      <!-- <bind nodeset="/data/types_of_patients"/> -->
+      <!-- <bind nodeset="/data/new_patients" type="xsd:int"/> -->
+      <!-- <bind nodeset="/data/maintained_patients" type="xsd:int"/> -->
+      <!-- <bind nodeset="/data/altered_patients" type="xsd:int"/> -->
+      <!-- <bind nodeset="/data/ptv" type="xsd:int"/> -->
+      <!-- <bind nodeset="/data/ppe" type="xsd:int"/> -->
+      <!-- <bind nodeset="/data/total_months" type="xsd:int"/> -->
+      <!-- <bind nodeset="/data/total_patients" type="xsd:int"/> -->
 
       <!-- CommTrack -->
       <!-- /CommTrack -->
@@ -116,8 +215,8 @@
           <text id="entries_mmia-label">
             <value>Entries:</value>
           </text>
-          <text id="exits_mmia-label">
-            <value>Exits:</value>
+          <text id="exits_LRDA-label">
+            <value>Exits real:</value>
           </text>
           <text id="losses_mmia-label">
             <value>Losses and Adjustments:</value>
@@ -127,11 +226,6 @@
           </text>
           <text id="validity_mmia-label">
             <value>Expiration:</value>
-          </text>
-
-          <!-- Exits -->
-          <text id="exits_LRDA-label">
-            <value>Exits real:</value>
           </text>
 
           <!-- Regimens -->
@@ -231,8 +325,8 @@
           <text id="entries_mmia-label">
             <value>Entradas:</value>
           </text>
-          <text id="exits_mmia-label">
-            <value>Saidas:</value>
+          <text id="exits_LRDA-label">
+            <value>Saidas reais:</value>
           </text>
           <text id="losses_mmia-label">
             <value>Perdas e ajustes:</value>
@@ -242,11 +336,6 @@
           </text>
           <text id="validity_mmia-label">
             <value>Validade:</value>
-          </text>
-
-          <!-- Exits -->
-          <text id="exits_LRDA-label">
-            <value>Saidas reais:</value>
           </text>
 
           <!-- Regimens -->
@@ -348,8 +437,9 @@
     <input ref="/data/entries_mmia">
       <label ref="jr:itext('entries_mmia-label')"/>
     </input>
-    <input ref="/data/exits_mmia">
-      <label ref="jr:itext('exits_mmia-label')"/>
+    <!-- Exits -->
+    <input ref="/data/exits_LRDA">
+      <label ref="jr:itext('exits_LRDA-label')"/>
     </input>
     <input ref="/data/losses_mmia">
       <label ref="jr:itext('losses_mmia-label')"/>
@@ -361,96 +451,91 @@
       <label ref="jr:itext('validity_mmia-label')"/>
     </input>
 
-    <!-- Exits -->
-    <input ref="/data/exits_LRDA">
-      <label ref="jr:itext('exits_LRDA-label')"/>
-    </input>
-
-    <!-- Regimens -->
-    <trigger ref="/data/adultos_label" appearance="minimal">
-      <label ref="jr:itext('adultos_label-label')"/>
-    </trigger>
-    <input ref="/data/AZT_3TC_NVP">
-      <label ref="jr:itext('AZT_3TC_NVP-label')"/>
-    </input>
-    <input ref="/data/TDF_3TC_EFV">
-      <label ref="jr:itext('TDF_3TC_EFV-label')"/>
-    </input>
-    <input ref="/data/AZT_3TC_EFV">
-      <label ref="jr:itext('AZT_3TC_EFV-label')"/>
-    </input>
-    <input ref="/data/d4T_30_3TC_NVP">
-      <label ref="jr:itext('d4T_30_3TC_NVP-label')"/>
-    </input>
-    <input ref="/data/d4T_30_3TC_EFV">
-      <label ref="jr:itext('d4T_30_3TC_EFV-label')"/>
-    </input>
-    <input ref="/data/AZT_3TC_LPV_r">
-      <label ref="jr:itext('AZT_3TC_LPV_r-label')"/>
-    </input>
-    <input ref="/data/TDF_3TC_LPV_r">
-      <label ref="jr:itext('TDF_3TC_LPV_r-label')"/>
-    </input>
-    <input ref="/data/ABC_3TC_LPV_r">
-      <label ref="jr:itext('ABC_3TC_LPV_r-label')"/>
-    </input>
-    <input ref="/data/AZT_3TC_ABC">
-      <label ref="jr:itext('AZT_3TC_ABC-label')"/>
-    </input>
-    <trigger ref="/data/peds_label" appearance="minimal">
-      <label ref="jr:itext('peds_label-label')"/>
-    </trigger>
-    <input ref="/data/d4T6_3TC_NVP_DFCBab">
-      <label ref="jr:itext('d4T6_3TC_NVP_DFCBab-label')"/>
-    </input>
-    <input ref="/data/d4T_3TC_LPV_r_baby">
-      <label ref="jr:itext('d4T_3TC_LPV_r_baby-label')"/>
-    </input>
-    <input ref="/data/d4T_3TC_ABC_baby">
-      <label ref="jr:itext('d4T_3TC_ABC_baby-label')"/>
-    </input>
-    <input ref="/data/d4T6_3TC_EFV_2DFCBaby_EFV">
-      <label ref="jr:itext('d4T6_3TC_EFV_2DFCBaby_EFV-label')"/>
-    </input>
-    <input ref="/data/AZT60_3TC_NVP_3DFC">
-      <label ref="jr:itext('AZT60_3TC_NVP_3DFC-label')"/>
-    </input>
-    <input ref="/data/AZT60_3TC_EFV_2DFC">
-      <label ref="jr:itext('AZT60_3TC_EFV_2DFC-label')"/>
-    </input>
-    <input ref="/data/AZT_3TC_ABC_ped">
-      <label ref="jr:itext('AZT_3TC_ABC_ped-label')"/>
-    </input>
-    <input ref="/data/AZT_ddI400_LPV_r">
-      <label ref="jr:itext('AZT_ddI400_LPV_r-label')"/>
-    </input>
-    <input ref="/data/ABC_3TC_EFV">
-      <label ref="jr:itext('ABC_3TC_EFV-label')"/>
-    </input>
-    <trigger ref="/data/types_of_patients" appearance="minimal">
-      <label ref="jr:itext('types_of_patients-label')"/>
-    </trigger>
-    <input ref="/data/new_patients">
-      <label ref="jr:itext('new_patients-label')"/>
-    </input>
-    <input ref="/data/maintained_patients">
-      <label ref="jr:itext('maintained_patients-label')"/>
-    </input>
-    <input ref="/data/altered_patients">
-      <label ref="jr:itext('altered_patients-label')"/>
-    </input>
-    <input ref="/data/ptv">
-      <label ref="jr:itext('ptv-label')"/>
-    </input>
-    <input ref="/data/ppe">
-      <label ref="jr:itext('ppe-label')"/>
-    </input>
-    <input ref="/data/total_months">
-      <label ref="jr:itext('total_months-label')"/>
-    </input>
-    <input ref="/data/total_patients">
-      <label ref="jr:itext('total_patients-label')"/>
-    </input>
+    <!-- [> Regimens <] -->
+    <!-- <trigger ref="/data/adultos_label" appearance="minimal"> -->
+      <!-- <label ref="jr:itext('adultos_label-label')"/> -->
+    <!-- </trigger> -->
+    <!-- <input ref="/data/AZT_3TC_NVP"> -->
+      <!-- <label ref="jr:itext('AZT_3TC_NVP-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/TDF_3TC_EFV"> -->
+      <!-- <label ref="jr:itext('TDF_3TC_EFV-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/AZT_3TC_EFV"> -->
+      <!-- <label ref="jr:itext('AZT_3TC_EFV-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/d4T_30_3TC_NVP"> -->
+      <!-- <label ref="jr:itext('d4T_30_3TC_NVP-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/d4T_30_3TC_EFV"> -->
+      <!-- <label ref="jr:itext('d4T_30_3TC_EFV-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/AZT_3TC_LPV_r"> -->
+      <!-- <label ref="jr:itext('AZT_3TC_LPV_r-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/TDF_3TC_LPV_r"> -->
+      <!-- <label ref="jr:itext('TDF_3TC_LPV_r-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/ABC_3TC_LPV_r"> -->
+      <!-- <label ref="jr:itext('ABC_3TC_LPV_r-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/AZT_3TC_ABC"> -->
+      <!-- <label ref="jr:itext('AZT_3TC_ABC-label')"/> -->
+    <!-- </input> -->
+    <!-- <trigger ref="/data/peds_label" appearance="minimal"> -->
+      <!-- <label ref="jr:itext('peds_label-label')"/> -->
+    <!-- </trigger> -->
+    <!-- <input ref="/data/d4T6_3TC_NVP_DFCBab"> -->
+      <!-- <label ref="jr:itext('d4T6_3TC_NVP_DFCBab-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/d4T_3TC_LPV_r_baby"> -->
+      <!-- <label ref="jr:itext('d4T_3TC_LPV_r_baby-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/d4T_3TC_ABC_baby"> -->
+      <!-- <label ref="jr:itext('d4T_3TC_ABC_baby-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/d4T6_3TC_EFV_2DFCBaby_EFV"> -->
+      <!-- <label ref="jr:itext('d4T6_3TC_EFV_2DFCBaby_EFV-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/AZT60_3TC_NVP_3DFC"> -->
+      <!-- <label ref="jr:itext('AZT60_3TC_NVP_3DFC-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/AZT60_3TC_EFV_2DFC"> -->
+      <!-- <label ref="jr:itext('AZT60_3TC_EFV_2DFC-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/AZT_3TC_ABC_ped"> -->
+      <!-- <label ref="jr:itext('AZT_3TC_ABC_ped-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/AZT_ddI400_LPV_r"> -->
+      <!-- <label ref="jr:itext('AZT_ddI400_LPV_r-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/ABC_3TC_EFV"> -->
+      <!-- <label ref="jr:itext('ABC_3TC_EFV-label')"/> -->
+    <!-- </input> -->
+    <!-- <trigger ref="/data/types_of_patients" appearance="minimal"> -->
+      <!-- <label ref="jr:itext('types_of_patients-label')"/> -->
+    <!-- </trigger> -->
+    <!-- <input ref="/data/new_patients"> -->
+      <!-- <label ref="jr:itext('new_patients-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/maintained_patients"> -->
+      <!-- <label ref="jr:itext('maintained_patients-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/altered_patients"> -->
+      <!-- <label ref="jr:itext('altered_patients-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/ptv"> -->
+      <!-- <label ref="jr:itext('ptv-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/ppe"> -->
+      <!-- <label ref="jr:itext('ppe-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/total_months"> -->
+      <!-- <label ref="jr:itext('total_months-label')"/> -->
+    <!-- </input> -->
+    <!-- <input ref="/data/total_patients"> -->
+      <!-- <label ref="jr:itext('total_patients-label')"/> -->
+    <!-- </input> -->
 
   </h:body>
 </h:html>
