@@ -31,63 +31,63 @@
 
           <validity/>
 
-          <!-- Regimens -->
-          <adultos_label/>
-          <AZT_3TC_NVP/>
-          <TDF_3TC_EFV/>
-          <AZT_3TC_EFV/>
-          <d4T_30_3TC_NVP/>
-          <d4T_30_3TC_EFV/>
-          <AZT_3TC_LPV_r/>
-          <TDF_3TC_LPV_r/>
-          <ABC_3TC_LPV_r/>
-          <AZT_3TC_ABC/>
-          <peds_label/>
-          <d4T6_3TC_NVP_DFCBab/>
-          <d4T_3TC_LPV_r_baby/>
-          <d4T_3TC_ABC_baby/>
-          <d4T6_3TC_EFV_2DFCBaby_EFV/>
-          <AZT60_3TC_NVP_3DFC/>
-          <AZT60_3TC_EFV_2DFC/>
-          <AZT_3TC_ABC_ped/>
-          <AZT_ddI400_LPV_r/>
-          <ABC_3TC_EFV/>
-          <types_of_patients/>
-          <new_patients/>
-          <maintained_patients/>
-          <altered_patients/>
-          <ptv/>
-          <ppe/>
-          <total_months/>
-          <total_patients/>
+          <!-- [> Regimens <] -->
+          <!-- <adultos_label/> -->
+          <!-- <AZT_3TC_NVP/> -->
+          <!-- <TDF_3TC_EFV/> -->
+          <!-- <AZT_3TC_EFV/> -->
+          <!-- <d4T_30_3TC_NVP/> -->
+          <!-- <d4T_30_3TC_EFV/> -->
+          <!-- <AZT_3TC_LPV_r/> -->
+          <!-- <TDF_3TC_LPV_r/> -->
+          <!-- <ABC_3TC_LPV_r/> -->
+          <!-- <AZT_3TC_ABC/> -->
+          <!-- <peds_label/> -->
+          <!-- <d4T6_3TC_NVP_DFCBab/> -->
+          <!-- <d4T_3TC_LPV_r_baby/> -->
+          <!-- <d4T_3TC_ABC_baby/> -->
+          <!-- <d4T6_3TC_EFV_2DFCBaby_EFV/> -->
+          <!-- <AZT60_3TC_NVP_3DFC/> -->
+          <!-- <AZT60_3TC_EFV_2DFC/> -->
+          <!-- <AZT_3TC_ABC_ped/> -->
+          <!-- <AZT_ddI400_LPV_r/> -->
+          <!-- <ABC_3TC_EFV/> -->
+          <!-- <types_of_patients/> -->
+          <!-- <new_patients/> -->
+          <!-- <maintained_patients/> -->
+          <!-- <altered_patients/> -->
+          <!-- <ptv/> -->
+          <!-- <ppe/> -->
+          <!-- <total_months/> -->
+          <!-- <total_patients/> -->
 
           <!-- CommTrack -->
 
           <!-- Transfers to reset monthly aggregates -->
           <monthly-initial>
-            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" date="" section-id="monthly-initial">
-              <entry id="" quantity="0"/>
-            </transfer>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="monthly-initial">
+              <entry id="" quantity=""/>
+            </balance>
           </monthly-initial>
-          <entries>
-            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" date="" section-id="entries">
+          <aggregate-entries>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="entries">
               <entry id="" quantity="0"/>
-            </transfer>
-          </entries>
-          <disbursements>
-            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" date="" section-id="disbursements">
+            </balance>
+          </aggregate-entries>
+          <aggregate-disbursements>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="disbursements">
               <entry id="" quantity="0"/>
-            </transfer>
-          </disbursements>
+            </balance>
+          </aggregate-disbursements>
           <neg_adjustments>
-            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" date="" section-id="neg_adjustments">
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="neg_adjustments">
               <entry id="" quantity="0"/>
-            </transfer>
+            </balance>
           </neg_adjustments>
           <pos_adjustments>
-            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" date="" section-id="pos_adjustments">
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="pos_adjustments">
               <entry id="" quantity="0"/>
-            </transfer>
+            </balance>
           </pos_adjustments>
 
           <!-- /CommTrack -->
@@ -112,11 +112,7 @@
                   0)" />
       -->
 
-      <!-- TODO - prepopulate these fields from the ledger data -->
-      <!-- then reset the fields to zero -->
-
       <!-- Confirm MMIA -->
-      <!-- TODO make it two setvalues and a bind -->
       <setvalue event="xforms-ready" ref="/data/calculated_initial_stock"
         value="coalesce(
           instance('ledger')/ledgerdb/
@@ -162,7 +158,7 @@
         value="coalesce(
           instance('ledger')/ledgerdb/
           ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
-          section[@section-id='inventory']/
+          section[@section-id='stock']/
           entry[@id=instance('commcaresession')/session/data/product_id],
         0)" />
       <setvalue event="xforms-ready" ref="/data/inventory" value="/data/calculated_inventory"/>
@@ -170,6 +166,29 @@
 
       <bind nodeset="/data/validity" type="xsd:date"
             relevant="/data/inventory != 0" required="true()"/>
+
+      <!-- reset monthly aggregates -->
+      <bind nodeset="/data/monthly-initial/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/monthly-initial/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/monthly-initial/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <!-- set monthly initial based on this form -->
+      <bind nodeset="/data/monthly-initial/balance/entry/@quantity" calculate="/data/inventory"/>
+
+      <bind nodeset="/data/aggregate-entries/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/aggregate-entries/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/aggregate-entries/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+
+      <bind nodeset="/data/aggregate-disbursements/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/aggregate-disbursements/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/aggregate-disbursements/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+
+      <bind nodeset="/data/neg_adjustments/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/neg_adjustments/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/neg_adjustments/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+
+      <bind nodeset="/data/pos_adjustments/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/pos_adjustments/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/pos_adjustments/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
 
       <!-- [> Regimens <] -->
       <!-- <bind nodeset="/data/adultos_label"/> -->
@@ -201,8 +220,6 @@
       <!-- <bind nodeset="/data/total_months" type="xsd:int"/> -->
       <!-- <bind nodeset="/data/total_patients" type="xsd:int"/> -->
 
-      <!-- CommTrack -->
-      <!-- /CommTrack -->
 
       <itext>
 
