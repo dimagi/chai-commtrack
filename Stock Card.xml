@@ -111,7 +111,8 @@
             calculate="
             if(/data/transaction_type = 'entry', 'entries',
             if(/data/transaction_type = 'disbursement', 'disbursements',
-            if(/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'negative', 'neg_adjustments',
+            if(/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'negative',
+                if(/data/loss_ask = 'yes', 'losses', 'neg_adjustments'),
             'pos_adjustments'
             )))
             "/>
@@ -356,7 +357,7 @@
       </item>
       <item>
         <label ref="jr:itext('loss_ask-no-label')"/>
-        <value>No</value>
+        <value>no</value>
       </item>
     </select1>
     <select1 ref="/data/reason_for_loss">

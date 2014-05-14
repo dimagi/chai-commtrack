@@ -449,7 +449,7 @@
   <h:body>
 
     <group>
-      <!-- <label ref="jr:itext('repeatable-label')"/> -->
+      <!-- TODO add label here to indicate that a new product is starting? -->
       <repeat nodeset="/data/stock/product" jr:count="/data/stock/num_elements">
         <!-- Confirm MMIA -->
         <input ref="/data/stock/product/initial_stock">
@@ -458,7 +458,6 @@
         <input ref="/data/stock/product/entries">
         <label ref="jr:itext('entries-label')"/>
         </input>
-        <!-- Exits -->
         <input ref="/data/stock/product/exits">
         <label ref="jr:itext('exits-label')"/>
         </input>
