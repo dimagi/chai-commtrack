@@ -25,6 +25,9 @@
           <adjustment_direction/>
           <units_adjusted/>
 
+          <loss_ask />
+          <reason_for_loss />
+
           <!-- CommTrack -->
           <transaction_magnitude/>
 
@@ -62,6 +65,9 @@
 
       <bind nodeset="/data/adjustment_direction" relevant="/data/transaction_type = 'adjustment'" required="true()"/>
       <bind nodeset="/data/units_adjusted" type="xsd:int" relevant="/data/transaction_type = 'adjustment'" required="true()"/>
+
+      <bind nodeset="/data/loss_ask" relevant="/data/adjustment_direction = 'negative'" required="true()" />
+      <bind nodeset="/data/reason_for_loss" relevant="/data/loss_ask = 'yes'" required="true()" />
 
       <!-- CommTrack -->
       <bind nodeset="/data/receiving/transfer/@type" calculate="concat('stock-card-', /data/transaction_type)"/>
@@ -113,6 +119,80 @@
       <!-- /CommTrack -->
 
       <itext>
+        <translation lang="por">
+          <text id="transaction_type-label">
+            <value>Tipo do movimento</value>
+          </text>
+          <text id="transaction_type-entry-label">
+            <value>Entrada</value>
+          </text>
+          <text id="transaction_type-disbursement-label">
+            <value>Saida</value>
+          </text>
+          <text id="transaction_type-adjustment-label">
+            <value>Ajuste</value>
+          </text>
+          <text id="units_added-label">
+            <value>Quantidade da entrada:</value>
+          </text>
+          <text id="expiry-label">
+            <value>Validade</value>
+          </text>
+          <text id="disbursement_location-label">
+            <value>Destino do movimento?</value>
+          </text>
+          <text id="disbursement_location-pharmacy-label">
+            <value>Farmácia pública</value>
+          </text>
+          <text id="disbursement_location-maternity-label">
+            <value>Maternidade</value>
+          </text>
+          <text id="disbursement_location-infirmary-label">
+            <value>Enfermaria</value>
+          </text>
+          <text id="disbursement_location-mobile-label">
+            <value>Brigada móvel</value>
+          </text>
+          <text id="disbursement_location-other_us-label">
+            <value>Outra Unidade Sanitária</value>
+          </text>
+          <text id="units_disbursed-label">
+            <value>Quantidade das saidas?</value>
+          </text>
+          <text id="adjustment_direction-label">
+            <value>Tipo do ajuste?</value>
+          </text>
+          <text id="adjustment_direction-positive-label">
+            <value>Positivo</value>
+          </text>
+          <text id="adjustment_direction-negative-label">
+            <value>Negativo</value>
+          </text>
+          <text id="units_adjusted-label">
+            <value>Quantidade do ajuste <output value="if(/data/adjustment_direction = 'positive', 'positivo', 'negativo')"/>?</value>
+          </text>
+          <text id="loss_ask-label">
+            <value> Este ajuste negativo foi uma perda?</value>
+          </text>
+          <text id="loss_ask-yes-label">
+            <value>Sim</value>
+          </text>
+          <text id="loss_ask-no-label">
+            <value>Não</value>
+          </text>
+          <text id="reason_for_loss-label">
+            <value>Qual é a razão para a perda?</value>
+          </text>
+          <text id="reason_for_loss-expiration-label">
+            <value>Expiração</value>
+          </text>
+          <text id="reason_for_loss-break-label">
+            <value>Rompido</value>
+          </text>
+          <text id="reason_for_loss-misplaced-label">
+            <value>Extravio</value>
+          </text>
+        </translation>
         <translation lang="en" default="">
 
           <text id="transaction_type-label">
@@ -144,6 +224,12 @@
           <text id="disbursement_location-maternity-label">
             <value>Maternity</value>
           </text>
+          <text id="disbursement_location-infirmary-label">
+            <value>Enfermaria</value>
+          </text>
+          <text id="disbursement_location-mobile-label">
+            <value>Brigada movel</value>
+          </text>
           <text id="disbursement_location-other_us-label">
             <value>Another health center</value>
           </text>
@@ -161,7 +247,28 @@
             <value>Negative</value>
           </text>
           <text id="units_adjusted-label">
-              <value>How many units are being <output value="if(/data/adjustment_direction = 'positive', 'added', 'deducted')"/>?</value>
+            <value>How many units are being <output value="if(/data/adjustment_direction = 'positive', 'added', 'deducted')"/>?</value>
+          </text>
+          <text id="loss_ask-label">
+            <value> Is this negative adjustment a loss?</value>
+          </text>
+          <text id="loss_ask-yes-label">
+            <value>Yes</value>
+          </text>
+          <text id="loss_ask-no-label">
+            <value>No</value>
+          </text>
+          <text id="reason_for_loss-label">
+            <value>What is the reason for the loss?</value>
+          </text>
+          <text id="reason_for_loss-expiration-label">
+            <value>Expiration</value>
+          </text>
+          <text id="reason_for_loss-break-label">
+            <value>Broken</value>
+          </text>
+          <text id="reason_for_loss-misplaced-label">
+            <value>Missing</value>
           </text>
 
 
@@ -208,6 +315,14 @@
         <value>maternity</value>
       </item>
       <item>
+        <label ref="jr:itext('disbursement_location-infirmary-label')"/>
+        <value>infirmary</value>
+      </item>
+      <item>
+        <label ref="jr:itext('disbursement_location-mobile-label')"/>
+        <value>mobile</value>
+      </item>
+      <item>
         <label ref="jr:itext('disbursement_location-other_us-label')"/>
         <value>other_us</value>
       </item>
@@ -233,5 +348,31 @@
       <label ref="jr:itext('units_adjusted-label')"/>
     </input>
 
+    <select1 ref="/data/loss_ask">
+      <label ref="jr:itext('loss_ask-label')"/>
+      <item>
+        <label ref="jr:itext('loss_ask-yes-label')"/>
+        <value>yes</value>
+      </item>
+      <item>
+        <label ref="jr:itext('loss_ask-no-label')"/>
+        <value>No</value>
+      </item>
+    </select1>
+    <select1 ref="/data/reason_for_loss">
+      <label ref="jr:itext('reason_for_loss-label')"/>
+      <item>
+        <label ref="jr:itext('reason_for_loss-expiration-label')"/>
+        <value>expiration</value>
+      </item>
+      <item>
+        <label ref="jr:itext('reason_for_loss-break-label')"/>
+        <value>break</value>
+      </item>
+      <item>
+        <label ref="jr:itext('reason_for_loss-misplaced-label')"/>
+        <value>misplaced</value>
+      </item>
+    </select1>
   </h:body>
 </h:html>
