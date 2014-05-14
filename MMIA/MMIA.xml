@@ -38,27 +38,27 @@
               <!-- Transfers to reset monthly aggregates -->
               <monthly-initial>
                 <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="monthly-initial">
-                <entry id="" quantity=""/>
+                  <entry id="" quantity=""/>
                 </balance>
               </monthly-initial>
               <aggregate-entries>
                 <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="entries">
-                <entry id="" quantity="0"/>
+                  <entry id="" quantity="0"/>
                 </balance>
               </aggregate-entries>
               <aggregate-disbursements>
                 <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="disbursements">
-                <entry id="" quantity="0"/>
+                  <entry id="" quantity="0"/>
                 </balance>
               </aggregate-disbursements>
               <neg_adjustments>
                 <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="neg_adjustments">
-                <entry id="" quantity="0"/>
+                  <entry id="" quantity="0"/>
                 </balance>
               </neg_adjustments>
               <pos_adjustments>
                 <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="pos_adjustments">
-                <entry id="" quantity="0"/>
+                  <entry id="" quantity="0"/>
                 </balance>
               </pos_adjustments>
 
@@ -67,34 +67,34 @@
 
 
           <!-- [> Regimens <] -->
-          <!-- <adultos_label/> -->
-          <!-- <AZT_3TC_NVP/> -->
-          <!-- <TDF_3TC_EFV/> -->
-          <!-- <AZT_3TC_EFV/> -->
-          <!-- <d4T_30_3TC_NVP/> -->
-          <!-- <d4T_30_3TC_EFV/> -->
-          <!-- <AZT_3TC_LPV_r/> -->
-          <!-- <TDF_3TC_LPV_r/> -->
-          <!-- <ABC_3TC_LPV_r/> -->
-          <!-- <AZT_3TC_ABC/> -->
-          <!-- <peds_label/> -->
-          <!-- <d4T6_3TC_NVP_DFCBab/> -->
-          <!-- <d4T_3TC_LPV_r_baby/> -->
-          <!-- <d4T_3TC_ABC_baby/> -->
-          <!-- <d4T6_3TC_EFV_2DFCBaby_EFV/> -->
-          <!-- <AZT60_3TC_NVP_3DFC/> -->
-          <!-- <AZT60_3TC_EFV_2DFC/> -->
-          <!-- <AZT_3TC_ABC_ped/> -->
-          <!-- <AZT_ddI400_LPV_r/> -->
-          <!-- <ABC_3TC_EFV/> -->
-          <!-- <types_of_patients/> -->
-          <!-- <new_patients/> -->
-          <!-- <maintained_patients/> -->
-          <!-- <altered_patients/> -->
-          <!-- <ptv/> -->
-          <!-- <ppe/> -->
-          <!-- <total_months/> -->
-          <!-- <total_patients/> -->
+          <adultos_label/>
+          <AZT_3TC_NVP/>
+          <TDF_3TC_EFV/>
+          <AZT_3TC_EFV/>
+          <d4T_30_3TC_NVP/>
+          <d4T_30_3TC_EFV/>
+          <AZT_3TC_LPV_r/>
+          <TDF_3TC_LPV_r/>
+          <ABC_3TC_LPV_r/>
+          <AZT_3TC_ABC/>
+          <peds_label/>
+          <d4T6_3TC_NVP_DFCBab/>
+          <d4T_3TC_LPV_r_baby/>
+          <d4T_3TC_ABC_baby/>
+          <d4T6_3TC_EFV_2DFCBaby_EFV/>
+          <AZT60_3TC_NVP_3DFC/>
+          <AZT60_3TC_EFV_2DFC/>
+          <AZT_3TC_ABC_ped/>
+          <AZT_ddI400_LPV_r/>
+          <ABC_3TC_EFV/>
+          <types_of_patients/>
+          <new_patients/>
+          <maintained_patients/>
+          <altered_patients/>
+          <ptv/>
+          <ppe/>
+          <total_months/>
+          <total_patients/>
 
         </data>
       </instance>
@@ -102,8 +102,9 @@
       <instance id="products" src="jr://fixture/commtrack:products"/>
 
       <!-- iteration business -->
+      <!-- MMIA id is 8e3938a57d5a57aed7111ba80504103d -->
       <setvalue event="xforms-ready" ref="/data/stock/elements"
-          value="join(' ',instance('products')/products/product/@id)"/>
+          value="join(' ',instance('products')/products/product[program_id='8e3938a57d5a57aed7111ba80504103d']/@id)"/>
       <setvalue event="jr-insert" ref="/data/stock/product/@index" value="int(/data/stock/cur_element)"/>
       <bind nodeset="/data/stock/num_elements" type="int" calculate="count-selected(/data/stock/elements)"/>
       <bind nodeset="/data/stock/cur_element" calculate="count(/data/stock/product)"/>
@@ -142,7 +143,7 @@
         0)" />
       <!-- Uncomment the next line to prepopulate the exits field -->
       <!-- <setvalue event="jr-insert" ref="/data/stock/product/exits" value="/data/stock/product/calculated_exits"/> -->
-      <bind nodeset="/data/stock/product/exits" type="xsd:int"/>
+      <bind nodeset="/data/stock/product/exits" type="xsd:int" required="true()"/>
 
       <setvalue event="jr-insert" ref="/data/stock/product/calculated_losses"
         value="coalesce(
@@ -191,34 +192,34 @@
       <bind nodeset="/data/stock/product/pos_adjustments/balance/entry/@id" calculate="/data/stock/product/@id"/>
 
       <!-- [> Regimens <] -->
-      <!-- <bind nodeset="/data/adultos_label"/> -->
-      <!-- <bind nodeset="/data/AZT_3TC_NVP" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/TDF_3TC_EFV" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/AZT_3TC_EFV" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/d4T_30_3TC_NVP" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/d4T_30_3TC_EFV" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/AZT_3TC_LPV_r" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/TDF_3TC_LPV_r" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/ABC_3TC_LPV_r" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/AZT_3TC_ABC" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/peds_label"/> -->
-      <!-- <bind nodeset="/data/d4T6_3TC_NVP_DFCBab" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/d4T_3TC_LPV_r_baby" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/d4T_3TC_ABC_baby" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/d4T6_3TC_EFV_2DFCBaby_EFV" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/AZT60_3TC_NVP_3DFC" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/AZT60_3TC_EFV_2DFC" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/AZT_3TC_ABC_ped" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/AZT_ddI400_LPV_r" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/ABC_3TC_EFV" type="xsd:int" required="true()"/> -->
-      <!-- <bind nodeset="/data/types_of_patients"/> -->
-      <!-- <bind nodeset="/data/new_patients" type="xsd:int"/> -->
-      <!-- <bind nodeset="/data/maintained_patients" type="xsd:int"/> -->
-      <!-- <bind nodeset="/data/altered_patients" type="xsd:int"/> -->
-      <!-- <bind nodeset="/data/ptv" type="xsd:int"/> -->
-      <!-- <bind nodeset="/data/ppe" type="xsd:int"/> -->
-      <!-- <bind nodeset="/data/total_months" type="xsd:int"/> -->
-      <!-- <bind nodeset="/data/total_patients" type="xsd:int"/> -->
+      <bind nodeset="/data/adultos_label"/>
+      <bind nodeset="/data/AZT_3TC_NVP" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/TDF_3TC_EFV" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT_3TC_EFV" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/d4T_30_3TC_NVP" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/d4T_30_3TC_EFV" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT_3TC_LPV_r" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/TDF_3TC_LPV_r" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/ABC_3TC_LPV_r" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT_3TC_ABC" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/peds_label"/>
+      <bind nodeset="/data/d4T6_3TC_NVP_DFCBab" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/d4T_3TC_LPV_r_baby" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/d4T_3TC_ABC_baby" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/d4T6_3TC_EFV_2DFCBaby_EFV" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT60_3TC_NVP_3DFC" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT60_3TC_EFV_2DFC" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT_3TC_ABC_ped" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT_ddI400_LPV_r" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/ABC_3TC_EFV" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/types_of_patients"/>
+      <bind nodeset="/data/new_patients" type="xsd:int"/>
+      <bind nodeset="/data/maintained_patients" type="xsd:int"/>
+      <bind nodeset="/data/altered_patients" type="xsd:int"/>
+      <bind nodeset="/data/ptv" type="xsd:int"/>
+      <bind nodeset="/data/ppe" type="xsd:int"/>
+      <bind nodeset="/data/total_months" type="xsd:int"/>
+      <bind nodeset="/data/total_patients" type="xsd:int"/>
 
 
       <itext>
@@ -227,40 +228,22 @@
 
           <!-- Confirm MMIA -->
           <text id="initial_stock-label">
-            <value>
-              <output ref="instance('products')/products/product[@id=current()/../@id]/name"/>
-              Initial Stock:
-            </value>
+              <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Initial Stock:</value>
           </text>
           <text id="entries-label">
-            <value>
-              <output ref="instance('products')/products/product[@id=current()/../@id]/name"/>
-              Entries:
-            </value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entries:</value>
           </text>
           <text id="exits-label">
-            <value>
-              <output ref="instance('products')/products/product[@id=current()/../@id]/name"/>
-              Exits real:
-            </value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Exits real:</value>
           </text>
           <text id="losses-label">
-            <value>
-              <output ref="instance('products')/products/product[@id=current()/../@id]/name"/>
-              Losses and Adjustments:
-            </value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Losses and Adjustments:</value>
           </text>
           <text id="inventory-label">
-            <value>
-              <output ref="instance('products')/products/product[@id=current()/../@id]/name"/>
-              Inventory:
-            </value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventory:</value>
           </text>
           <text id="validity-label">
-            <value>
-              <output ref="instance('products')/products/product[@id=current()/../@id]/name"/>
-              Expiration:
-            </value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Expiration:</value>
           </text>
 
           <!-- Regimens -->
@@ -355,22 +338,22 @@
 
           <!-- Confirm MMIA -->
           <text id="initial_stock-label">
-            <value>Saldo Inicial</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saldo Inicial</value>
           </text>
           <text id="entries-label">
-            <value>Entradas:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entradas:</value>
           </text>
           <text id="exits-label">
-            <value>Saidas reais:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saidas reais:</value>
           </text>
           <text id="losses-label">
-            <value>Perdas e ajustes:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Perdas e ajustes:</value>
           </text>
           <text id="inventory-label">
-            <value>Inventario</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventario</value>
           </text>
           <text id="validity-label">
-            <value>Validade:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Validade:</value>
           </text>
 
           <!-- Regimens -->
@@ -492,90 +475,90 @@
     </group>
 
     <!-- [> Regimens <] -->
-    <!-- <trigger ref="/data/adultos_label" appearance="minimal"> -->
-      <!-- <label ref="jr:itext('adultos_label-label')"/> -->
-    <!-- </trigger> -->
-    <!-- <input ref="/data/AZT_3TC_NVP"> -->
-      <!-- <label ref="jr:itext('AZT_3TC_NVP-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/TDF_3TC_EFV"> -->
-      <!-- <label ref="jr:itext('TDF_3TC_EFV-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/AZT_3TC_EFV"> -->
-      <!-- <label ref="jr:itext('AZT_3TC_EFV-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/d4T_30_3TC_NVP"> -->
-      <!-- <label ref="jr:itext('d4T_30_3TC_NVP-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/d4T_30_3TC_EFV"> -->
-      <!-- <label ref="jr:itext('d4T_30_3TC_EFV-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/AZT_3TC_LPV_r"> -->
-      <!-- <label ref="jr:itext('AZT_3TC_LPV_r-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/TDF_3TC_LPV_r"> -->
-      <!-- <label ref="jr:itext('TDF_3TC_LPV_r-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/ABC_3TC_LPV_r"> -->
-      <!-- <label ref="jr:itext('ABC_3TC_LPV_r-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/AZT_3TC_ABC"> -->
-      <!-- <label ref="jr:itext('AZT_3TC_ABC-label')"/> -->
-    <!-- </input> -->
-    <!-- <trigger ref="/data/peds_label" appearance="minimal"> -->
-      <!-- <label ref="jr:itext('peds_label-label')"/> -->
-    <!-- </trigger> -->
-    <!-- <input ref="/data/d4T6_3TC_NVP_DFCBab"> -->
-      <!-- <label ref="jr:itext('d4T6_3TC_NVP_DFCBab-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/d4T_3TC_LPV_r_baby"> -->
-      <!-- <label ref="jr:itext('d4T_3TC_LPV_r_baby-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/d4T_3TC_ABC_baby"> -->
-      <!-- <label ref="jr:itext('d4T_3TC_ABC_baby-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/d4T6_3TC_EFV_2DFCBaby_EFV"> -->
-      <!-- <label ref="jr:itext('d4T6_3TC_EFV_2DFCBaby_EFV-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/AZT60_3TC_NVP_3DFC"> -->
-      <!-- <label ref="jr:itext('AZT60_3TC_NVP_3DFC-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/AZT60_3TC_EFV_2DFC"> -->
-      <!-- <label ref="jr:itext('AZT60_3TC_EFV_2DFC-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/AZT_3TC_ABC_ped"> -->
-      <!-- <label ref="jr:itext('AZT_3TC_ABC_ped-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/AZT_ddI400_LPV_r"> -->
-      <!-- <label ref="jr:itext('AZT_ddI400_LPV_r-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/ABC_3TC_EFV"> -->
-      <!-- <label ref="jr:itext('ABC_3TC_EFV-label')"/> -->
-    <!-- </input> -->
-    <!-- <trigger ref="/data/types_of_patients" appearance="minimal"> -->
-      <!-- <label ref="jr:itext('types_of_patients-label')"/> -->
-    <!-- </trigger> -->
-    <!-- <input ref="/data/new_patients"> -->
-      <!-- <label ref="jr:itext('new_patients-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/maintained_patients"> -->
-      <!-- <label ref="jr:itext('maintained_patients-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/altered_patients"> -->
-      <!-- <label ref="jr:itext('altered_patients-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/ptv"> -->
-      <!-- <label ref="jr:itext('ptv-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/ppe"> -->
-      <!-- <label ref="jr:itext('ppe-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/total_months"> -->
-      <!-- <label ref="jr:itext('total_months-label')"/> -->
-    <!-- </input> -->
-    <!-- <input ref="/data/total_patients"> -->
-      <!-- <label ref="jr:itext('total_patients-label')"/> -->
-    <!-- </input> -->
+    <trigger ref="/data/adultos_label" appearance="minimal">
+      <label ref="jr:itext('adultos_label-label')"/>
+    </trigger>
+    <input ref="/data/AZT_3TC_NVP">
+      <label ref="jr:itext('AZT_3TC_NVP-label')"/>
+    </input>
+    <input ref="/data/TDF_3TC_EFV">
+      <label ref="jr:itext('TDF_3TC_EFV-label')"/>
+    </input>
+    <input ref="/data/AZT_3TC_EFV">
+      <label ref="jr:itext('AZT_3TC_EFV-label')"/>
+    </input>
+    <input ref="/data/d4T_30_3TC_NVP">
+      <label ref="jr:itext('d4T_30_3TC_NVP-label')"/>
+    </input>
+    <input ref="/data/d4T_30_3TC_EFV">
+      <label ref="jr:itext('d4T_30_3TC_EFV-label')"/>
+    </input>
+    <input ref="/data/AZT_3TC_LPV_r">
+      <label ref="jr:itext('AZT_3TC_LPV_r-label')"/>
+    </input>
+    <input ref="/data/TDF_3TC_LPV_r">
+      <label ref="jr:itext('TDF_3TC_LPV_r-label')"/>
+    </input>
+    <input ref="/data/ABC_3TC_LPV_r">
+      <label ref="jr:itext('ABC_3TC_LPV_r-label')"/>
+    </input>
+    <input ref="/data/AZT_3TC_ABC">
+      <label ref="jr:itext('AZT_3TC_ABC-label')"/>
+    </input>
+    <trigger ref="/data/peds_label" appearance="minimal">
+      <label ref="jr:itext('peds_label-label')"/>
+    </trigger>
+    <input ref="/data/d4T6_3TC_NVP_DFCBab">
+      <label ref="jr:itext('d4T6_3TC_NVP_DFCBab-label')"/>
+    </input>
+    <input ref="/data/d4T_3TC_LPV_r_baby">
+      <label ref="jr:itext('d4T_3TC_LPV_r_baby-label')"/>
+    </input>
+    <input ref="/data/d4T_3TC_ABC_baby">
+      <label ref="jr:itext('d4T_3TC_ABC_baby-label')"/>
+    </input>
+    <input ref="/data/d4T6_3TC_EFV_2DFCBaby_EFV">
+      <label ref="jr:itext('d4T6_3TC_EFV_2DFCBaby_EFV-label')"/>
+    </input>
+    <input ref="/data/AZT60_3TC_NVP_3DFC">
+      <label ref="jr:itext('AZT60_3TC_NVP_3DFC-label')"/>
+    </input>
+    <input ref="/data/AZT60_3TC_EFV_2DFC">
+      <label ref="jr:itext('AZT60_3TC_EFV_2DFC-label')"/>
+    </input>
+    <input ref="/data/AZT_3TC_ABC_ped">
+      <label ref="jr:itext('AZT_3TC_ABC_ped-label')"/>
+    </input>
+    <input ref="/data/AZT_ddI400_LPV_r">
+      <label ref="jr:itext('AZT_ddI400_LPV_r-label')"/>
+    </input>
+    <input ref="/data/ABC_3TC_EFV">
+      <label ref="jr:itext('ABC_3TC_EFV-label')"/>
+    </input>
+    <trigger ref="/data/types_of_patients" appearance="minimal">
+      <label ref="jr:itext('types_of_patients-label')"/>
+    </trigger>
+    <input ref="/data/new_patients">
+      <label ref="jr:itext('new_patients-label')"/>
+    </input>
+    <input ref="/data/maintained_patients">
+      <label ref="jr:itext('maintained_patients-label')"/>
+    </input>
+    <input ref="/data/altered_patients">
+      <label ref="jr:itext('altered_patients-label')"/>
+    </input>
+    <input ref="/data/ptv">
+      <label ref="jr:itext('ptv-label')"/>
+    </input>
+    <input ref="/data/ppe">
+      <label ref="jr:itext('ppe-label')"/>
+    </input>
+    <input ref="/data/total_months">
+      <label ref="jr:itext('total_months-label')"/>
+    </input>
+    <input ref="/data/total_patients">
+      <label ref="jr:itext('total_patients-label')"/>
+    </input>
 
   </h:body>
 </h:html>
