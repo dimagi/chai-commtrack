@@ -23,6 +23,7 @@
 
         </data>
       </instance>
+
       <bind nodeset="/data/inventory_amount" type="xsd:int"/>
       <bind nodeset="/data/validity_date" type="xsd:date"/>
 
@@ -34,8 +35,7 @@
       <!-- /CommTrack -->
 
       <itext>
-
-        <translation lang="en" default="">
+        <translation lang="en">
           <text id="inventory_amount-label">
             <value>Monthly Inventory</value>
           </text>
@@ -43,17 +43,16 @@
             <value>Valididty</value>
           </text>
         </translation>
-
-        <translation lang="por">
+        <translation lang="por" default="">
           <text id="inventory_amount-label">
-            <value>Monthly Inventory</value>
+            <value>Inventário mensal: Stock existente</value>
           </text>
           <text id="validity_date-label">
-            <value>Valididty</value>
+            <value>Validade</value>
           </text>
         </translation>
-
       </itext>
+
     </model>
   </h:head>
   <h:body>
