@@ -5,8 +5,6 @@
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
         xmlns:jr="http://openrosa.org/javarosa">
 
-  <!-- TODO Actually record the disbursement_location? -->
-  <!-- TODO change adjustments thing to one question? - transaction type? positive adjustment, negative adjustment -->
   <h:head>
     <h:title>Stock Card</h:title>
     <model>
@@ -32,13 +30,13 @@
           <transaction_magnitude/>
 
           <receiving>
-            <transfer xmlns="http://commcarehq.org/ledger/v1" dest="" type="" date="" section-id="stock">
+            <transfer xmlns="http://commcarehq.org/ledger/v1" dest="" date="" section-id="stock">
               <entry id="" quantity=""/>
             </transfer>
           </receiving>
 
           <disbursing>
-            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" type="" date="" section-id="stock">
+            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" date="" section-id="stock">
               <entry id="" quantity=""/>
             </transfer>
           </disbursing>
@@ -70,10 +68,6 @@
       <bind nodeset="/data/reason_for_loss" relevant="/data/loss_ask = 'yes'" required="true()" />
 
       <!-- CommTrack -->
-      <bind nodeset="/data/receiving/transfer/@type" calculate="concat('stock-card-', /data/transaction_type)"/>
-      <bind nodeset="/data/disbursing/transfer/@type" calculate="concat('stock-card-', /data/transaction_type)"/>
-      <bind nodeset="/data/aggregate-monthly/transfer/@type" calculate="concat('stock-card-', /data/transaction_type)"/>
-
       <bind nodeset="/data/receiving/transfer/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/disbursing/transfer/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/aggregate-monthly/transfer/@date" calculate="/data/meta/timeEnd"/>
