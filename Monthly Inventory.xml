@@ -28,7 +28,7 @@
       <bind nodeset="/data/validity_date" type="xsd:date"/>
 
       <!-- CommTrack -->
-      <bind nodeset="/data/balance/entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
       <bind nodeset="/data/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/balance/entry/@quantity" calculate="/data/inventory_amount"/>
