@@ -105,10 +105,8 @@
             calculate="
             if(/data/transaction_type = 'entry', 'entries',
             if(/data/transaction_type = 'disbursement', 'disbursements',
-            if(/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'negative',
-                if(/data/loss_ask = 'yes', 'losses', 'neg_adjustments'),
-            'pos_adjustments'
-            )))
+            'adjustments'
+            ))
             "/>
 
       <!-- /CommTrack -->

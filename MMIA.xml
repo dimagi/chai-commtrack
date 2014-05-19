@@ -27,8 +27,8 @@
               <calculated_exits/>
               <exits/>
 
-              <calculated_losses/>
-              <losses/>
+              <calculated_adjustments/>
+              <adjustments/>
 
               <calculated_inventory/>
               <inventory/>
@@ -51,16 +51,11 @@
                   <entry id="" quantity="0"/>
                 </balance>
               </aggregate-disbursements>
-              <neg_adjustments>
-                <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="neg_adjustments">
+              <aggregate-adjustments>
+                <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="adjustments">
                   <entry id="" quantity="0"/>
                 </balance>
-              </neg_adjustments>
-              <pos_adjustments>
-                <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="pos_adjustments">
-                  <entry id="" quantity="0"/>
-                </balance>
-              </pos_adjustments>
+              </aggregate-adjustments>
 
             </product>
           </stock>
@@ -108,7 +103,7 @@
           9d38ba4aadc20b631f03cae340111895 on chai-moz
       -->
       <setvalue event="xforms-ready" ref="/data/stock/elements"
-          value="join(' ',instance('products')/products/product[program_id='9d38ba4aadc20b631f03cae340111895']/@id)"/>
+          value="join(' ',instance('products')/products/product[program_id='8e3938a57d5a57aed7111ba80504103d']/@id)"/>
       <setvalue event="jr-insert" ref="/data/stock/product/@index" value="int(/data/stock/cur_element)"/>
       <bind nodeset="/data/stock/num_elements" type="int" calculate="count-selected(/data/stock/elements)"/>
       <bind nodeset="/data/stock/cur_element" calculate="count(/data/stock/product)"/>
@@ -149,15 +144,15 @@
       <!-- <setvalue event="jr-insert" ref="/data/stock/product/exits" value="/data/stock/product/calculated_exits"/> -->
       <bind nodeset="/data/stock/product/exits" type="xsd:int" required="true()"/>
 
-      <setvalue event="jr-insert" ref="/data/stock/product/calculated_losses"
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_adjustments"
         value="coalesce(
           instance('ledger')/ledgerdb/
           ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
-          section[@section-id='losses']/
+          section[@section-id='adjustments']/
           entry[@id=current()/../@id],
         0)" />
-      <setvalue event="jr-insert" ref="/data/stock/product/losses" value="/data/stock/product/calculated_losses"/>
-      <bind nodeset="/data/stock/product/losses" type="xsd:int" required="true()"/>
+      <setvalue event="jr-insert" ref="/data/stock/product/adjustments" value="/data/stock/product/calculated_adjustments"/>
+      <bind nodeset="/data/stock/product/adjustments" type="xsd:int" required="true()"/>
 
       <setvalue event="jr-insert" ref="/data/stock/product/calculated_inventory"
         value="coalesce(
@@ -187,13 +182,9 @@
       <bind nodeset="/data/stock/product/aggregate-disbursements/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/stock/product/aggregate-disbursements/balance/entry/@id" calculate="/data/stock/product/@id"/>
 
-      <bind nodeset="/data/stock/product/neg_adjustments/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
-      <bind nodeset="/data/stock/product/neg_adjustments/balance/@date" calculate="/data/meta/timeEnd"/>
-      <bind nodeset="/data/stock/product/neg_adjustments/balance/entry/@id" calculate="/data/stock/product/@id"/>
-
-      <bind nodeset="/data/stock/product/pos_adjustments/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
-      <bind nodeset="/data/stock/product/pos_adjustments/balance/@date" calculate="/data/meta/timeEnd"/>
-      <bind nodeset="/data/stock/product/pos_adjustments/balance/entry/@id" calculate="/data/stock/product/@id"/>
+      <bind nodeset="/data/stock/product/adjustments/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/stock/product/adjustments/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/stock/product/adjustments/balance/entry/@id" calculate="/data/stock/product/@id"/>
 
       <!-- [> Regimens <] -->
       <bind nodeset="/data/adultos_label"/>
@@ -240,7 +231,7 @@
           <text id="exits-label">
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Exits real:</value>
           </text>
-          <text id="losses-label">
+          <text id="adjustments-label">
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Losses and Adjustments:</value>
           </text>
           <text id="inventory-label">
@@ -350,7 +341,7 @@
           <text id="exits-label">
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saidas reais:</value>
           </text>
-          <text id="losses-label">
+          <text id="adjustments-label">
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Perdas e ajustes:</value>
           </text>
           <text id="inventory-label">
@@ -465,8 +456,8 @@
         <input ref="/data/stock/product/exits">
         <label ref="jr:itext('exits-label')"/>
         </input>
-        <input ref="/data/stock/product/losses">
-        <label ref="jr:itext('losses-label')"/>
+        <input ref="/data/stock/product/adjustments">
+        <label ref="jr:itext('adjustments-label')"/>
         </input>
         <input ref="/data/stock/product/inventory">
         <label ref="jr:itext('inventory-label')"/>
