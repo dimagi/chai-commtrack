@@ -102,9 +102,13 @@
       <instance id="products" src="jr://fixture/commtrack:products"/>
 
       <!-- iteration business -->
-      <!-- MMIA id is 8e3938a57d5a57aed7111ba80504103d -->
+      <!-- MMIA id is
+          8e3938a57d5a57aed7111ba80504103d on ethan-chai
+      and
+          9d38ba4aadc20b631f03cae340111895 on chai-moz
+      -->
       <setvalue event="xforms-ready" ref="/data/stock/elements"
-          value="join(' ',instance('products')/products/product[program_id='8e3938a57d5a57aed7111ba80504103d']/@id)"/>
+          value="join(' ',instance('products')/products/product[program_id='9d38ba4aadc20b631f03cae340111895']/@id)"/>
       <setvalue event="jr-insert" ref="/data/stock/product/@index" value="int(/data/stock/cur_element)"/>
       <bind nodeset="/data/stock/num_elements" type="int" calculate="count-selected(/data/stock/elements)"/>
       <bind nodeset="/data/stock/cur_element" calculate="count(/data/stock/product)"/>
