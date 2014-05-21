@@ -53,7 +53,7 @@
             </transfer>
           </aggregate-monthly>
 
-          <stored_expiration/>
+          <stored-expiration/>
           <earliest-expiration>
             <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="expiration">
               <entry id="" quantity=""/>
@@ -125,18 +125,19 @@
                        ))"/>
 
       <!-- Product expiration date -->
-      <setvalue event="jr-insert" ref="/data/stored_expiration"
+      <setvalue event="xforms-ready" ref="/data/stored-expiration"
         value="date(instance('ledger')/ledgerdb/
-                   ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
-                   section[@section-id='expiration']/
-                   entry[@id=current()/../@id]"/>
+                    ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                    section[@section-id='expiration']/
+                    entry[@id=instance('commcaresession')/session/data/product_id])"/>
+      <bind nodeset="/data/stored-expiration" type="xsd:date"/>
       <bind nodeset="/data/earliest-expiration/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
       <!-- If expiration is not set or if entered expiration is < current expiration, update -->
       <bind nodeset="/data/earliest-expiration"
-            relevant="(/data/transaction_type = 'entry') and (
-                         (/data/stored_expiration = '')
-                         or
-                         (/data/stored_expiration > /data/expiry))"/>
+            relevant="(/data/transaction_type = 'entry')
+                      and ((/data/stored-expiration = '')
+                           or
+                           (/data/stored-expiration > /data/expiry))"/>
       <bind nodeset="/data/earliest-expiration/balance/entry/@quantity" calculate="int(/data/expiry)"/>
 
       <!-- /CommTrack -->
@@ -292,7 +293,6 @@
           <text id="reason_for_loss-misplaced-label">
             <value>Missing</value>
           </text>
-
 
         </translation>
       </itext>
