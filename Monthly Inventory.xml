@@ -13,25 +13,37 @@
               uiVersion="1" version="1" name="Monthly Inventory">
 
           <inventory_amount/>
-          <validity_date/>
+          <expiry/>
 
           <!-- CommTrack -->
           <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="stock">
             <entry id="" quantity=""/>
           </balance>
+
+          <earliest-expiration>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="expiration">
+              <entry id="" quantity=""/>
+            </balance>
+          </earliest-expiration>
           <!-- /CommTrack -->
 
         </data>
       </instance>
 
       <bind nodeset="/data/inventory_amount" type="xsd:int"/>
-      <bind nodeset="/data/validity_date" type="xsd:date"/>
+      <bind nodeset="/data/expiry" type="xsd:date"/>
 
       <!-- CommTrack -->
       <bind nodeset="/data/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
       <bind nodeset="/data/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/balance/entry/@quantity" calculate="/data/inventory_amount"/>
+
+      <bind nodeset="/data/earliest-expiration" relevant="boolean(/data/expiry)"/>
+      <bind nodeset="/data/earliest-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/earliest-expiration/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <bind nodeset="/data/earliest-expiration/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/earliest-expiration/balance/entry/@quantity" calculate="int(/data/expiry)"/>
       <!-- /CommTrack -->
 
       <itext>
@@ -39,7 +51,7 @@
           <text id="inventory_amount-label">
             <value>Monthly Inventory</value>
           </text>
-          <text id="validity_date-label">
+          <text id="expiry-label">
             <value>Valididty</value>
           </text>
         </translation>
@@ -47,7 +59,7 @@
           <text id="inventory_amount-label">
             <value>Inventário mensal: Stock existente</value>
           </text>
-          <text id="validity_date-label">
+          <text id="expiry-label">
             <value>Validade</value>
           </text>
         </translation>
@@ -59,8 +71,8 @@
     <input ref="/data/inventory_amount">
       <label ref="jr:itext('inventory_amount-label')"/>
     </input>
-    <input ref="/data/validity_date">
-      <label ref="jr:itext('validity_date-label')"/>
+    <input ref="/data/expiry">
+      <label ref="jr:itext('expiry-label')"/>
     </input>
   </h:body>
 </h:html>
