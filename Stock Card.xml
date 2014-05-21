@@ -52,6 +52,13 @@
               <entry id="" quantity=""/>
             </transfer>
           </aggregate-monthly>
+
+          <stored_expiration/>
+          <earliest-expiration>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="expiration">
+              <entry id="" quantity=""/>
+            </balance>
+          </earliest-expiration>
           <!-- /CommTrack -->
 
         </data>
@@ -78,10 +85,12 @@
       <bind nodeset="/data/receiving/transfer/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/disbursing/transfer/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/aggregate-monthly/transfer/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/earliest-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
 
       <bind nodeset="/data/receiving/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/disbursing/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/aggregate-monthly/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <bind nodeset="/data/earliest-expiration/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
 
       <!-- Is the value being added or subtracted? -->
       <bind nodeset="/data/receiving"
@@ -97,14 +106,12 @@
 
       <!-- What is the magnitude of the change? -->
       <bind nodeset="/data/units"
-            calculate="
-                if(/data/transaction_type = 'entry', /data/entry_units,
-                if(/data/transaction_type = 'disbursement', /data/disbursement_units,
-                if(/data/transaction_type = 'positive', /data/positive_units,
-                if(/data/transaction_type = 'negative', /data/negative_units,
-                if(/data/transaction_type = 'loss', /data/loss_units,
-                0)))))
-            "/>
+            calculate="if(/data/transaction_type = 'entry', /data/entry_units,
+                       if(/data/transaction_type = 'disbursement', /data/disbursement_units,
+                       if(/data/transaction_type = 'positive', /data/positive_units,
+                       if(/data/transaction_type = 'negative', /data/negative_units,
+                       if(/data/transaction_type = 'loss', /data/loss_units,
+                       0)))))"/>
       <bind nodeset="/data/receiving/transfer/entry/@quantity" calculate="/data/units"/>
       <bind nodeset="/data/disbursing/transfer/entry/@quantity" calculate="/data/units"/>
       <bind nodeset="/data/aggregate-monthly/transfer/entry/@quantity" calculate="/data/units"/>
@@ -112,12 +119,25 @@
       <!-- Monthly aggregate info for requisition form -->
       <bind nodeset="/data/aggregate-monthly/transfer/@dest" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
       <bind nodeset="/data/aggregate-monthly/transfer/@section-id"
-            calculate="
-            if(/data/transaction_type = 'entry', 'entries',
-            if(/data/transaction_type = 'disbursement', 'disbursements',
-            'adjustments'
-            ))
-            "/>
+            calculate="if(/data/transaction_type = 'entry', 'entries',
+                       if(/data/transaction_type = 'disbursement', 'disbursements',
+                       'adjustments'
+                       ))"/>
+
+      <!-- Product expiration date -->
+      <setvalue event="jr-insert" ref="/data/stored_expiration"
+        value="date(instance('ledger')/ledgerdb/
+                   ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                   section[@section-id='expiration']/
+                   entry[@id=current()/../@id]"/>
+      <bind nodeset="/data/earliest-expiration/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <!-- If expiration is not set or if entered expiration is < current expiration, update -->
+      <bind nodeset="/data/earliest-expiration"
+            relevant="(/data/transaction_type = 'entry') and (
+                         (/data/stored_expiration = '')
+                         or
+                         (/data/stored_expiration > /data/expiry))"/>
+      <bind nodeset="/data/earliest-expiration/balance/entry/@quantity" calculate="int(/data/expiry)"/>
 
       <!-- /CommTrack -->
 
