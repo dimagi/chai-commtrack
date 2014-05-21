@@ -33,7 +33,8 @@
               <calculated_inventory/>
               <inventory/>
 
-              <validity/>
+              <calculated_expiry/>
+              <expiry/>
 
               <!-- Transfers to reset monthly aggregates -->
               <monthly-initial>
@@ -164,7 +165,14 @@
       <setvalue event="jr-insert" ref="/data/stock/product/inventory" value="/data/stock/product/calculated_inventory"/>
       <bind nodeset="/data/stock/product/inventory" type="xsd:int" required="true()"/>
 
-      <bind nodeset="/data/stock/product/validity" type="xsd:date"
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_expiry"
+        value="date(instance('ledger')/ledgerdb/
+                    ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                    section[@section-id='expiration']/
+                    entry[@id=current()/../@id])" />
+      <bind nodeset="/data/stock/product/calculated_expiry" type="xsd:date"/>
+      <setvalue event="jr-insert" ref="/data/stock/product/expiry" value="/data/stock/product/calculated_expiry"/>
+      <bind nodeset="/data/stock/product/expiry" type="xsd:date"
             relevant="/data/stock/product/inventory != 0" required="true()"/>
 
       <!-- reset monthly aggregates -->
@@ -237,7 +245,7 @@
           <text id="inventory-label">
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventory:</value>
           </text>
-          <text id="validity-label">
+          <text id="expiry-label">
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Expiration:</value>
           </text>
 
@@ -347,7 +355,7 @@
           <text id="inventory-label">
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventario</value>
           </text>
-          <text id="validity-label">
+          <text id="expiry-label">
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Validade:</value>
           </text>
 
@@ -462,8 +470,8 @@
         <input ref="/data/stock/product/inventory">
         <label ref="jr:itext('inventory-label')"/>
         </input>
-        <input ref="/data/stock/product/validity">
-        <label ref="jr:itext('validity-label')"/>
+        <input ref="/data/stock/product/expiry">
+        <label ref="jr:itext('expiry-label')"/>
         </input>
       </repeat>
     </group>
