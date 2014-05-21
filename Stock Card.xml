@@ -14,20 +14,26 @@
               uiVersion="1" version="1" name="Stock Card">
           <transaction_type/>
 
-          <units_added/>
+          <!-- Entry -->
+          <entry_units/>
           <expiry/>
 
+          <!-- Disbursment -->
+          <disbursement_units/>
           <disbursement_location/>
-          <units_disbursed/>
 
-          <adjustment_direction/>
-          <units_adjusted/>
+          <!-- Positive -->
+          <positive_units/>
 
-          <loss_ask />
-          <reason_for_loss />
+          <!-- Negative -->
+          <negative_units/>
+
+          <!-- Loss -->
+          <loss_units/>
+          <reason_for_loss/>
 
           <!-- CommTrack -->
-          <transaction_magnitude/>
+          <units/>
 
           <receiving>
             <transfer xmlns="http://commcarehq.org/ledger/v1" dest="" date="" section-id="stock">
@@ -55,17 +61,18 @@
 
       <bind nodeset="/data/transaction_type" required="true()"/>
 
-      <bind nodeset="/data/units_added" type="xsd:int" relevant="/data/transaction_type = 'entry'" required="true()"/>
+      <bind nodeset="/data/entry_units" type="xsd:int" relevant="/data/transaction_type = 'entry'" required="true()"/>
       <bind nodeset="/data/expiry" type="xsd:date" relevant="/data/transaction_type = 'entry'" required="true()"/>
 
+      <bind nodeset="/data/disbursement_units" type="xsd:int" relevant="/data/transaction_type = 'disbursement'" required="true()"/>
       <bind nodeset="/data/disbursement_location" relevant="/data/transaction_type = 'disbursement'" required="true()"/>
-      <bind nodeset="/data/units_disbursed" type="xsd:int" relevant="/data/transaction_type = 'disbursement'" required="true()"/>
 
-      <bind nodeset="/data/adjustment_direction" relevant="/data/transaction_type = 'adjustment'" required="true()"/>
-      <bind nodeset="/data/units_adjusted" type="xsd:int" relevant="/data/transaction_type = 'adjustment'" required="true()"/>
+      <bind nodeset="/data/positive_units" type="xsd:int" relevant="/data/transaction_type = 'positive'" required="true()"/>
 
-      <bind nodeset="/data/loss_ask" relevant="/data/adjustment_direction = 'negative'" required="true()" />
-      <bind nodeset="/data/reason_for_loss" relevant="/data/loss_ask = 'yes'" required="true()" />
+      <bind nodeset="/data/negative_units" type="xsd:int" relevant="/data/transaction_type = 'negative'" required="true()"/>
+
+      <bind nodeset="/data/loss_units" type="xsd:int" relevant="/data/transaction_type = 'loss'" required="true()"/>
+      <bind nodeset="/data/reason_for_loss" relevant="/data/transaction_type = 'loss'" required="true()" />
 
       <!-- CommTrack -->
       <bind nodeset="/data/receiving/transfer/@date" calculate="/data/meta/timeEnd"/>
@@ -79,25 +86,28 @@
       <!-- Is the value being added or subtracted? -->
       <bind nodeset="/data/receiving"
             relevant="(/data/transaction_type = 'entry') or
-                      (/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'positive')"/>
+                      (/data/transaction_type = 'positive')"/>
       <bind nodeset="/data/receiving/transfer/@dest" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
 
       <bind nodeset="/data/disbursing"
             relevant="(/data/transaction_type = 'disbursement') or
-                      (/data/transaction_type = 'adjustment' and /data/adjustment_direction = 'negative')"/>
+                      (/data/transaction_type = 'negative') or
+                      (/data/transaction_type = 'loss')"/>
       <bind nodeset="/data/disbursing/transfer/@src" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
 
       <!-- What is the magnitude of the change? -->
-      <bind nodeset="/data/transaction_magnitude"
+      <bind nodeset="/data/units"
             calculate="
-                if(/data/transaction_type = 'entry', /data/units_added,
-                if(/data/transaction_type = 'disbursement', /data/units_disbursed,
-                /data/units_adjusted
-                ))
+                if(/data/transaction_type = 'entry', /data/entry_units,
+                if(/data/transaction_type = 'disbursement', /data/disbursement_units,
+                if(/data/transaction_type = 'positive', /data/positive_units,
+                if(/data/transaction_type = 'negative', /data/negative_units,
+                if(/data/transaction_type = 'loss', /data/loss_units,
+                0)))))
             "/>
-      <bind nodeset="/data/receiving/transfer/entry/@quantity" calculate="/data/transaction_magnitude"/>
-      <bind nodeset="/data/disbursing/transfer/entry/@quantity" calculate="/data/transaction_magnitude"/>
-      <bind nodeset="/data/aggregate-monthly/transfer/entry/@quantity" calculate="/data/transaction_magnitude"/>
+      <bind nodeset="/data/receiving/transfer/entry/@quantity" calculate="/data/units"/>
+      <bind nodeset="/data/disbursing/transfer/entry/@quantity" calculate="/data/units"/>
+      <bind nodeset="/data/aggregate-monthly/transfer/entry/@quantity" calculate="/data/units"/>
 
       <!-- Monthly aggregate info for requisition form -->
       <bind nodeset="/data/aggregate-monthly/transfer/@dest" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
@@ -113,6 +123,7 @@
 
       <itext>
         <translation lang="por">
+
           <text id="transaction_type-label">
             <value>Tipo do movimento</value>
           </text>
@@ -122,14 +133,25 @@
           <text id="transaction_type-disbursement-label">
             <value>Saida</value>
           </text>
-          <text id="transaction_type-adjustment-label">
-            <value>Ajuste</value>
+          <text id="transaction_type-positive-label">
+            <value>Ajuste Positivo</value>
           </text>
-          <text id="units_added-label">
+          <text id="transaction_type-negative-label">
+            <value>Ajuste Negativo</value>
+          </text>
+          <text id="transaction_type-loss-label">
+            <value>Perda</value>
+          </text>
+
+          <text id="entry_units-label">
             <value>Quantidade da entrada:</value>
           </text>
           <text id="expiry-label">
             <value>Validade</value>
+          </text>
+
+          <text id="disbursement_units-label">
+            <value>Quantidade das saidas?</value>
           </text>
           <text id="disbursement_location-label">
             <value>Destino do movimento?</value>
@@ -149,29 +171,18 @@
           <text id="disbursement_location-other_us-label">
             <value>Outra Unidade Sanitária</value>
           </text>
-          <text id="units_disbursed-label">
-            <value>Quantidade das saidas?</value>
+
+          <text id="positive_units-label">
+            <value>Quantidade do ajuste positivo?</value>
           </text>
-          <text id="adjustment_direction-label">
-            <value>Tipo do ajuste?</value>
+
+          <text id="negative_units-label">
+            <value>Quantidade do ajuste negativo?</value>
           </text>
-          <text id="adjustment_direction-positive-label">
-            <value>Positivo</value>
-          </text>
-          <text id="adjustment_direction-negative-label">
-            <value>Negativo</value>
-          </text>
-          <text id="units_adjusted-label">
-            <value>Quantidade do ajuste <output value="if(/data/adjustment_direction = 'positive', 'positivo', 'negativo')"/>?</value>
-          </text>
-          <text id="loss_ask-label">
-            <value> Este ajuste negativo foi uma perda?</value>
-          </text>
-          <text id="loss_ask-yes-label">
-            <value>Sim</value>
-          </text>
-          <text id="loss_ask-no-label">
-            <value>Não</value>
+
+          <text id="loss_units-label">
+            <!-- Claire, can you update this value? -->
+            <value>Quantidade do ajuste negativo?</value>
           </text>
           <text id="reason_for_loss-label">
             <value>Qual é a razão para a perda?</value>
@@ -185,6 +196,7 @@
           <text id="reason_for_loss-misplaced-label">
             <value>Extravio</value>
           </text>
+
         </translation>
         <translation lang="en" default="">
 
@@ -197,17 +209,26 @@
           <text id="transaction_type-disbursement-label">
             <value>Disbursement</value>
           </text>
-          <text id="transaction_type-adjustment-label">
-            <value>Adjustment</value>
+          <text id="transaction_type-positive-label">
+            <value>Positive Adjustment</value>
+          </text>
+          <text id="transaction_type-negative-label">
+            <value>Negative Adjustment</value>
+          </text>
+          <text id="transaction_type-loss-label">
+            <value>Loss</value>
           </text>
 
-          <text id="units_added-label">
+          <text id="entry_units-label">
             <value>How many units are being added?</value>
           </text>
           <text id="expiry-label">
             <value>What is the earliest expiration date of the items being added?</value>
           </text>
 
+          <text id="disbursement_units-label">
+            <value>How many units are being disbursed?</value>
+          </text>
           <text id="disbursement_location-label">
             <value>What is this being disbursed to?</value>
           </text>
@@ -226,30 +247,18 @@
           <text id="disbursement_location-other_us-label">
             <value>Another health center</value>
           </text>
-          <text id="units_disbursed-label">
-            <value>How many units are being disbursed?</value>
+
+          <text id="positive_units-label">
+            <value>How many units are being added?</value>
           </text>
 
-          <text id="adjustment_direction-label">
-            <value>Is this a positive or negative adjustment?</value>
+          <text id="negative_units-label">
+            <value>How many units are being deducted?</value>
           </text>
-          <text id="adjustment_direction-positive-label">
-            <value>Positive</value>
-          </text>
-          <text id="adjustment_direction-negative-label">
-            <value>Negative</value>
-          </text>
-          <text id="units_adjusted-label">
-            <value>How many units are being <output value="if(/data/adjustment_direction = 'positive', 'added', 'deducted')"/>?</value>
-          </text>
-          <text id="loss_ask-label">
-            <value> Is this negative adjustment a loss?</value>
-          </text>
-          <text id="loss_ask-yes-label">
-            <value>Yes</value>
-          </text>
-          <text id="loss_ask-no-label">
-            <value>No</value>
+
+          <text id="loss_units-label">
+            <!-- Claire, can you update this value? -->
+            <value>How many units are being deducted?</value>
           </text>
           <text id="reason_for_loss-label">
             <value>What is the reason for the loss?</value>
@@ -284,19 +293,29 @@
         <value>disbursement</value>
       </item>
       <item>
-        <label ref="jr:itext('transaction_type-adjustment-label')"/>
-        <value>adjustment</value>
+        <label ref="jr:itext('transaction_type-positive-label')"/>
+        <value>positive</value>
+      </item>
+      <item>
+        <label ref="jr:itext('transaction_type-negative-label')"/>
+        <value>negative</value>
+      </item>
+      <item>
+        <label ref="jr:itext('transaction_type-loss-label')"/>
+        <value>loss</value>
       </item>
     </select1>
 
-    <input ref="/data/units_added">
-      <label ref="jr:itext('units_added-label')"/>
+    <input ref="/data/entry_units">
+      <label ref="jr:itext('entry_units-label')"/>
     </input>
-
     <input ref="/data/expiry">
         <label ref="jr:itext('expiry-label')"/>
     </input>
 
+    <input ref="/data/disbursement_units">
+      <label ref="jr:itext('disbursement_units-label')"/>
+    </input>
     <select1 ref="/data/disbursement_location">
       <label ref="jr:itext('disbursement_location-label')"/>
       <item>
@@ -321,37 +340,17 @@
       </item>
     </select1>
 
-    <input ref="/data/units_disbursed">
-      <label ref="jr:itext('units_disbursed-label')"/>
+    <input ref="/data/positive_units">
+      <label ref="jr:itext('positive_units-label')"/>
     </input>
 
-    <select1 ref="/data/adjustment_direction">
-      <label ref="jr:itext('adjustment_direction-label')"/>
-      <item>
-        <label ref="jr:itext('adjustment_direction-positive-label')"/>
-        <value>positive</value>
-      </item>
-      <item>
-        <label ref="jr:itext('adjustment_direction-negative-label')"/>
-        <value>negative</value>
-      </item>
-    </select1>
-
-    <input ref="/data/units_adjusted">
-      <label ref="jr:itext('units_adjusted-label')"/>
+    <input ref="/data/negative_units">
+      <label ref="jr:itext('negative_units-label')"/>
     </input>
 
-    <select1 ref="/data/loss_ask">
-      <label ref="jr:itext('loss_ask-label')"/>
-      <item>
-        <label ref="jr:itext('loss_ask-yes-label')"/>
-        <value>yes</value>
-      </item>
-      <item>
-        <label ref="jr:itext('loss_ask-no-label')"/>
-        <value>no</value>
-      </item>
-    </select1>
+    <input ref="/data/loss_units">
+      <label ref="jr:itext('loss_units-label')"/>
+    </input>
     <select1 ref="/data/reason_for_loss">
       <label ref="jr:itext('reason_for_loss-label')"/>
       <item>
