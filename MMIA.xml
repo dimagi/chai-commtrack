@@ -231,22 +231,22 @@
 
           <!-- Confirm MMIA -->
           <text id="initial_stock-label">
-              <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Initial Stock:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Initial Stock: <output ref="/data/stock/product/calculated_initial_stock"/></value>
           </text>
           <text id="entries-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entries:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entries: <output ref="/data/stock/product/calculated_entries"/></value>
           </text>
           <text id="exits-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Exits real:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Exits real: <output ref="/data/stock/product/calculated_exits"/></value>
           </text>
           <text id="adjustments-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Losses and Adjustments:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Losses and Adjustments: <output ref="/data/stock/product/calculated_adjustments"/></value>
           </text>
           <text id="inventory-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventory:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventory: <output ref="/data/stock/product/calculated_inventory"/></value>
           </text>
           <text id="expiry-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Expiration:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Expiration: <output ref="/data/stock/product/calculated_expiry"/></value>
           </text>
 
           <!-- Regimens -->
@@ -341,22 +341,22 @@
 
           <!-- Confirm MMIA -->
           <text id="initial_stock-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saldo Inicial</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saldo Inicial: <output ref="/data/stock/product/calculated_initial_stock"/></value>
           </text>
           <text id="entries-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entradas:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entradas: <output ref="/data/stock/product/calculated_entries"/></value>
           </text>
           <text id="exits-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saidas reais:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saidas reais: <output ref="/data/stock/product/calculated_exits"/></value>
           </text>
           <text id="adjustments-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Perdas e ajustes:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Perdas e ajustes: <output ref="/data/stock/product/calculated_adjustments"/></value>
           </text>
           <text id="inventory-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventario</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventario: <output ref="/data/stock/product/calculated_inventory"/></value>
           </text>
           <text id="expiry-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Validade:</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Validade: <output ref="/data/stock/product/calculated_expiry"/></value>
           </text>
 
           <!-- Regimens -->
