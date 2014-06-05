@@ -30,6 +30,12 @@
               <entry id="" quantity=""/>
             </balance>
           </earliest-expiration>
+
+          <reset-expiration>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="expiration">
+              <entry id="" quantity=""/>
+            </balance>
+          </reset-expiration>
           <!-- /CommTrack -->
 
         </data>
@@ -62,7 +68,8 @@
                                      entry[@id=instance('commcaresession')/session/data/product_id]
                                      , 0))"/>
       <bind nodeset="/data/calculated-expiry" type="xsd:date"/>
-      <setvalue event="xforms-ready" ref="/data/expiry" value="/data/calculated-expiry"/>
+      <setvalue event="xforms-ready" ref="/data/expiry"
+                value="if(/data/calculated-expiry = date(0), today(), /data/calculated-expiry)"/>
 
       <!-- Set stock level -->
       <bind nodeset="/data/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
@@ -71,11 +78,18 @@
       <bind nodeset="/data/balance/entry/@quantity" calculate="/data/inventory_amount"/>
 
       <!-- Set expiration date -->
-      <bind nodeset="/data/earliest-expiration" relevant="boolean(/data/expiry)"/>
+      <bind nodeset="/data/earliest-expiration" relevant="not(/data/inventory_amount = 0)"/>
       <bind nodeset="/data/earliest-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/earliest-expiration/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/earliest-expiration/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
       <bind nodeset="/data/earliest-expiration/balance/entry/@quantity" calculate="int(/data/expiry)"/>
+
+      <!-- If stock is 0, reset expiration -->
+      <bind nodeset="/data/reset-expiration" relevant="/data/inventory_amount = 0"/>
+      <bind nodeset="/data/reset-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/reset-expiration/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <bind nodeset="/data/reset-expiration/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/reset-expiration/balance/entry/@quantity" calculate="0"/>
       <!-- /CommTrack -->
 
       <itext>
@@ -85,7 +99,7 @@
             <value><output ref="/data/product_name"/>&#10;&#10;Monthly Inventory&#10;&#10;Calculated: <output ref="/data/calculated-stock"/></value>
           </text>
           <text id="expiry-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Validity&#10;&#10;Calculated: <output ref="/data/calculated-expiry"/></value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Validity&#10;&#10;Calculated: <output ref="if(/data/calculated-expiry = date(0), 'None', /data/calculated-expiry"/></value>
           </text>
         </translation>
         <translation lang="por" default="">
@@ -93,7 +107,7 @@
             <value><output ref="/data/product_name"/>&#10;&#10;Inventário mensal: Stock existente&#10;&#10;Calculated: <output ref="/data/calculated-stock"/></value>
           </text>
           <text id="expiry-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Validade&#10;&#10;Calculated: <output ref="/data/calculated-expiry"/></value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Validade&#10;&#10;Calculated: <output ref="if(/data/calculated-expiry = date(0), 'None', /data/calculated-expiry"/></value>
           </text>
         </translation>
       </itext>
