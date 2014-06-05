@@ -12,6 +12,8 @@
               xmlns="http://openrosa.org/formdesigner/e12041b9ce7726b571cf79aaca581ed031c1427f"
               uiVersion="1" version="1" name="Monthly Inventory">
 
+          <product_name/>
+
           <inventory_amount/>
           <expiry/>
 
@@ -29,11 +31,15 @@
 
         </data>
       </instance>
+      <instance id="products" src="jr://fixture/commtrack:products"/>
 
       <bind nodeset="/data/inventory_amount" type="xsd:int"/>
       <bind nodeset="/data/expiry" type="xsd:date"/>
 
       <!-- CommTrack -->
+      <bind nodeset="/data/product_name"
+            calculate="instance('products')/products/product[@id=instance('commcaresession')/session/data/product_id]/name"/>
+
       <bind nodeset="/data/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
       <bind nodeset="/data/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
@@ -49,18 +55,18 @@
       <itext>
         <translation lang="en">
           <text id="inventory_amount-label">
-            <value>Monthly Inventory</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Monthly Inventory</value>
           </text>
           <text id="expiry-label">
-            <value>Valididty</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Valididty</value>
           </text>
         </translation>
         <translation lang="por" default="">
           <text id="inventory_amount-label">
-            <value>Inventário mensal: Stock existente</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Inventário mensal: Stock existente</value>
           </text>
           <text id="expiry-label">
-            <value>Validade</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Validade</value>
           </text>
         </translation>
       </itext>
