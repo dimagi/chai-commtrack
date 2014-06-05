@@ -34,6 +34,10 @@
 
           <!-- CommTrack -->
           <units/>
+          <is-deduction/>
+          <is-stock-out/>
+          <calculated-stock/>
+          <calculated-expiration/>
 
           <receiving>
             <transfer xmlns="http://commcarehq.org/ledger/v1" dest="" date="" section-id="stock">
@@ -53,12 +57,17 @@
             </transfer>
           </aggregate-monthly>
 
-          <stored-expiration/>
           <earliest-expiration>
             <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="expiration">
               <entry id="" quantity=""/>
             </balance>
           </earliest-expiration>
+
+          <reset-expiration>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="expiration">
+              <entry id="" quantity=""/>
+            </balance>
+          </reset-expiration>
           <!-- /CommTrack -->
 
         </data>
@@ -86,11 +95,13 @@
       <bind nodeset="/data/disbursing/transfer/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/aggregate-monthly/transfer/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/earliest-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/reset-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
 
       <bind nodeset="/data/receiving/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/disbursing/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/aggregate-monthly/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/earliest-expiration/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <bind nodeset="/data/reset-expiration/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
 
       <!-- Is the value being added or subtracted? -->
       <bind nodeset="/data/receiving"
@@ -98,10 +109,11 @@
                       (/data/transaction_type = 'positive')"/>
       <bind nodeset="/data/receiving/transfer/@dest" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
 
-      <bind nodeset="/data/disbursing"
-            relevant="(/data/transaction_type = 'disbursement') or
+      <bind nodeset="/data/is-deduction"
+            calculate="(/data/transaction_type = 'disbursement') or
                       (/data/transaction_type = 'negative') or
                       (/data/transaction_type = 'loss')"/>
+      <bind nodeset="/data/disbursing" relevant="/data/is-deduction"/>
       <bind nodeset="/data/disbursing/transfer/@src" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
 
       <!-- What is the magnitude of the change? -->
@@ -124,21 +136,46 @@
                        'adjustments'
                        ))"/>
 
-      <!-- Product expiration date -->
-      <setvalue event="xforms-ready" ref="/data/stored-expiration"
-        value="date(instance('ledger')/ledgerdb/
-                    ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
-                    section[@section-id='expiration']/
-                    entry[@id=instance('commcaresession')/session/data/product_id])"/>
-      <bind nodeset="/data/stored-expiration" type="xsd:date"/>
+      <!-- Product expiration date business -->
       <bind nodeset="/data/earliest-expiration/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/reset-expiration/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+
+      <!-- look up current expiration date -->
+      <setvalue event="xforms-ready" ref="/data/calculated-expiration"
+                value="date(coalesce(instance('ledger')/ledgerdb/
+                                     ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                     section[@section-id='expiration']/
+                                     entry[@id=instance('commcaresession')/session/data/product_id]
+                                     , 0))"/>
+      <bind nodeset="/data/calculated-expiration" type="xsd:date"/>
+
+      <!-- look up current stock levels -->
+      <setvalue event="xforms-ready" ref="/data/calculated-stock"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                section[@section-id='stock']/
+                                entry[@id=instance('commcaresession')/session/data/product_id]
+                                , 0)"/>
+      <bind nodeset="/data/calculated-stock" type="xsd:int"/>
+
+      <!-- Determine whether or not this is a stock-out -->
+      <bind nodeset="/data/is-stock-out"
+            calculate="/data/is-deduction and
+                      (/data/units >= /data/calculated-stock)"/>
+
       <!-- If expiration is not set or if entered expiration is < current expiration, update -->
       <bind nodeset="/data/earliest-expiration"
             relevant="(/data/transaction_type = 'entry')
-                      and ((/data/stored-expiration = '')
+                      and ((/data/calculated-expiration = date(0))
                            or
-                           (/data/stored-expiration > /data/expiry))"/>
+                           (/data/calculated-expiration > /data/expiry))"/>
       <bind nodeset="/data/earliest-expiration/balance/entry/@quantity" calculate="int(/data/expiry)"/>
+
+      <!-- If it's a stock out, reset expiration -->
+      <bind nodeset="/data/reset-expiration" relevant="/data/is-stock-out"/>
+      <!-- TODO how do I set an empty value? -->
+      <bind nodeset="/data/reset-expiration/balance/entry/@quantity"
+            calculate="0"/>
 
       <!-- /CommTrack -->
 
