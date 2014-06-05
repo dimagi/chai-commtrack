@@ -24,8 +24,8 @@
               <calculated_entries/>
               <entries/>
 
-              <calculated_exits/>
-              <exits/>
+              <calculated_disbursements/>
+              <disbursements/>
 
               <calculated_adjustments/>
               <adjustments/>
@@ -134,16 +134,16 @@
       <setvalue event="jr-insert" ref="/data/stock/product/entries" value="/data/stock/product/calculated_entries"/>
       <bind nodeset="/data/stock/product/entries" type="xsd:int" required="true()"/>
 
-      <setvalue event="jr-insert" ref="/data/stock/product/calculated_exits"
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_disbursements"
         value="coalesce(
           instance('ledger')/ledgerdb/
           ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
-          section[@section-id='exits']/
+          section[@section-id='disbursements']/
           entry[@id=current()/../@id],
         0)" />
-      <!-- Uncomment the next line to prepopulate the exits field -->
-      <!-- <setvalue event="jr-insert" ref="/data/stock/product/exits" value="/data/stock/product/calculated_exits"/> -->
-      <bind nodeset="/data/stock/product/exits" type="xsd:int" required="true()"/>
+      <!-- Uncomment the next line to prepopulate the disbursements field -->
+      <!-- <setvalue event="jr-insert" ref="/data/stock/product/disbursements" value="/data/stock/product/calculated_disbursements"/> -->
+      <bind nodeset="/data/stock/product/disbursements" type="xsd:int" required="true()"/>
 
       <setvalue event="jr-insert" ref="/data/stock/product/calculated_adjustments"
         value="coalesce(
@@ -231,22 +231,22 @@
 
           <!-- Confirm MMIA -->
           <text id="initial_stock-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Initial Stock: <output ref="/data/stock/product/calculated_initial_stock"/></value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Initial Stock: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;Este quantidade é o stock ao início do periodo, é o inventário do mes anterior</value>
           </text>
           <text id="entries-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entries: <output ref="/data/stock/product/calculated_entries"/></value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entries: <output ref="/data/stock/product/calculated_entries"/>&#10;&#10;Este quantidade é a soma das Entradas digitadas na Ficha de Stock</value>
           </text>
-          <text id="exits-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Exits real: <output ref="/data/stock/product/calculated_exits"/></value>
+          <text id="disbursements-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Disbursements real: <output ref="/data/stock/product/calculated_disbursements"/>&#10;&#10;Por favor, digite a quantidade das Saidas somado so LRDA</value>
           </text>
           <text id="adjustments-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Losses and Adjustments: <output ref="/data/stock/product/calculated_adjustments"/></value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Losses and Adjustments: <output ref="/data/stock/product/calculated_adjustments"/>&#10;&#10;Este quantidade é a soma das Ajustes positvos e negativos digitados na Ficha de Stock</value>
           </text>
           <text id="inventory-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventory: <output ref="/data/stock/product/calculated_inventory"/></value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventory: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10; Este quantidade é o stock existente da Ficha de Stock</value>
           </text>
           <text id="expiry-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Expiration: <output ref="/data/stock/product/calculated_expiry"/></value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Expiration: <output ref="/data/stock/product/calculated_expiry"/>&#10;&#10; Este data é a Validade digitada no inventário mesal</value>
           </text>
 
           <!-- Regimens -->
@@ -341,27 +341,27 @@
 
           <!-- Confirm MMIA -->
           <text id="initial_stock-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saldo Inicial: <output ref="/data/stock/product/calculated_initial_stock"/></value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saldo Inicial: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;(Este quantidade é o stock ao início do periodo, é o inventário do mes anterior)</value>
           </text>
           <text id="entries-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entradas: <output ref="/data/stock/product/calculated_entries"/></value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entradas: <output ref="/data/stock/product/calculated_entries"/>&#10;&#10;(Este quantidade é a soma das Entradas digitadas na Ficha de Stock)</value>
           </text>
-          <text id="exits-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saidas reais: <output ref="/data/stock/product/calculated_exits"/></value>
+          <text id="disbursements-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saidas reais: <output ref="/data/stock/product/calculated_disbursements"/>&#10;&#10;(Por favor, digite a quantidade das Saidas somado so LRDA)</value>
           </text>
           <text id="adjustments-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Perdas e ajustes: <output ref="/data/stock/product/calculated_adjustments"/></value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Perdas e ajustes: <output ref="/data/stock/product/calculated_adjustments"/>&#10;&#10;(Este quantidade é a soma das Ajustes positvos e negativos digitados na Ficha de Stock)</value>
           </text>
           <text id="inventory-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventario: <output ref="/data/stock/product/calculated_inventory"/></value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventario: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10;(Este quantidade é o stock existente da Ficha de Stock)</value>
           </text>
           <text id="expiry-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Validade: <output ref="/data/stock/product/calculated_expiry"/></value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Validade: <output ref="/data/stock/product/calculated_expiry"/>&#10;&#10;(Este data é a Validade digitada no inventário mensal)</value>
           </text>
 
           <!-- Regimens -->
           <text id="adultos_label-label">
-            <value>Total doentes em regimes terapeuticos: Adultos</value>
+            <value>Total doentes em regimes terapeuticos: Adultos&#10;&#10;Continue a proxima pagina e digite os valores de LRDA</value>
           </text>
           <text id="AZT_3TC_NVP-label">
             <value>AZT+3TC+NVP</value>
@@ -391,7 +391,7 @@
             <value>AZT300+3TC+ABC</value>
           </text>
           <text id="peds_label-label">
-            <value>Total doentes em regimes terapeuticos: Pediatricos</value>
+            <value>Total doentes em regimes terapeuticos: Pediatricos&#10;&#10;Continue a proxima pagina e digite os valores de LRDA</value>
           </text>
           <text id="d4T6_3TC_NVP_DFCBab-label">
             <value>d4T+3TC+NVP (3DFC Baby)</value>
@@ -421,7 +421,7 @@
             <value>ABC+3TC+EFV</value>
           </text>
           <text id="types_of_patients-label">
-            <value>Tipos de doents</value>
+            <value>Tipos de doentes: &#10;&#10;Continue a proxima pagina e digite os valores de LRDA</value>
           </text>
           <text id="new_patients-label">
             <value>Novos</value>
@@ -461,8 +461,8 @@
         <input ref="/data/stock/product/entries">
         <label ref="jr:itext('entries-label')"/>
         </input>
-        <input ref="/data/stock/product/exits">
-        <label ref="jr:itext('exits-label')"/>
+        <input ref="/data/stock/product/disbursements">
+        <label ref="jr:itext('disbursements-label')"/>
         </input>
         <input ref="/data/stock/product/adjustments">
         <label ref="jr:itext('adjustments-label')"/>
