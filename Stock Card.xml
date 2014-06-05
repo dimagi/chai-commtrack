@@ -16,9 +16,10 @@
 
           <!-- Entry -->
           <entry_units/>
+          <entry_source/>
           <expiry/>
 
-          <!-- Disbursment -->
+          <!-- Disbursement -->
           <disbursement_units/>
           <disbursement_location/>
 
@@ -31,6 +32,9 @@
           <!-- Loss -->
           <loss_units/>
           <reason_for_loss/>
+
+          <!-- Confirmation -->
+          <confirmation />
 
           <!-- CommTrack -->
           <units/>
@@ -78,6 +82,7 @@
       <bind nodeset="/data/transaction_type" required="true()"/>
 
       <bind nodeset="/data/entry_units" type="xsd:int" relevant="/data/transaction_type = 'entry'" required="true()"/>
+      <bind nodeset="/data/entry_source" relevant="/data/transaction_type = 'entry'" required="true()"/>
       <bind nodeset="/data/expiry" type="xsd:date" relevant="/data/transaction_type = 'entry'" required="true()"/>
 
       <bind nodeset="/data/disbursement_units" type="xsd:int" relevant="/data/transaction_type = 'disbursement'" required="true()"/>
@@ -89,6 +94,7 @@
 
       <bind nodeset="/data/loss_units" type="xsd:int" relevant="/data/transaction_type = 'loss'" required="true()"/>
       <bind nodeset="/data/reason_for_loss" relevant="/data/transaction_type = 'loss'" required="true()" />
+      <bind nodeset="/data/confirmation" required="true()" />
 
       <!-- CommTrack -->
       <bind nodeset="/data/receiving/transfer/@date" calculate="/data/meta/timeEnd"/>
@@ -173,7 +179,6 @@
 
       <!-- If it's a stock out, reset expiration -->
       <bind nodeset="/data/reset-expiration" relevant="/data/is-stock-out"/>
-      <!-- TODO how do I set an empty value? -->
       <bind nodeset="/data/reset-expiration/balance/entry/@quantity"
             calculate="0"/>
 
@@ -182,6 +187,7 @@
       <itext>
         <translation lang="por">
 
+          <!-- Transaction Type -->
           <text id="transaction_type-label">
             <value>Tipo do movimento</value>
           </text>
@@ -201,13 +207,24 @@
             <value>Perda</value>
           </text>
 
+          <!-- Entry -->
           <text id="entry_units-label">
             <value>Quantidade da entrada:</value>
+          </text>
+          <text id="entry_source-label">
+            <value>Origem da Entrada:</value>
+          </text>
+          <text id="entry_source-ddm-label">
+            <value>Distrito (DDM)</value>
+          </text>
+          <text id="entry_source-dpm-label">
+            <value>Província (DPM)</value>
           </text>
           <text id="expiry-label">
             <value>Validade</value>
           </text>
 
+          <!-- Disbursement -->
           <text id="disbursement_units-label">
             <value>Quantidade das saidas?</value>
           </text>
@@ -218,29 +235,47 @@
             <value>Farmácia pública</value>
           </text>
           <text id="disbursement_location-maternity-label">
-            <value>Maternidade</value>
+            <value>Maternidade/SMI</value>
           </text>
           <text id="disbursement_location-infirmary-label">
             <value>Enfermaria</value>
           </text>
+          <text id="disbursement_location-bis-label">
+            <value>Banco de Socorros/BIS</value>
+          </text>
           <text id="disbursement_location-mobile-label">
             <value>Brigada móvel</value>
           </text>
-          <text id="disbursement_location-other_us-label">
-            <value>Outra Unidade Sanitária</value>
+          <text id="disbursement_location-lab-label">
+            <value>Laboritório</value>
+          </text>
+          <text id="disbursement_location-uats-label">
+            <value>UATS</value>
+          </text>
+          <text id="disbursement_location-pnctl-label">
+            <value>PNCTL</value>
+          </text>
+          <text id="disbursement_location-pav-label">
+            <value>PAV</value>
+          </text>
+          <text id="disbursement_location-estomatologia-label">
+            <value>Estomatologia</value>
           </text>
 
+          <!-- Positive -->
           <text id="positive_units-label">
             <value>Quantidade do ajuste positivo?</value>
           </text>
 
+          <!-- Negative -->
           <text id="negative_units-label">
             <value>Quantidade do ajuste negativo?</value>
           </text>
 
+          <!-- Loss -->
           <text id="loss_units-label">
             <!-- Claire, can you update this value? -->
-            <value>Quantidade do ajuste negativo?</value>
+            <value>Quantidade do perda?</value>
           </text>
           <text id="reason_for_loss-label">
             <value>Qual é a razão para a perda?</value>
@@ -255,9 +290,15 @@
             <value>Extravio</value>
           </text>
 
+          <!-- Confirmation -->
+          <text id="confirmation-label">
+            <value>Tipo do movimento: <output value="if(/data/transaction_type = 'entry', 'Entrada', if(/data/transaction_type = 'disbursement', 'Saida', 'Ajuste'))"/>&#10;Quantidade: <output value="/data/units"/>&#10;&#10;Por favor confirme este movimento.</value>
+          </text>
         </translation>
+
         <translation lang="en" default="">
 
+          <!-- Transaction Type -->
           <text id="transaction_type-label">
             <value>What type of transaction is this?</value>
           </text>
@@ -277,13 +318,24 @@
             <value>Loss</value>
           </text>
 
+          <!-- Entry -->
           <text id="entry_units-label">
             <value>How many units are being added?</value>
+          </text>
+          <text id="entry_source-label">
+            <value>Origin of entry:</value>
+          </text>
+          <text id="entry_source-ddm-label">
+            <value>District (DDM)</value>
+          </text>
+          <text id="entry_source-dpm-label">
+            <value>Province (DPM)</value>
           </text>
           <text id="expiry-label">
             <value>What is the earliest expiration date of the items being added?</value>
           </text>
 
+          <!-- Disbursement -->
           <text id="disbursement_units-label">
             <value>How many units are being disbursed?</value>
           </text>
@@ -297,23 +349,41 @@
             <value>Maternity</value>
           </text>
           <text id="disbursement_location-infirmary-label">
-            <value>Enfermaria</value>
+            <value>Infirmary</value>
+          </text>
+          <text id="disbursement_location-bis-label">
+            <value>BIS</value>
           </text>
           <text id="disbursement_location-mobile-label">
-            <value>Brigada movel</value>
+            <value>Mobile unit</value>
           </text>
-          <text id="disbursement_location-other_us-label">
-            <value>Another health center</value>
+          <text id="disbursement_location-lab-label">
+            <value>Laboratory</value>
+          </text>
+          <text id="disbursement_location-uats-label">
+            <value>UATS</value>
+          </text>
+          <text id="disbursement_location-pnctl-label">
+            <value>PNCTL</value>
+          </text>
+          <text id="disbursement_location-pav-label">
+            <value>PAV</value>
+          </text>
+          <text id="disbursement_location-estomatologia-label">
+            <value>Estomatologia</value>
           </text>
 
+          <!-- Positive -->
           <text id="positive_units-label">
             <value>How many units are being added?</value>
           </text>
 
+          <!-- Negative -->
           <text id="negative_units-label">
             <value>How many units are being deducted?</value>
           </text>
 
+          <!-- Loss -->
           <text id="loss_units-label">
             <!-- Claire, can you update this value? -->
             <value>How many units are being deducted?</value>
@@ -331,6 +401,10 @@
             <value>Missing</value>
           </text>
 
+          <!-- Confirmation -->
+          <text id="confirmation-label">
+            <value>Type of Movement: <output value="if(/data/transaction_type = 'entry', 'Entrada', if(/data/transaction_type = 'disbursement', 'Saida', 'Ajuste'))"/>&#10;Quantity: <output value="/data/units"/>&#10;&#10;Please confirm this movement.</value>
+          </text>
         </translation>
       </itext>
 
@@ -339,6 +413,7 @@
 
   <h:body>
 
+    <!-- Transaction Type -->
     <select1 ref="/data/transaction_type">
       <label ref="jr:itext('transaction_type-label')"/>
       <item>
@@ -363,16 +438,30 @@
       </item>
     </select1>
 
+    <!-- Entry -->
     <input ref="/data/entry_units">
       <label ref="jr:itext('entry_units-label')"/>
     </input>
     <input ref="/data/expiry">
-        <label ref="jr:itext('expiry-label')"/>
+      <label ref="jr:itext('expiry-label')"/>
     </input>
+    <select1 ref="/data/entry_source">
+      <label ref="jr:itext('entry_source-label')"/>
+      <item>
+        <label ref="jr:itext('entry_source-ddm-label')"/>
+        <value>ddm</value>
+      </item>
+      <item>
+        <label ref="jr:itext('entry_source-dpm-label')"/>
+        <value>dpm</value>
+      </item>
+    </select1>
 
+    <!-- Disbursement -->
     <input ref="/data/disbursement_units">
       <label ref="jr:itext('disbursement_units-label')"/>
     </input>
+
     <select1 ref="/data/disbursement_location">
       <label ref="jr:itext('disbursement_location-label')"/>
       <item>
@@ -388,23 +477,46 @@
         <value>infirmary</value>
       </item>
       <item>
+        <label ref="jr:itext('disbursement_location-bis-label')"/>
+        <value>BIS</value>
+      </item>
+      <item>
         <label ref="jr:itext('disbursement_location-mobile-label')"/>
         <value>mobile</value>
       </item>
       <item>
-        <label ref="jr:itext('disbursement_location-other_us-label')"/>
-        <value>other_us</value>
+        <label ref="jr:itext('disbursement_location-lab-label')"/>
+        <value>Laboratory</value>
+      </item>
+      <item>
+        <label ref="jr:itext('disbursement_location-uats-label')"/>
+        <value>UATS</value>
+      </item>
+      <item>
+        <label ref="jr:itext('disbursement_location-pnctl-label')"/>
+        <value>PNCTL</value>
+      </item>
+      <item>
+        <label ref="jr:itext('disbursement_location-pav-label')"/>
+        <value>PAV</value>
+      </item>
+      <item>
+        <label ref="jr:itext('disbursement_location-estomatologia-label')"/>
+        <value>Estomatologia</value>
       </item>
     </select1>
 
+    <!-- Positive -->
     <input ref="/data/positive_units">
       <label ref="jr:itext('positive_units-label')"/>
     </input>
 
+    <!-- Negative -->
     <input ref="/data/negative_units">
       <label ref="jr:itext('negative_units-label')"/>
     </input>
 
+    <!-- Loss -->
     <input ref="/data/loss_units">
       <label ref="jr:itext('loss_units-label')"/>
     </input>
@@ -423,5 +535,11 @@
         <value>misplaced</value>
       </item>
     </select1>
+
+    <!-- Confirmation -->
+    <trigger ref="/data/confirmation">
+      <label ref="jr:itext('confirmation-label')"/>
+    </trigger>
+
   </h:body>
 </h:html>
