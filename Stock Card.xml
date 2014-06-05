@@ -12,6 +12,10 @@
         <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms"
               xmlns="http://openrosa.org/formdesigner/D48F4F44-56D1-49AA-AA9C-8EBD8B199FAE"
               uiVersion="1" version="1" name="Stock Card">
+
+          <product_name/>
+
+          <!-- Transaction Type -->
           <transaction_type/>
 
           <!-- Entry -->
@@ -78,6 +82,7 @@
 
       </instance>
       <instance id="ledger" src="jr://instance/ledgerdb" />
+      <instance id="products" src="jr://fixture/commtrack:products"/>
 
       <bind nodeset="/data/transaction_type" required="true()"/>
 
@@ -97,6 +102,9 @@
       <bind nodeset="/data/confirmation" required="true()" />
 
       <!-- CommTrack -->
+      <bind nodeset="/data/product_name"
+            calculate="instance('products')/products/product[@id=instance('commcaresession')/session/data/product_id]/name"/>
+
       <bind nodeset="/data/receiving/transfer/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/disbursing/transfer/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/aggregate-monthly/transfer/@date" calculate="/data/meta/timeEnd"/>
@@ -189,7 +197,7 @@
 
           <!-- Transaction Type -->
           <text id="transaction_type-label">
-            <value>Tipo do movimento</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Tipo do movimento</value>
           </text>
           <text id="transaction_type-entry-label">
             <value>Entrada</value>
@@ -209,10 +217,10 @@
 
           <!-- Entry -->
           <text id="entry_units-label">
-            <value>Quantidade da entrada:</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Quantidade da entrada:</value>
           </text>
           <text id="entry_source-label">
-            <value>Origem da Entrada:</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Origem da Entrada:</value>
           </text>
           <text id="entry_source-ddm-label">
             <value>Distrito (DDM)</value>
@@ -221,15 +229,15 @@
             <value>Província (DPM)</value>
           </text>
           <text id="expiry-label">
-            <value>Validade</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Validade</value>
           </text>
 
           <!-- Disbursement -->
           <text id="disbursement_units-label">
-            <value>Quantidade das saidas?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Quantidade das saidas?</value>
           </text>
           <text id="disbursement_location-label">
-            <value>Destino do movimento?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Destino do movimento?</value>
           </text>
           <text id="disbursement_location-pharmacy-label">
             <value>Farmácia pública</value>
@@ -264,21 +272,21 @@
 
           <!-- Positive -->
           <text id="positive_units-label">
-            <value>Quantidade do ajuste positivo?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Quantidade do ajuste positivo?</value>
           </text>
 
           <!-- Negative -->
           <text id="negative_units-label">
-            <value>Quantidade do ajuste negativo?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Quantidade do ajuste negativo?</value>
           </text>
 
           <!-- Loss -->
           <text id="loss_units-label">
             <!-- Claire, can you update this value? -->
-            <value>Quantidade do perda?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Quantidade do perda?</value>
           </text>
           <text id="reason_for_loss-label">
-            <value>Qual é a razão para a perda?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Qual é a razão para a perda?</value>
           </text>
           <text id="reason_for_loss-expiration-label">
             <value>Expiração</value>
@@ -292,7 +300,7 @@
 
           <!-- Confirmation -->
           <text id="confirmation-label">
-            <value>Tipo do movimento: <output value="if(/data/transaction_type = 'entry', 'Entrada', if(/data/transaction_type = 'disbursement', 'Saida', 'Ajuste'))"/>&#10;Quantidade: <output value="/data/units"/>&#10;&#10;Por favor confirme este movimento.</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Tipo do movimento: <output value="if(/data/transaction_type = 'entry', 'Entrada', if(/data/transaction_type = 'disbursement', 'Saida', 'Ajuste'))"/>&#10;Quantidade: <output value="/data/units"/>&#10;&#10;Por favor confirme este movimento.</value>
           </text>
         </translation>
 
@@ -300,7 +308,7 @@
 
           <!-- Transaction Type -->
           <text id="transaction_type-label">
-            <value>What type of transaction is this?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;What type of transaction is this?</value>
           </text>
           <text id="transaction_type-entry-label">
             <value>Entry</value>
@@ -320,10 +328,10 @@
 
           <!-- Entry -->
           <text id="entry_units-label">
-            <value>How many units are being added?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;How many units are being added?</value>
           </text>
           <text id="entry_source-label">
-            <value>Origin of entry:</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Origin of entry:</value>
           </text>
           <text id="entry_source-ddm-label">
             <value>District (DDM)</value>
@@ -332,15 +340,15 @@
             <value>Province (DPM)</value>
           </text>
           <text id="expiry-label">
-            <value>What is the earliest expiration date of the items being added?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;What is the earliest expiration date of the items being added?</value>
           </text>
 
           <!-- Disbursement -->
           <text id="disbursement_units-label">
-            <value>How many units are being disbursed?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;How many units are being disbursed?</value>
           </text>
           <text id="disbursement_location-label">
-            <value>What is this being disbursed to?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;What is this being disbursed to?</value>
           </text>
           <text id="disbursement_location-pharmacy-label">
             <value>Pharmacy</value>
@@ -375,21 +383,21 @@
 
           <!-- Positive -->
           <text id="positive_units-label">
-            <value>How many units are being added?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;How many units are being added?</value>
           </text>
 
           <!-- Negative -->
           <text id="negative_units-label">
-            <value>How many units are being deducted?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;How many units are being deducted?</value>
           </text>
 
           <!-- Loss -->
           <text id="loss_units-label">
             <!-- Claire, can you update this value? -->
-            <value>How many units are being deducted?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;How many units were lost?</value>
           </text>
           <text id="reason_for_loss-label">
-            <value>What is the reason for the loss?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;What is the reason for the loss?</value>
           </text>
           <text id="reason_for_loss-expiration-label">
             <value>Expiration</value>
@@ -403,7 +411,7 @@
 
           <!-- Confirmation -->
           <text id="confirmation-label">
-            <value>Type of Movement: <output value="if(/data/transaction_type = 'entry', 'Entrada', if(/data/transaction_type = 'disbursement', 'Saida', 'Ajuste'))"/>&#10;Quantity: <output value="/data/units"/>&#10;&#10;Please confirm this movement.</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Type of Movement: <output value="if(/data/transaction_type = 'entry', 'Entrada', if(/data/transaction_type = 'disbursement', 'Saida', 'Ajuste'))"/>&#10;Quantity: <output value="/data/units"/>&#10;&#10;Please confirm this movement.</value>
           </text>
         </translation>
       </itext>
