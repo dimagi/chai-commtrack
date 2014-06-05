@@ -18,6 +18,9 @@
           <expiry/>
 
           <!-- CommTrack -->
+          <calculated-stock/>
+          <calculated-expiry/>
+
           <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="stock">
             <entry id="" quantity=""/>
           </balance>
@@ -31,6 +34,7 @@
 
         </data>
       </instance>
+      <instance id="ledger" src="jr://instance/ledgerdb" />
       <instance id="products" src="jr://fixture/commtrack:products"/>
 
       <bind nodeset="/data/inventory_amount" type="xsd:int"/>
@@ -40,11 +44,33 @@
       <bind nodeset="/data/product_name"
             calculate="instance('products')/products/product[@id=instance('commcaresession')/session/data/product_id]/name"/>
 
+      <!-- look up current stock levels -->
+      <setvalue event="xforms-ready" ref="/data/calculated-stock"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                section[@section-id='stock']/
+                                entry[@id=instance('commcaresession')/session/data/product_id]
+                                , 0)"/>
+      <bind nodeset="/data/calculated-stock" type="xsd:int"/>
+      <setvalue event="xforms-ready" ref="/data/inventory_amount" value="/data/calculated-stock"/>
+
+      <!-- look up current expiration date -->
+      <setvalue event="xforms-ready" ref="/data/calculated-expiry"
+                value="date(coalesce(instance('ledger')/ledgerdb/
+                                     ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                     section[@section-id='expiration']/
+                                     entry[@id=instance('commcaresession')/session/data/product_id]
+                                     , 0))"/>
+      <bind nodeset="/data/calculated-expiry" type="xsd:date"/>
+      <setvalue event="xforms-ready" ref="/data/expiry" value="/data/calculated-expiry"/>
+
+      <!-- Set stock level -->
       <bind nodeset="/data/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
       <bind nodeset="/data/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/balance/entry/@quantity" calculate="/data/inventory_amount"/>
 
+      <!-- Set expiration date -->
       <bind nodeset="/data/earliest-expiration" relevant="boolean(/data/expiry)"/>
       <bind nodeset="/data/earliest-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/earliest-expiration/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
@@ -54,19 +80,20 @@
 
       <itext>
         <translation lang="en">
+          <!-- Claire, can you update the wording in these? -->
           <text id="inventory_amount-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Monthly Inventory</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Monthly Inventory&#10;&#10;Calculated: <output ref="/data/calculated-stock"/></value>
           </text>
           <text id="expiry-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Valididty</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Validity&#10;&#10;Calculated: <output ref="/data/calculated-expiry"/></value>
           </text>
         </translation>
         <translation lang="por" default="">
           <text id="inventory_amount-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Inventário mensal: Stock existente</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Inventário mensal: Stock existente&#10;&#10;Calculated: <output ref="/data/calculated-stock"/></value>
           </text>
           <text id="expiry-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Validade</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Validade&#10;&#10;Calculated: <output ref="/data/calculated-expiry"/></value>
           </text>
         </translation>
       </itext>
