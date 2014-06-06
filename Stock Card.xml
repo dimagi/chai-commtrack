@@ -283,7 +283,7 @@
           <text id="positive_units-label">
             <value><output ref="/data/product_name"/>&#10;&#10;Quantidade do ajuste positivo?</value>
           </text>
-		  </text id="positive_source-label">
+		  <text id="positive_source-label">
 			<value><output ref="/data/product_name"/>&#10;&#10;Origem do ajuste positivo?</value>
 		  </text>
 
@@ -291,7 +291,7 @@
           <text id="negative_units-label">
             <value><output ref="/data/product_name"/>&#10;&#10;Quantidade do ajuste negativo?</value>
           </text>
-		  </text id="negative_desctipton-label">
+		  <text id="negative_desctipton-label">
 			<value><output ref="/data/product_name"/>&#10;&#10;Descrição do ajuste negativo:</value>
 		  </text>
           <!-- Loss -->
@@ -340,7 +340,7 @@
             <value>Loss</value>
           </text>
 		  <text id="document_number-label">
-		    </value>Número do documento</value>
+		    <value>Número do documento</value>
 		  </text>
 		  
           <!-- Entry -->
