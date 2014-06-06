@@ -91,6 +91,7 @@
           <ppe/>
           <total_months/>
           <total_patients/>
+          <total_patients_calc/>
 
         </data>
       </instance>
@@ -223,7 +224,7 @@
       <bind nodeset="/data/ppe" type="xsd:int"/>
       <bind nodeset="/data/total_months" type="xsd:int"/>
       <bind nodeset="/data/total_patients" type="xsd:int"/>
-
+      <bind nodeset="/data/total_patients_calc" calculate="int(/data/new_patients) + int(/data/maintained_patients) + int(/data/altered_patients) + int(/data/ptv) +int(/data/ppe)" />
 
       <itext>
 
@@ -332,7 +333,7 @@
             <value>Total months of medicine available</value>
           </text>
           <text id="total_patients-label">
-            <value>Total patients on TARV in US</value>
+            <value>Total patients on TARV in US calculated: <output value="/data/total_patients_calc"/></value>
           </text>
 
         </translation>
@@ -442,7 +443,7 @@
             <value>Total de Meses de medicamentos dispensados</value>
           </text>
           <text id="total_patients-label">
-            <value>Total de pacientes em TARV na US</value>
+            <value>Total de pacientes em TARV na US calculado: <output value="/data/total_patients_calc"/></value>
           </text>
 
         </translation>
