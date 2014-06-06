@@ -96,21 +96,22 @@
         <translation lang="en">
           <!-- Claire, can you update the wording in these? -->
           <text id="inventory_amount-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Monthly Inventory&#10;&#10;Calculated: <output ref="/data/calculated-stock"/></value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Monthly Inventory&#10;&#10;Calculated from the Stock Card: <output ref="/data/calculated-stock"/></value>
           </text>
           <text id="expiry-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Validity&#10;&#10;Calculated: <output ref="if(/data/calculated-expiry = date(0), 'None', /data/calculated-expiry"/></value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Validity&#10;&#10;Earliest inventory inputed in the Stock Card: <output ref="if(/data/calculated-expiry = date(0), 'None', /data/calculated-expiry"/></value>
           </text>
         </translation>
         <translation lang="por" default="">
           <text id="inventory_amount-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Inventário mensal: Stock existente&#10;&#10;Calculated: <output ref="/data/calculated-stock"/></value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Inventário mensal: Stock existente&#10;&#10;Invenário calculado da Fica de Stock: <output ref="/data/calculated-stock"/></value>
           </text>
           <text id="expiry-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Validade&#10;&#10;Calculated: <output ref="if(/data/calculated-expiry = date(0), 'None', /data/calculated-expiry"/></value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Validade&#10;&#10;A data mas próxima digitada na Ficha de Stock: <output ref="if(/data/calculated-expiry = date(0), 'None', /data/calculated-expiry"/></value>
           </text>
         </translation>
       </itext>
+      <itext>
 
     </model>
   </h:head>
