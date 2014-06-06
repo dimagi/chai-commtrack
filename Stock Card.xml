@@ -291,7 +291,7 @@
           <text id="negative_units-label">
             <value><output ref="/data/product_name"/>&#10;&#10;Quantidade do ajuste negativo?</value>
           </text>
-		  <text id="negative_desctipton-label">
+		  <text id="negative_description-label">
 			<value><output ref="/data/product_name"/>&#10;&#10;Descrição do ajuste negativo:</value>
 		  </text>
           <!-- Loss -->
