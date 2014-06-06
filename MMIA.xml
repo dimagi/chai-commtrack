@@ -347,7 +347,7 @@
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entradas: <output ref="/data/stock/product/calculated_entries"/>&#10;&#10;(Este quantidade é a soma das Entradas digitadas na Ficha de Stock)</value>
           </text>
           <text id="disbursements-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saidas reais: <output ref="/data/stock/product/calculated_disbursements"/>&#10;&#10;(Por favor, digite a quantidade das Saidas somado so LRDA)</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saidas calculadas da Ficha de Stock: <output ref="/data/stock/product/calculated_disbursements"/>&#10;&#10;Por favor, digite a quantidade das Saidas somado so LRDA</value>
           </text>
           <text id="adjustments-label">
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Perdas e ajustes: <output ref="/data/stock/product/calculated_adjustments"/>&#10;&#10;(Este quantidade é a soma das Ajustes positvos e negativos digitados na Ficha de Stock)</value>
