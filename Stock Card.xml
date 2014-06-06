@@ -469,7 +469,7 @@
       </item>
     </select1>
 	<input ref="/data/document_number">
-		<label ref="jr:itext('document_number-label;)"/>
+		<label ref="jr:itext('document_number-label)"/>
 	</input>
 
     <!-- Entry -->
