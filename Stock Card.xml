@@ -410,7 +410,7 @@
           <text id="negative_units-label">
             <value><output ref="/data/product_name"/>&#10;&#10;How many units are being deducted?</value>
           </text>
-          <text id="negative_descriptoin-label">
+          <text id="negative_description-label">
             <value><output ref="/data/product_name"/>&#10;&#10;What is the description of the negative adjustment?</value>
           </text>
 		  
