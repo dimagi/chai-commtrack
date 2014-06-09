@@ -247,7 +247,7 @@
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventory: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10; Este quantidade é o stock existente da Ficha de Stock</value>
           </text>
           <text id="expiry-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Expiration: <output ref="/data/stock/product/calculated_expiry"/>&#10;&#10; Este data é a Validade digitada no inventário mesal</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Expiration: <output ref="if(/data/stock/product/calculated_expiry = date(0), 'None', /data/stock/product/calculated_expiry)"/>&#10;&#10; Este data é a Validade digitada no inventário mesal</value>
           </text>
 
           <!-- Regimens -->
@@ -357,7 +357,7 @@
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventario: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10;(Este quantidade é o stock existente da Ficha de Stock)</value>
           </text>
           <text id="expiry-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Validade: <output ref="/data/stock/product/calculated_expiry"/>&#10;&#10;(Este data é a Validade digitada no inventário mensal)</value>
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Validade: <output ref="if(/data/stock/product/calculated_expiry = date(0), 'None', /data/stock/product/calculated_expiry)"/>&#10;&#10;(Este data é a Validade digitada no inventário mensal)</value>
           </text>
 
           <!-- Regimens -->
