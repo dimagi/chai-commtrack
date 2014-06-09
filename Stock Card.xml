@@ -88,7 +88,7 @@
       <instance id="products" src="jr://fixture/commtrack:products"/>
 
       <bind nodeset="/data/transaction_type" required="true()"/>
-	  <bind nodeset="/data/document_number"/>
+	  <bind nodeset="/data/document_number" type="xsd:int"/>
 
       <bind nodeset="/data/entry_units" type="xsd:int" relevant="/data/transaction_type = 'entry'" required="true()"/>
       <bind nodeset="/data/entry_source" relevant="/data/transaction_type = 'entry'" required="true()"/>

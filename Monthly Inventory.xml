@@ -16,6 +16,7 @@
 
           <inventory_amount/>
           <expiry/>
+		  <no_stock/>
 
           <!-- CommTrack -->
           <calculated-stock/>
@@ -44,7 +45,8 @@
       <instance id="products" src="jr://fixture/commtrack:products"/>
 
       <bind nodeset="/data/inventory_amount" type="xsd:int"/>
-      <bind nodeset="/data/expiry" type="xsd:date"/>
+      <bind nodeset="/data/expiry" type="xsd:date" relevant="/data/inventory_amount != 0"/>
+	  <bind nodeset="/data/no_stock" relevant="/data/inventory_amount = 0"/>
 
       <!-- CommTrack -->
       <bind nodeset="/data/product_name"
@@ -96,19 +98,27 @@
         <translation lang="en">
           <!-- Claire, can you update the wording in these? -->
           <text id="inventory_amount-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Monthly Inventory&#10;&#10;Calculated from the Stock Card: <output ref="/data/calculated-stock"/></value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Monthly Inventory&#10;&#10;Calculated from the Stock Card: <output ref="/data/calculated-stock"/>&#10;&#10;If the physical inventory is different from this value, you should make an adjustment.</value>
           </text>
           <text id="expiry-label">
             <value><output ref="/data/product_name"/>&#10;&#10;Validity&#10;&#10;Earliest inventory inputed in the Stock Card: <output ref="if(/data/calculated-expiry = date(0), 'None', /data/calculated-expiry)"/></value>
           </text>
+		  <text id="no_stock-label">
+			<value>Your stock on hand for <output ref="/data/product_name"/> is 0. You don't need to enter an expiration date.</value>
+		  </text>
         </translation>
+		
+		
         <translation lang="por" default="">
           <text id="inventory_amount-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Inventário mensal: Stock existente&#10;&#10;Invenário calculado da Fica de Stock: <output ref="/data/calculated-stock"/></value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Inventário mensal: Stock existente&#10;&#10;Invenário calculado da Fica de Stock: <output ref="/data/calculated-stock"/>&#10;&#10; Se o invenário físico é diferente que este número, deve fazer um ajuste</value>
           </text>
           <text id="expiry-label">
             <value><output ref="/data/product_name"/>&#10;&#10;Validade&#10;&#10;A data mas próxima digitada na Ficha de Stock: <output ref="if(/data/calculated-expiry = date(0), 'None', /data/calculated-expiry)"/></value>
           </text>
+		  <text id="no_stock-label">
+			<value>Seu inventário de <output ref="/data/product_name"/> é 0. Não precisa de digitar validade.</value>
+		  </text>
         </translation>
       </itext>
 
@@ -121,5 +131,8 @@
     <input ref="/data/expiry">
       <label ref="jr:itext('expiry-label')"/>
     </input>
+	<trigger ref="/data/no_stock">
+	  <label ref="jr:itext('no_stock-label')"/>
+	</trigger>
   </h:body>
 </h:html>
