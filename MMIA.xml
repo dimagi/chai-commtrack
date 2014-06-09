@@ -35,6 +35,7 @@
 
               <calculated_expiry/>
               <expiry/>
+			  <no_stock_expiry/>
 
               <!-- Transfers to reset monthly aggregates -->
               <monthly-initial>
@@ -176,6 +177,8 @@
       <bind nodeset="/data/stock/product/expiry" type="xsd:date"
             relevant="/data/stock/product/inventory != 0" required="true()"/>
 
+	  <bind nodeset="/data/stock/product/no_stock_expiry" relevant="/data/stock/product/inventory = 0"/>
+	
       <!-- reset monthly aggregates -->
       <bind nodeset="/data/stock/product/monthly-initial/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
       <bind nodeset="/data/stock/product/monthly-initial/balance/@date" calculate="/data/meta/timeEnd"/>
@@ -248,7 +251,11 @@
           </text>
           <text id="expiry-label">
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Expiration: <output ref="if(/data/stock/product/calculated_expiry = date(0), 'None', /data/stock/product/calculated_expiry)"/>&#10;&#10; Este data é a Validade digitada no inventário mesal</value>
-          </text>
+          </text>		  
+		  <text id="no_stock_expiry-label">
+			<value>Your inventory for <output ref="instance('products')/products/product[@id=current()/../@id]/name"/> is 0. You don't need to enter expiration date</value>
+		  </text>
+
 
           <!-- Regimens -->
           <text id="adultos_label-label">
@@ -359,6 +366,9 @@
           <text id="expiry-label">
             <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Validade: <output ref="if(/data/stock/product/calculated_expiry = date(0), 'None', /data/stock/product/calculated_expiry)"/>&#10;&#10;(Este data é a Validade digitada no inventário mensal)</value>
           </text>
+		  <text id="no_stock_expiry-label">
+			<value>O inventário de <output ref="instance('products')/products/product[@id=current()/../@id]/name"/> é 0. Não precisa de digitar validade</value>
+		  </text>
 
           <!-- Regimens -->
           <text id="adultos_label-label">
@@ -474,6 +484,9 @@
         <input ref="/data/stock/product/expiry">
         <label ref="jr:itext('expiry-label')"/>
         </input>
+		<trigger ref="/data/stock/product/no_stock_expiry">
+		<label ref="jr:itext('no_stock_expiry-label')"/>
+		</trigger>
       </repeat>
     </group>
 
