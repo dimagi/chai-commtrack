@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:orx="http://openrosa.org/jr/xforms"
+        xmlns="http://www.w3.org/2002/xforms"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:vellum="http://commcarehq.org/xforms/vellum">
+  <h:head>
+    <h:title>Via Classica Requisition</h:title>
+    <model>
+      <instance>
+        <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms"
+              xmlns="http://openrosa.org/formdesigner/8F7A24EB-6234-41A5-A7C3-0205E341CAFB"
+              uiVersion="1"
+              version="1"
+              name="New Form">
+
+          <stock>
+            <elements/>
+            <num_elements/>
+            <cur_element/>
+            <product id="" index="" jr:template="">
+              <calculated_initial_stock/>
+              <initial_stock/>
+
+              <calculated_entries/>
+              <entries/>
+
+              <calculated_disbursements/>
+              <disbursements/>
+
+              <calculated_adjustments/>
+              <adjustments/>
+
+              <calculated_inventory/>
+              <inventory/>
+
+              <calculated_expiry/>
+              <expiry/>
+
+              <!-- Transfers to reset monthly aggregates -->
+              <monthly-initial>
+                <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="monthly-initial">
+                  <entry id="" quantity=""/>
+                </balance>
+              </monthly-initial>
+              <aggregate-entries>
+                <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="entries">
+                  <entry id="" quantity="0"/>
+                </balance>
+              </aggregate-entries>
+              <aggregate-disbursements>
+                <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="disbursements">
+                  <entry id="" quantity="0"/>
+                </balance>
+              </aggregate-disbursements>
+              <aggregate-adjustments>
+                <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="adjustments">
+                  <entry id="" quantity="0"/>
+                </balance>
+              </aggregate-adjustments>
+
+            </product>
+          </stock>
+
+        </data>
+      </instance>
+      <instance id="ledger" src="jr://instance/ledgerdb"/>
+      <instance id="products" src="jr://fixture/commtrack:products"/>
+
+      <!-- iteration business -->
+      <!-- Via Classica program id is
+          f5885951a77585dc8677fc82c5cc31db on ethan-chai
+      and
+          0aeab1e7918385d8a122c34b313b13ea on chai-moz
+      -->
+      <setvalue event="xforms-ready" ref="/data/stock/elements"
+                value="join(' ',instance('products')/products/product[program_id='f5885951a77585dc8677fc82c5cc31db']/@id)"/>
+      <setvalue event="jr-insert" ref="/data/stock/product/@index" value="int(/data/stock/cur_element)"/>
+      <bind nodeset="/data/stock/num_elements" type="int" calculate="count-selected(/data/stock/elements)"/>
+      <bind nodeset="/data/stock/cur_element" calculate="count(/data/stock/product)"/>
+      <bind nodeset="/data/stock/product/@id" calculate="selected-at(/data/stock/elements,../@index)"/>
+
+      <!-- Look up and prepopulate initial stock value -->
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_initial_stock"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                section[@section-id='monthly-initial']/
+                                entry[@id=current()/../@id],
+                                0)" />
+      <setvalue event="jr-insert" ref="/data/stock/product/initial_stock" value="/data/stock/product/calculated_initial_stock"/>
+      <bind nodeset="/data/stock/product/initial_stock" type="xsd:int" required="true()"/>
+
+      <!-- Look up and prepopulate aggregate entries -->
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_entries"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                section[@section-id='entries']/
+                                entry[@id=current()/../@id],
+                                0)" />
+      <setvalue event="jr-insert" ref="/data/stock/product/entries" value="/data/stock/product/calculated_entries"/>
+      <bind nodeset="/data/stock/product/entries" type="xsd:int" required="true()"/>
+
+      <!-- Look up aggregate disbursements -->
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_disbursements"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                section[@section-id='disbursements']/
+                                entry[@id=current()/../@id],
+                                0)" />
+      <!-- Uncomment the next line to prepopulate the disbursements field -->
+      <!-- <setvalue event="jr-insert" ref="/data/stock/product/disbursements" value="/data/stock/product/calculated_disbursements"/> -->
+      <bind nodeset="/data/stock/product/disbursements" type="xsd:int" required="true()"/>
+
+      <!-- Look up and prepopulate aggregate adjustments -->
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_adjustments"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                section[@section-id='adjustments']/
+                                entry[@id=current()/../@id],
+                                0)" />
+      <setvalue event="jr-insert" ref="/data/stock/product/adjustments" value="/data/stock/product/calculated_adjustments"/>
+      <bind nodeset="/data/stock/product/adjustments" type="xsd:int" required="true()"/>
+
+      <!-- Look up and prepopulate current inventory -->
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_inventory"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                section[@section-id='stock']/
+                                entry[@id=current()/../@id],
+                                0)" />
+      <setvalue event="jr-insert" ref="/data/stock/product/inventory" value="/data/stock/product/calculated_inventory"/>
+      <bind nodeset="/data/stock/product/inventory" type="xsd:int" required="true()"/>
+
+      <!-- Look up and prepopulate expiration date -->
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_expiry"
+                value="date(instance('ledger')/ledgerdb/
+                            ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                            section[@section-id='expiration']/
+                            entry[@id=current()/../@id])" />
+      <bind nodeset="/data/stock/product/calculated_expiry" type="xsd:date"/>
+      <setvalue event="jr-insert" ref="/data/stock/product/expiry" value="/data/stock/product/calculated_expiry"/>
+      <bind nodeset="/data/stock/product/expiry" type="xsd:date"
+            relevant="/data/stock/product/inventory != 0" required="true()"/>
+
+      <!-- reset monthly aggregates -->
+      <bind nodeset="/data/stock/product/monthly-initial/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/stock/product/monthly-initial/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/stock/product/monthly-initial/balance/entry/@id" calculate="/data/stock/product/@id"/>
+      <!-- set monthly initial based on this form -->
+      <bind nodeset="/data/stock/product/monthly-initial/balance/entry/@quantity" calculate="/data/stock/product/inventory"/>
+
+      <bind nodeset="/data/stock/product/aggregate-entries/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/stock/product/aggregate-entries/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/stock/product/aggregate-entries/balance/entry/@id" calculate="/data/stock/product/@id"/>
+
+      <bind nodeset="/data/stock/product/aggregate-disbursements/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/stock/product/aggregate-disbursements/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/stock/product/aggregate-disbursements/balance/entry/@id" calculate="/data/stock/product/@id"/>
+
+      <bind nodeset="/data/stock/product/adjustments/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/stock/product/adjustments/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/stock/product/adjustments/balance/entry/@id" calculate="/data/stock/product/@id"/>
+
+      <itext>
+
+        <translation lang="por" default="">
+          <text id="initial_stock-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saldo Inicial: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;(Este quantidade é o stock ao início do periodo, é o inventário do mes anterior)</value>
+          </text>
+          <text id="entries-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entradas: <output ref="/data/stock/product/calculated_entries"/>&#10;&#10;(Este quantidade é a soma das Entradas digitadas na Ficha de Stock)</value>
+          </text>
+          <text id="disbursements-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saidas calculadas da Ficha de Stock: <output ref="/data/stock/product/calculated_disbursements"/>&#10;&#10;Por favor, digite a quantidade das Saidas somado so LRDA</value>
+          </text>
+          <text id="adjustments-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Perdas e ajustes: <output ref="/data/stock/product/calculated_adjustments"/>&#10;&#10;(Este quantidade é a soma das Ajustes positvos e negativos digitados na Ficha de Stock)</value>
+          </text>
+          <text id="inventory-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventario: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10;(Este quantidade é o stock existente da Ficha de Stock)</value>
+          </text>
+          <text id="expiry-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Validade: <output ref="/data/stock/product/calculated_expiry"/>&#10;&#10;(Este data é a Validade digitada no inventário mensal)</value>
+          </text>
+        </translation>
+
+        <translation lang="en">
+          <text id="initial_stock-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Initial Stock: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;Este quantidade é o stock ao início do periodo, é o inventário do mes anterior</value>
+          </text>
+          <text id="entries-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entries: <output ref="/data/stock/product/calculated_entries"/>&#10;&#10;Este quantidade é a soma das Entradas digitadas na Ficha de Stock</value>
+          </text>
+          <text id="disbursements-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Disbursements real: <output ref="/data/stock/product/calculated_disbursements"/>&#10;&#10;Por favor, digite a quantidade das Saidas somado so LRDA</value>
+          </text>
+          <text id="adjustments-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Losses and Adjustments: <output ref="/data/stock/product/calculated_adjustments"/>&#10;&#10;Este quantidade é a soma das Ajustes positvos e negativos digitados na Ficha de Stock</value>
+          </text>
+          <text id="inventory-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventory: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10; Este quantidade é o stock existente da Ficha de Stock</value>
+          </text>
+          <text id="expiry-label">
+            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Expiration: <output ref="/data/stock/product/calculated_expiry"/>&#10;&#10; Este data é a Validade digitada no inventário mesal</value>
+          </text>
+        </translation>
+      </itext>
+
+    </model>
+  </h:head>
+  <h:body>
+
+     <group>
+      <!-- TODO add label here to indicate that a new product is starting? -->
+      <repeat nodeset="/data/stock/product" jr:count="/data/stock/num_elements">
+        <input ref="/data/stock/product/initial_stock">
+          <label ref="jr:itext('initial_stock-label')"/>
+        </input>
+        <input ref="/data/stock/product/entries">
+          <label ref="jr:itext('entries-label')"/>
+        </input>
+        <input ref="/data/stock/product/disbursements">
+          <label ref="jr:itext('disbursements-label')"/>
+        </input>
+        <input ref="/data/stock/product/adjustments">
+          <label ref="jr:itext('adjustments-label')"/>
+        </input>
+        <input ref="/data/stock/product/inventory">
+          <label ref="jr:itext('inventory-label')"/>
+        </input>
+        <input ref="/data/stock/product/expiry">
+          <label ref="jr:itext('expiry-label')"/>
+        </input>
+      </repeat>
+    </group>
+
+ </h:body>
+</h:html>
