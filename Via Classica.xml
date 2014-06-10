@@ -20,6 +20,8 @@
             <num_elements/>
             <cur_element/>
             <product id="" index="" jr:template="">
+              <name/>
+
               <calculated_initial_stock/>
               <initial_stock/>
 
@@ -83,6 +85,10 @@
       <bind nodeset="/data/stock/num_elements" type="int" calculate="count-selected(/data/stock/elements)"/>
       <bind nodeset="/data/stock/cur_element" calculate="count(/data/stock/product)"/>
       <bind nodeset="/data/stock/product/@id" calculate="selected-at(/data/stock/elements,../@index)"/>
+
+      <!-- product name -->
+      <setvalue event="jr-insert" ref="/data/stock/product/name"
+                value="instance('products')/products/product[@id=current()/../@id]/name"/>
 
       <!-- Look up and prepopulate initial stock value -->
       <setvalue event="jr-insert" ref="/data/stock/product/calculated_initial_stock"
@@ -169,43 +175,43 @@
 
         <translation lang="por" default="">
           <text id="initial_stock-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saldo Inicial: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;(Este quantidade é o stock ao início do periodo, é o inventário do mes anterior)</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Saldo Inicial: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;(Este quantidade é o stock ao início do periodo, é o inventário do mes anterior)</value>
           </text>
           <text id="entries-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entradas: <output ref="/data/stock/product/calculated_entries"/>&#10;&#10;(Este quantidade é a soma das Entradas digitadas na Ficha de Stock)</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Entradas: <output ref="/data/stock/product/calculated_entries"/>&#10;&#10;(Este quantidade é a soma das Entradas digitadas na Ficha de Stock)</value>
           </text>
           <text id="disbursements-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Saidas calculadas da Ficha de Stock: <output ref="/data/stock/product/calculated_disbursements"/>&#10;&#10;Por favor, digite a quantidade das Saidas somado so LRDA</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Saidas calculadas da Ficha de Stock: <output ref="/data/stock/product/calculated_disbursements"/>&#10;&#10;Por favor, digite a quantidade das Saidas somado so LRDA</value>
           </text>
           <text id="adjustments-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Perdas e ajustes: <output ref="/data/stock/product/calculated_adjustments"/>&#10;&#10;(Este quantidade é a soma das Ajustes positvos e negativos digitados na Ficha de Stock)</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Perdas e ajustes: <output ref="/data/stock/product/calculated_adjustments"/>&#10;&#10;(Este quantidade é a soma das Ajustes positvos e negativos digitados na Ficha de Stock)</value>
           </text>
           <text id="inventory-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventario: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10;(Este quantidade é o stock existente da Ficha de Stock)</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Inventario: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10;(Este quantidade é o stock existente da Ficha de Stock)</value>
           </text>
           <text id="expiry-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Validade: <output ref="if(/data/stock/product/calculated_expiry = date(0), 'None', /data/stock/product/calculated_expiry)"/>&#10;&#10;(Este data é a Validade digitada no inventário mensal)</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Validade: <output ref="if(/data/stock/product/calculated_expiry = date(0), 'None', /data/stock/product/calculated_expiry)"/>&#10;&#10;(Este data é a Validade digitada no inventário mensal)</value>
           </text>
         </translation>
 
         <translation lang="en">
           <text id="initial_stock-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Initial Stock: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;Este quantidade é o stock ao início do periodo, é o inventário do mes anterior</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Initial Stock: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;Este quantidade é o stock ao início do periodo, é o inventário do mes anterior</value>
           </text>
           <text id="entries-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Entries: <output ref="/data/stock/product/calculated_entries"/>&#10;&#10;Este quantidade é a soma das Entradas digitadas na Ficha de Stock</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Entries: <output ref="/data/stock/product/calculated_entries"/>&#10;&#10;Este quantidade é a soma das Entradas digitadas na Ficha de Stock</value>
           </text>
           <text id="disbursements-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Disbursements real: <output ref="/data/stock/product/calculated_disbursements"/>&#10;&#10;Por favor, digite a quantidade das Saidas somado so LRDA</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Disbursements real: <output ref="/data/stock/product/calculated_disbursements"/>&#10;&#10;Por favor, digite a quantidade das Saidas somado so LRDA</value>
           </text>
           <text id="adjustments-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Losses and Adjustments: <output ref="/data/stock/product/calculated_adjustments"/>&#10;&#10;Este quantidade é a soma das Ajustes positvos e negativos digitados na Ficha de Stock</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Losses and Adjustments: <output ref="/data/stock/product/calculated_adjustments"/>&#10;&#10;Este quantidade é a soma das Ajustes positvos e negativos digitados na Ficha de Stock</value>
           </text>
           <text id="inventory-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Inventory: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10; Este quantidade é o stock existente da Ficha de Stock</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Inventory: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10; Este quantidade é o stock existente da Ficha de Stock</value>
           </text>
           <text id="expiry-label">
-            <value><output ref="instance('products')/products/product[@id=current()/../@id]/name"/>&#10;&#10;Expiration: <output ref="if(/data/stock/product/calculated_expiry = date(0), 'None', /data/stock/product/calculated_expiry)"/>&#10;&#10; Este data é a Validade digitada no inventário mesal</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Expiration: <output ref="if(/data/stock/product/calculated_expiry = date(0), 'None', /data/stock/product/calculated_expiry)"/>&#10;&#10; Este data é a Validade digitada no inventário mesal</value>
           </text>
         </translation>
       </itext>
