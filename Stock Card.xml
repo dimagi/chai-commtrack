@@ -323,7 +323,7 @@
                                                'Ajuste negativo'))),
 
               '&#10;&#10;Quantidade: ', /data/units,
-              if(/data/transcation_type = 'entry', concat('&#10;&#10;', /data/expiry), ''),
+              if(/data/transaction_type = 'entry', concat('&#10;&#10;', /data/expiry), ''),
               '&#10;&#10;', if(/data/transaction_type = 'entry', 'Origem da entrada:',
                             if(/data/transaction_type = 'disbursement', 'Destino da Saida:',
                             'Origem/Descrição de ajuste:')),
