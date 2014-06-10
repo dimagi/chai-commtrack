@@ -40,6 +40,11 @@
               <calculated_expiry/>
               <expiry/>
 
+              <kits/>
+
+              <calculated_desired_amt/>
+              <desired_amt/>
+
               <calculated_requisition_amt/>
               <requisition_amt/>
 
@@ -148,9 +153,30 @@
                             section[@section-id='expiration']/
                             entry[@id=current()/../@id])" />
       <bind nodeset="/data/stock/product/calculated_expiry" type="xsd:date"/>
-      <setvalue event="jr-insert" ref="/data/stock/product/expiry" value="/data/stock/product/calculated_expiry"/>
+      <setvalue event="jr-insert" ref="/data/stock/product/expiry"
+                value="if(/data/stock/product/calculated_expiry = date(0),
+                          today(),
+                          /data/stock/product/calculated_expiry)"/>
       <bind nodeset="/data/stock/product/expiry" type="xsd:date"
             relevant="/data/stock/product/inventory != 0" required="true()"/>
+
+      <!-- Calculating amount to requisition -->
+      <!-- Amount in kits -->
+      <bind nodeset="/data/stock/product/kits" type="xsd:int" required="true()"/>
+
+      <!-- Desired stock level -->
+      <bind nodeset="/data/stock/product/calculated_desired_amt" calculate="2 * /data/stock/product/disbursements"/>
+      <!-- There is no appropriate event for this yet :( -->
+      <!-- <setvalue event="jr-insert" ref="/data/stock/product/desired_amt" value="/data/stock/product/calculated_desired_amt"/> -->
+      <bind nodeset="/data/stock/product/desired_amt" type="xsd:int" required="true()"/>
+
+      <!-- Amount to requisition -->
+      <!-- desired_amt - (inventory + kits) -->
+      <bind nodeset="/data/stock/product/calculated_requisition_amt"
+            calculate="max(/data/stock/product/desired_amt - (/data/stock/product/inventory + /data/stock/product/kits), 0)"/>
+      <!-- There is no appropriate event for this yet :( -->
+      <!-- <setvalue event="jr-insert" ref="/data/stock/product/requisition_amt" value="/data/stock/product/calculated_requisition_amt"/> -->
+      <bind nodeset="/data/stock/product/requisition_amt" type="xsd:int" required="true()"/>
 
       <!-- reset monthly aggregates -->
       <bind nodeset="/data/stock/product/monthly-initial/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
@@ -192,6 +218,19 @@
           <text id="expiry-label">
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Validade: <output ref="if(/data/stock/product/calculated_expiry = date(0), 'None', /data/stock/product/calculated_expiry)"/>&#10;&#10;(Este data é a Validade digitada no inventário mensal)</value>
           </text>
+
+          <!-- Claire, please translate/reword -->
+          <!-- Via Classica -->
+          <text id="kits-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantity expected in kits:</value>
+          </text>
+          <text id="desired_amt-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Desired stock level: <output ref="/data/stock/product/calculated_desired_amt"/>&#10;&#10;(Exits x2)</value>
+          </text>
+          <text id="requisition_amt-label">
+            <!-- <value>Quantity asked for: <output value="/data/stock/product/calculated_requisition_amt"/>&#10;&#10;(Exits x2 - invetory - number expected in kits)</value> -->
+            <value>You have <output value="/data/stock/product/calculated_requisition_amt"/> and you'll get <output value="/data/stock/product/calculated_requisition_amt"/> in kits, so to get <output value="/data/stock/product/calculated_requisition_amt"/>, you should request <output value="/data/stock/product/calculated_requisition_amt"/></value>
+          </text>
         </translation>
 
         <translation lang="en">
@@ -208,12 +247,26 @@
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Losses and Adjustments: <output ref="/data/stock/product/calculated_adjustments"/>&#10;&#10;Este quantidade é a soma das Ajustes positvos e negativos digitados na Ficha de Stock</value>
           </text>
           <text id="inventory-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Inventory: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10; Este quantidade é o stock existente da Ficha de Stock</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Current Inventory: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10; Este quantidade é o stock existente da Ficha de Stock</value>
           </text>
           <text id="expiry-label">
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Expiration: <output ref="if(/data/stock/product/calculated_expiry = date(0), 'None', /data/stock/product/calculated_expiry)"/>&#10;&#10; Este data é a Validade digitada no inventário mesal</value>
           </text>
+
+          <!-- Via Classica -->
+          <text id="kits-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantity expected in kits:</value>
+          </text>
+          <text id="desired_amt-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Desired stock level: <output ref="/data/stock/product/calculated_desired_amt"/>&#10;&#10;(Exits x2)</value>
+          </text>
+          <text id="requisition_amt-label">
+            <!-- <value>Quantity asked for: <output value="/data/stock/product/calculated_requisition_amt"/>&#10;&#10;(Exits x2 - invetory - number expected in kits)</value> -->
+            <value>You have <output value="/data/stock/product/inventory"/> and you'll get <output value="/data/stock/product/kits"/> in kits, so to get <output value="/data/stock/product/desired_amt"/>, you should request <output value="/data/stock/product/calculated_requisition_amt"/></value>
+          <!-- TODO - You have <inventory> and you'll get <kits> from kits so to get <desired_amt>,  you should request <calculated_requisition_amt> (make sure that's not negative) -->
+          </text>
         </translation>
+
       </itext>
 
     </model>
@@ -223,6 +276,7 @@
      <group>
       <!-- TODO add label here to indicate that a new product is starting? -->
       <repeat nodeset="/data/stock/product" jr:count="/data/stock/num_elements">
+        <!-- This bit is the same as the MMIA -->
         <input ref="/data/stock/product/initial_stock">
           <label ref="jr:itext('initial_stock-label')"/>
         </input>
@@ -240,6 +294,16 @@
         </input>
         <input ref="/data/stock/product/expiry">
           <label ref="jr:itext('expiry-label')"/>
+        </input>
+        <!-- Requisition business specific to Via Classica -->
+        <input ref="/data/stock/product/kits">
+          <label ref="jr:itext('kits-label')"/>
+        </input>
+        <input ref="/data/stock/product/desired_amt">
+          <label ref="jr:itext('desired_amt-label')"/>
+        </input>
+        <input ref="/data/stock/product/requisition_amt">
+          <label ref="jr:itext('requisition_amt-label')"/>
         </input>
       </repeat>
     </group>
