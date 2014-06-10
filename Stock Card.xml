@@ -17,7 +17,7 @@
 
           <!-- Transaction Type -->
           <transaction_type/>
-		  <document_number/>
+          <document_number/>
 
           <!-- Entry -->
           <entry_units/>
@@ -30,11 +30,11 @@
 
           <!-- Positive -->
           <positive_units/>
-		  <positive_source/>
+          <positive_source/>
 
           <!-- Negative -->
           <negative_units/>
-		  <negative_description/>
+          <negative_description/>
 
           <!-- Loss -->
           <loss_units/>
@@ -88,7 +88,7 @@
       <instance id="products" src="jr://fixture/commtrack:products"/>
 
       <bind nodeset="/data/transaction_type" required="true()"/>
-	  <bind nodeset="/data/document_number" type="xsd:int"/>
+      <bind nodeset="/data/document_number" type="xsd:int"/>
 
       <bind nodeset="/data/entry_units" type="xsd:int" relevant="/data/transaction_type = 'entry'" required="true()"/>
       <bind nodeset="/data/entry_source" relevant="/data/transaction_type = 'entry'" required="true()"/>
@@ -98,10 +98,10 @@
       <bind nodeset="/data/disbursement_location" relevant="/data/transaction_type = 'disbursement'" required="true()"/>
 
       <bind nodeset="/data/positive_units" type="xsd:int" relevant="/data/transaction_type = 'positive'" required="true()"/>
-	  <bind nodeset="/data/positive_source" type="xsd:string" relevant="/data/transaction_type = 'positive'" required="true()"/>
+      <bind nodeset="/data/positive_source" type="xsd:string" relevant="/data/transaction_type = 'positive'" required="true()"/>
 
       <bind nodeset="/data/negative_units" type="xsd:int" relevant="/data/transaction_type = 'negative'" required="true()"/>
-	  <bind nodeset="/data/negative_description" type="xsd:int" relevant="/data/transaction_type = 'negative'" required="true()"/>
+      <bind nodeset="/data/negative_description" type="xsd:int" relevant="/data/transaction_type = 'negative'" required="true()"/>
 
       <bind nodeset="/data/loss_units" type="xsd:int" relevant="/data/transaction_type = 'loss'" required="true()"/>
       <bind nodeset="/data/reason_for_loss" relevant="/data/transaction_type = 'loss'" required="true()" />
@@ -220,9 +220,9 @@
           <text id="transaction_type-loss-label">
             <value>Perda</value>
           </text>
-		  <text id="document_number-label">
-		    <value>Número do documento</value>
-		  </text>
+          <text id="document_number-label">
+            <value>Número do documento</value>
+          </text>
 
           <!-- Entry -->
           <text id="entry_units-label">
@@ -283,17 +283,17 @@
           <text id="positive_units-label">
             <value><output ref="/data/product_name"/>&#10;&#10;Quantidade do ajuste positivo?</value>
           </text>
-		  <text id="positive_source-label">
-			<value><output ref="/data/product_name"/>&#10;&#10;Origem do ajuste positivo?</value>
-		  </text>
+          <text id="positive_source-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Origem do ajuste positivo?</value>
+          </text>
 
           <!-- Negative -->
           <text id="negative_units-label">
             <value><output ref="/data/product_name"/>&#10;&#10;Quantidade do ajuste negativo?</value>
           </text>
-		  <text id="negative_description-label">
-			<value><output ref="/data/product_name"/>&#10;&#10;Descrição do ajuste negativo:</value>
-		  </text>
+          <text id="negative_description-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Descrição do ajuste negativo:</value>
+          </text>
           <!-- Loss -->
           <text id="loss_units-label">
             <!-- Claire, can you update this value? -->
@@ -314,7 +314,27 @@
 
           <!-- Confirmation -->
           <text id="confirmation-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Tipo do movimento: <output value="if(/data/transaction_type = 'entry', 'Entrada', if(/data/transaction_type = 'disbursement', 'Saida', 'Ajuste'))"/>&#10;Quantidade: <output value="/data/units"/>&#10;&#10;Por favor confirme este movimento.</value>
+            <value><output ref="concat(
+              'Medicamento: ', /data/product_name,
+              '&#10;&#10;Numero do documento: ', /data/document_number,
+              '&#10;&#10;Tipo do movimento: ', if(/data/transaction_type = 'entry', 'Entrada',
+                                               if(/data/transaction_type = 'disbursement', 'Saida',
+                                               if(/data/transaction_type = 'positive', 'Ajuste Positivo',
+                                               'Ajuste negativo'))),
+
+              '&#10;&#10;Quantidade: ', /data/units,
+              if(/data/transcation_type = 'entry', concat('&#10;&#10;', /data/expiry), ''),
+              '&#10;&#10;', if(/data/transaction_type = 'entry', 'Origem da entrada:',
+                            if(/data/transaction_type = 'disbursement', 'Destino da Saida:',
+                            'Origem/Descrição de ajuste:')),
+
+                            if(/data/transaction_type = 'entry', /data/entry_source,
+                            if(/data/transaction_type = 'disbursement', /data/disbursement_location,
+                            if(/data/transaction_type = 'positive', /data/positive_source,
+                            /data/negative_description))),
+
+              '&#10;&#10;Por favor confirme este movimento'
+            )"/></value>
           </text>
         </translation>
 
@@ -339,10 +359,10 @@
           <text id="transaction_type-loss-label">
             <value>Loss</value>
           </text>
-		  <text id="document_number-label">
-		    <value>Número do documento</value>
-		  </text>
-		  
+          <text id="document_number-label">
+            <value>Número do documento</value>
+          </text>
+
           <!-- Entry -->
           <text id="entry_units-label">
             <value><output ref="/data/product_name"/>&#10;&#10;How many units are being added?</value>
@@ -405,7 +425,7 @@
           <text id="positive_source-label">
             <value><output ref="/data/product_name"/>&#10;&#10;What is the origin of the positive adjustment?</value>
           </text>
-		  
+
           <!-- Negative -->
           <text id="negative_units-label">
             <value><output ref="/data/product_name"/>&#10;&#10;How many units are being deducted?</value>
@@ -413,7 +433,7 @@
           <text id="negative_description-label">
             <value><output ref="/data/product_name"/>&#10;&#10;What is the description of the negative adjustment?</value>
           </text>
-		  
+
           <!-- Loss -->
           <text id="loss_units-label">
             <!-- Claire, can you update this value? -->
@@ -434,11 +454,32 @@
 
           <!-- Confirmation -->
           <text id="confirmation-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Type of Movement: <output value="if(/data/transaction_type = 'entry', 'Entrada', if(/data/transaction_type = 'disbursement', 'Saida', 'Ajuste'))"/>&#10;Quantity: <output value="/data/units"/>&#10;&#10;Please confirm this movement.</value>
+            <value><output ref="concat(
+              'Medicamento: ', /data/product_name,
+              '&#10;&#10;Numero do documento: ', /data/document_number,
+              '&#10;&#10;Tipo do movimento: ', if(/data/transaction_type = 'entry', 'Entrada',
+                                               if(/data/transaction_type = 'disbursement', 'Saida',
+                                               if(/data/transaction_type = 'positive', 'Ajuste Positivo',
+                                               'Ajuste negativo'))),
+
+              '&#10;&#10;Quantidade: ', /data/units,
+              if(/data/transcation_type = 'entry', concat('&#10;&#10;', /data/expiry), ''),
+              '&#10;&#10;', if(/data/transaction_type = 'entry', 'Origem da entrada:',
+                            if(/data/transaction_type = 'disbursement', 'Destino da Saida:',
+                            'Origem/Descrição de ajuste:')),
+
+                            if(/data/transaction_type = 'entry', /data/entry_source,
+                            if(/data/transaction_type = 'disbursement', /data/disbursement_location,
+                            if(/data/transaction_type = 'positive', /data/positive_source,
+                            /data/negative_description))),
+
+              '&#10;&#10;Por favor confirme este movimento'
+            )"/></value>
           </text>
         </translation>
       </itext>
 
+            <!-- <value><output ref="/data/product_name"/>&#10;&#10;Type of Movement: <output value="if(/data/transaction_type = 'entry', 'Entrada', if(/data/transaction_type = 'disbursement', 'Saida', 'Ajuste'))"/>&#10;Quantity: <output value="/data/units"/>&#10;&#10;Please confirm this movement.</value> -->
     </model>
   </h:head>
 
@@ -468,9 +509,9 @@
         <value>loss</value>
       </item>
     </select1>
-	<input ref="/data/document_number">
-		<label ref="jr:itext('document_number-label')"/>
-	</input>
+    <input ref="/data/document_number">
+        <label ref="jr:itext('document_number-label')"/>
+    </input>
 
     <!-- Entry -->
     <input ref="/data/entry_units">
@@ -547,7 +588,7 @@
     <input ref="/data/positive_source">
       <label ref="jr:itext('positive_source-label')"/>
     </input>
-	
+
     <!-- Negative -->
     <input ref="/data/negative_units">
       <label ref="jr:itext('negative_units-label')"/>
@@ -555,7 +596,7 @@
     <input ref="/data/negative_description">
       <label ref="jr:itext('negative_description-label')"/>
     </input>
-	
+
     <!-- Loss -->
     <input ref="/data/loss_units">
       <label ref="jr:itext('loss_units-label')"/>
