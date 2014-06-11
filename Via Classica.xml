@@ -37,9 +37,6 @@
               <calculated_inventory/>
               <inventory/>
 
-              <calculated_expiry/>
-              <expiry/>
-
               <kits/>
 
               <calculated_desired_amt/>
@@ -146,20 +143,6 @@
       <setvalue event="jr-insert" ref="/data/stock/product/inventory" value="/data/stock/product/calculated_inventory"/>
       <bind nodeset="/data/stock/product/inventory" type="xsd:int" required="true()"/>
 
-      <!-- Look up and prepopulate expiration date -->
-      <setvalue event="jr-insert" ref="/data/stock/product/calculated_expiry"
-                value="date(instance('ledger')/ledgerdb/
-                            ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
-                            section[@section-id='expiration']/
-                            entry[@id=current()/../@id])" />
-      <bind nodeset="/data/stock/product/calculated_expiry" type="xsd:date"/>
-      <setvalue event="jr-insert" ref="/data/stock/product/expiry"
-                value="if(/data/stock/product/calculated_expiry = date(0),
-                          today(),
-                          /data/stock/product/calculated_expiry)"/>
-      <bind nodeset="/data/stock/product/expiry" type="xsd:date"
-            relevant="/data/stock/product/inventory != 0" required="true()"/>
-
       <!-- Calculating amount to requisition -->
       <!-- Amount in kits -->
       <bind nodeset="/data/stock/product/kits" type="xsd:int" required="true()"/>
@@ -215,9 +198,6 @@
           <text id="inventory-label">
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Inventario: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10;(Este quantidade é o stock existente da Ficha de Stock)</value>
           </text>
-          <text id="expiry-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Validade: <output ref="if(/data/stock/product/calculated_expiry = date(0), 'None', /data/stock/product/calculated_expiry)"/>&#10;&#10;(Este data é a Validade digitada no inventário mensal)</value>
-          </text>
 
           <!-- Claire, please translate/reword -->
           <!-- Via Classica -->
@@ -248,9 +228,6 @@
           </text>
           <text id="inventory-label">
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Current Inventory: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10; Este quantidade é o stock existente da Ficha de Stock</value>
-          </text>
-          <text id="expiry-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Expiration: <output ref="if(/data/stock/product/calculated_expiry = date(0), 'None', /data/stock/product/calculated_expiry)"/>&#10;&#10; Este data é a Validade digitada no inventário mesal</value>
           </text>
 
           <!-- Via Classica -->
@@ -291,9 +268,6 @@
         </input>
         <input ref="/data/stock/product/inventory">
           <label ref="jr:itext('inventory-label')"/>
-        </input>
-        <input ref="/data/stock/product/expiry">
-          <label ref="jr:itext('expiry-label')"/>
         </input>
         <!-- Requisition business specific to Via Classica -->
         <input ref="/data/stock/product/kits">
