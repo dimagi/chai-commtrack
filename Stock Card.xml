@@ -92,7 +92,7 @@
 
       <bind nodeset="/data/entry_units" type="xsd:int" relevant="/data/transaction_type = 'entry'" required="true()"/>
       <bind nodeset="/data/entry_source" relevant="/data/transaction_type = 'entry'" required="true()"/>
-      <bind nodeset="/data/expiry" type="xsd:date" relevant="/data/transaction_type = 'entry'" required="true()"/>
+	  <bind nodeset="/data/expiry" type="xsd:date" relevant="/data/transaction_type = 'entry'" constraint=". > today()" required="true()"/>
 
       <bind nodeset="/data/disbursement_units" type="xsd:int" relevant="/data/transaction_type = 'disbursement'" required="true()"/>
       <bind nodeset="/data/disbursement_location" relevant="/data/transaction_type = 'disbursement'" required="true()"/>
@@ -100,8 +100,8 @@
       <bind nodeset="/data/positive_units" type="xsd:int" relevant="/data/transaction_type = 'positive'" required="true()"/>
       <bind nodeset="/data/positive_source" type="xsd:string" relevant="/data/transaction_type = 'positive'" required="true()"/>
 
-      <bind nodeset="/data/negative_units" type="xsd:int" relevant="/data/transaction_type = 'negative'" required="true()"/>
-      <bind nodeset="/data/negative_description" type="xsd:int" relevant="/data/transaction_type = 'negative'" required="true()"/>
+      <bind nodeset="/data/negative_units" type="xsd:int" relevant="/data/transaction_type = 'negative'" constraint=". &lt;= coalesce(instance('ledger')/ledgerdb/ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/section[@section-id='stock']/entry[@id=instance('commcaresession')/session/data/product_id], 0)" required="true()"/>
+      <bind nodeset="/data/negative_description" type="xsd:string" relevant="/data/transaction_type = 'negative'" required="true()"/>
 
       <bind nodeset="/data/loss_units" type="xsd:int" relevant="/data/transaction_type = 'loss'" required="true()"/>
       <bind nodeset="/data/reason_for_loss" relevant="/data/transaction_type = 'loss'" required="true()" />
@@ -209,7 +209,7 @@
             <value>Entrada</value>
           </text>
           <text id="transaction_type-disbursement-label">
-            <value>Saida</value>
+            <value>Saída</value>
           </text>
           <text id="transaction_type-positive-label">
             <value>Ajuste Positivo</value>
@@ -243,7 +243,7 @@
 
           <!-- Disbursement -->
           <text id="disbursement_units-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Quantidade das saidas?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Quantidade das saídas?</value>
           </text>
           <text id="disbursement_location-label">
             <value><output ref="/data/product_name"/>&#10;&#10;Destino do movimento?</value>
@@ -318,14 +318,14 @@
               'Medicamento: ', /data/product_name,
               '&#10;&#10;Numero do documento: ', /data/document_number,
               '&#10;&#10;Tipo do movimento: ', if(/data/transaction_type = 'entry', 'Entrada',
-                                               if(/data/transaction_type = 'disbursement', 'Saida',
+                                               if(/data/transaction_type = 'disbursement', 'Saída',
                                                if(/data/transaction_type = 'positive', 'Ajuste Positivo',
                                                'Ajuste negativo'))),
 
               '&#10;&#10;Quantidade: ', /data/units,
               if(/data/transaction_type = 'entry', concat('&#10;&#10;', /data/expiry), ''),
               '&#10;&#10;', if(/data/transaction_type = 'entry', 'Origem da entrada:',
-                            if(/data/transaction_type = 'disbursement', 'Destino da Saida:',
+                            if(/data/transaction_type = 'disbursement', 'Destino da Saída:',
                             'Origem/Descrição de ajuste:')),
 
                             if(/data/transaction_type = 'entry', /data/entry_source,
@@ -458,14 +458,14 @@
               'Medicamento: ', /data/product_name,
               '&#10;&#10;Numero do documento: ', /data/document_number,
               '&#10;&#10;Tipo do movimento: ', if(/data/transaction_type = 'entry', 'Entrada',
-                                               if(/data/transaction_type = 'disbursement', 'Saida',
+                                               if(/data/transaction_type = 'disbursement', 'Saída',
                                                if(/data/transaction_type = 'positive', 'Ajuste Positivo',
                                                'Ajuste negativo'))),
 
               '&#10;&#10;Quantidade: ', /data/units,
               if(/data/transcation_type = 'entry', concat('&#10;&#10;', /data/expiry), ''),
               '&#10;&#10;', if(/data/transaction_type = 'entry', 'Origem da entrada:',
-                            if(/data/transaction_type = 'disbursement', 'Destino da Saida:',
+                            if(/data/transaction_type = 'disbursement', 'Destino da Saída:',
                             'Origem/Descrição de ajuste:')),
 
                             if(/data/transaction_type = 'entry', /data/entry_source,
