@@ -135,8 +135,7 @@
                                 section[@section-id='disbursements']/
                                 entry[@id=current()/../@id],
                                 0)" />
-      <!-- Uncomment the next line to prepopulate the disbursements field -->
-      <!-- <setvalue event="jr-insert" ref="/data/stock/product/disbursements" value="/data/stock/product/calculated_disbursements"/> -->
+      <setvalue event="jr-insert" ref="/data/stock/product/disbursements" value="/data/stock/product/calculated_disbursements"/>
       <bind nodeset="/data/stock/product/disbursements" type="xsd:int" required="true()"/>
 
       <!-- Theoretical invetory (initial_stock + entries - exits) -->
