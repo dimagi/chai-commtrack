@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:orx="http://openrosa.org/jr/xforms"
+        xmlns="http://www.w3.org/2002/xforms"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:jr="http://openrosa.org/javarosa">
+
+  <h:head>
+    <h:title>Stock Card</h:title>
+    <model>
+      <instance>
+        <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms"
+              xmlns="http://openrosa.org/formdesigner/D48F4F44-56D1-49AA-AA9C-8EBD8B199FAE"
+              uiVersion="1" version="1" name="Stock Card">
+
+          <product_name/>
+
+          <!-- Transaction Type -->
+          <transaction_type/>
+		  <document_number/>
+
+          <!-- Entry -->
+          <entry_units/>
+          <entry_source/>
+		  <entry_source_other/>
+          <expiry/>
+
+          <!-- Disbursement -->
+          <disbursement_units/>
+          <disbursement_location/>
+
+          <!-- Positive -->
+          <positive_units/>
+		  <positive_source/>
+
+          <!-- Negative -->
+          <negative_units/>
+		  <negative_description/>
+
+          <!-- Loss -->
+          <loss_units/>
+          <reason_for_loss/>
+
+          <!-- Confirmation -->
+          <confirmation />
+
+          <!-- CommTrack -->
+          <units/>
+          <is-deduction/>
+          <is-stock-out/>
+          <calculated-stock/>
+          <calculated-expiration/>
+
+          <receiving>
+            <transfer xmlns="http://commcarehq.org/ledger/v1" dest="" date="" section-id="stock">
+              <entry id="" quantity=""/>
+            </transfer>
+          </receiving>
+
+          <disbursing>
+            <transfer xmlns="http://commcarehq.org/ledger/v1" src="" date="" section-id="stock">
+              <entry id="" quantity=""/>
+            </transfer>
+          </disbursing>
+
+          <aggregate-monthly>
+            <transfer xmlns="http://commcarehq.org/ledger/v1" dest="" date="" section-id="">
+              <entry id="" quantity=""/>
+            </transfer>
+          </aggregate-monthly>
+
+          <earliest-expiration>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="expiration">
+              <entry id="" quantity=""/>
+            </balance>
+          </earliest-expiration>
+
+          <reset-expiration>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="expiration">
+              <entry id="" quantity=""/>
+            </balance>
+          </reset-expiration>
+          <!-- /CommTrack -->
+
+        </data>
+
+      </instance>
+      <instance id="ledger" src="jr://instance/ledgerdb" />
+      <instance id="products" src="jr://fixture/commtrack:products"/>
+
+      <bind nodeset="/data/transaction_type" required="true()"/>
+	  <bind nodeset="/data/document_number" type="xsd:int"/>
+
+      <bind nodeset="/data/entry_units" type="xsd:int" relevant="/data/transaction_type = 'entry'" required="true()"/>
+      <bind nodeset="/data/entry_source" relevant="/data/transaction_type = 'entry'" required="true()"/>
+      <bind nodeset="/data/entry_source_other" relevant="/data/entry_source = 'other'" required="true()"/>
+	  <bind nodeset="/data/expiry" type="xsd:date" relevant="/data/transaction_type = 'entry'" constraint=". > today()" required="true()"/>
+
+      <bind nodeset="/data/disbursement_units" type="xsd:int" relevant="/data/transaction_type = 'disbursement'" required="true()"/>
+      <bind nodeset="/data/disbursement_location" relevant="/data/transaction_type = 'disbursement'" required="true()"/>
+
+      <bind nodeset="/data/positive_units" type="xsd:int" relevant="/data/transaction_type = 'positive'" required="true()"/>
+	  <bind nodeset="/data/positive_source" type="xsd:string" relevant="/data/transaction_type = 'positive'" required="true()"/>
+
+      <bind nodeset="/data/negative_units" type="xsd:int" relevant="/data/transaction_type = 'negative'" constraint=". &lt;= coalesce(instance('ledger')/ledgerdb/ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/section[@section-id='stock']/entry[@id=instance('commcaresession')/session/data/product_id], 0)" required="true()"/>
+	  <bind nodeset="/data/negative_description" relevant="/data/transaction_type = 'negative'" required="true()"/>
+
+      <bind nodeset="/data/loss_units" type="xsd:int" relevant="/data/transaction_type = 'loss'" required="true()"/>
+      <bind nodeset="/data/reason_for_loss" relevant="/data/transaction_type = 'loss'" required="true()" />
+      <bind nodeset="/data/confirmation" required="true()" />
+
+      <!-- CommTrack -->
+      <bind nodeset="/data/product_name"
+            calculate="instance('products')/products/product[@id=instance('commcaresession')/session/data/product_id]/name"/>
+
+      <bind nodeset="/data/receiving/transfer/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/disbursing/transfer/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/aggregate-monthly/transfer/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/earliest-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/reset-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
+
+      <bind nodeset="/data/receiving/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <bind nodeset="/data/disbursing/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <bind nodeset="/data/aggregate-monthly/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <bind nodeset="/data/earliest-expiration/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <bind nodeset="/data/reset-expiration/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+
+      <!-- Is the value being added or subtracted? -->
+      <bind nodeset="/data/receiving"
+            relevant="(/data/transaction_type = 'entry') or
+                      (/data/transaction_type = 'positive')"/>
+      <bind nodeset="/data/receiving/transfer/@dest" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+
+      <bind nodeset="/data/is-deduction"
+            calculate="(/data/transaction_type = 'disbursement') or
+                      (/data/transaction_type = 'negative') or
+                      (/data/transaction_type = 'loss')"/>
+      <bind nodeset="/data/disbursing" relevant="/data/is-deduction"/>
+      <bind nodeset="/data/disbursing/transfer/@src" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+
+      <!-- What is the magnitude of the change? -->
+      <bind nodeset="/data/units"
+            calculate="if(/data/transaction_type = 'entry', /data/entry_units,
+                       if(/data/transaction_type = 'disbursement', /data/disbursement_units,
+                       if(/data/transaction_type = 'positive', /data/positive_units,
+                       if(/data/transaction_type = 'negative', /data/negative_units,
+                       if(/data/transaction_type = 'loss', /data/loss_units,
+                       0)))))"/>
+      <bind nodeset="/data/receiving/transfer/entry/@quantity" calculate="/data/units"/>
+      <bind nodeset="/data/disbursing/transfer/entry/@quantity" calculate="/data/units"/>
+      <bind nodeset="/data/aggregate-monthly/transfer/entry/@quantity" calculate="/data/units"/>
+
+      <!-- Monthly aggregate info for requisition form -->
+      <bind nodeset="/data/aggregate-monthly/transfer/@dest" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/aggregate-monthly/transfer/@section-id"
+            calculate="if(/data/transaction_type = 'entry', 'entries',
+                       if(/data/transaction_type = 'disbursement', 'disbursements',
+                       'adjustments'
+                       ))"/>
+
+      <!-- Product expiration date business -->
+      <bind nodeset="/data/earliest-expiration/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/reset-expiration/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+
+      <!-- look up current expiration date -->
+      <setvalue event="xforms-ready" ref="/data/calculated-expiration"
+                value="date(coalesce(instance('ledger')/ledgerdb/
+                                     ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                     section[@section-id='expiration']/
+                                     entry[@id=instance('commcaresession')/session/data/product_id]
+                                     , 0))"/>
+      <bind nodeset="/data/calculated-expiration" type="xsd:date"/>
+
+      <!-- look up current stock levels -->
+      <setvalue event="xforms-ready" ref="/data/calculated-stock"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                section[@section-id='stock']/
+                                entry[@id=instance('commcaresession')/session/data/product_id]
+                                , 0)"/>
+      <bind nodeset="/data/calculated-stock" type="xsd:int"/>
+
+      <!-- Determine whether or not this is a stock-out -->
+      <bind nodeset="/data/is-stock-out"
+            calculate="/data/is-deduction and
+                      (/data/units >= /data/calculated-stock)"/>
+
+      <!-- If expiration is not set or if entered expiration is < current expiration, update -->
+      <bind nodeset="/data/earliest-expiration"
+            relevant="(/data/transaction_type = 'entry')
+                      and ((/data/calculated-expiration = date(0))
+                           or
+                           (/data/calculated-expiration > /data/expiry))"/>
+      <bind nodeset="/data/earliest-expiration/balance/entry/@quantity" calculate="int(/data/expiry)"/>
+
+      <!-- If it's a stock out, reset expiration -->
+      <bind nodeset="/data/reset-expiration" relevant="/data/is-stock-out"/>
+      <bind nodeset="/data/reset-expiration/balance/entry/@quantity"
+            calculate="0"/>
+
+      <!-- /CommTrack -->
+
+      <itext>
+        <translation lang="por">
+
+          <!-- Transaction Type -->
+          <text id="transaction_type-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Tipo do movimento</value>
+          </text>
+          <text id="transaction_type-entry-label">
+            <value>Entrada</value>
+          </text>
+          <text id="transaction_type-disbursement-label">
+            <value>Saida</value>
+          </text>
+          <text id="transaction_type-positive-label">
+            <value>Ajuste Positivo</value>
+          </text>
+          <text id="transaction_type-negative-label">
+            <value>Ajuste Negativo</value>
+          </text>
+          <text id="transaction_type-loss-label">
+            <value>Perda</value>
+          </text>
+		  <text id="document_number-label">
+		    <value>Número do documento</value>
+		  </text>
+
+          <!-- Entry -->
+          <text id="entry_units-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Quantidade da entrada:</value>
+          </text>
+          <text id="entry_source-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Origem da Entrada:</value>
+          </text>
+          <text id="entry_source-other-label">
+            <value>Outra</value>
+          </text>
+          <text id="entry_source-dpm-label">
+            <value>Província (DPM)</value>
+          </text>
+		  <text id="entry_source_other-label">
+			<value>Origem da entrada</value>
+		  </text>
+          <text id="expiry-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Validade</value>
+          </text>
+
+          <!-- Disbursement -->
+          <text id="disbursement_units-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Quantidade das saidas?</value>
+          </text>
+          <text id="disbursement_location-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Destino do movimento?</value>
+          </text>
+          <text id="disbursement_location-marracuene-label">
+            <value>C.S. Marracuene</value>
+          </text>
+          <text id="disbursement_location-mumemo-label">
+            <value>C.S. Mumemo</value>
+          </text>
+          <text id="disbursement_location-eduardomondlane-label">
+            <value>C.S. Eduardo Mondlane</value>
+          </text>
+          <text id="disbursement_location-machubo-label">
+            <value>C.S. Machubo</value>
+          </text>
+          <text id="disbursement_location-madremaclara-label">
+            <value>C.S. Michafutene</value>
+          </text>
+          <text id="disbursement_location-matalane-label">
+            <value>C.S. Matalane</value>
+          </text>
+          <text id="disbursement_location-ricatla-label">
+            <value>C.S. Ricatla</value>
+          </text>
+		  
+
+          <!-- Positive -->
+          <text id="positive_units-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Quantidade do ajuste positivo?</value>
+          </text>
+		  <text id="positive_source-label">
+			<value><output ref="/data/product_name"/>&#10;&#10;Origem do ajuste positivo?</value>
+		  </text>
+
+          <!-- Negative -->
+          <text id="negative_units-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Quantidade do ajuste negativo?</value>
+          </text>
+		  <text id="negative_description-label">
+			<value><output ref="/data/product_name"/>&#10;&#10;Descrição do ajuste negativo:</value>
+		  </text>
+          <!-- Loss -->
+          <text id="loss_units-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Quantidade da perda?</value>
+          </text>
+          <text id="reason_for_loss-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Qual é a razão para a perda?</value>
+          </text>
+          <text id="reason_for_loss-expiration-label">
+            <value>Expiração</value>
+          </text>
+          <text id="reason_for_loss-break-label">
+            <value>Rompido</value>
+          </text>
+          <text id="reason_for_loss-misplaced-label">
+            <value>Extravio</value>
+          </text>
+
+          <!-- Confirmation -->
+		  <text id="confirmation-label">
+            <value><output ref="concat(
+              'Medicamento: ', /data/product_name,
+              '&#10;&#10;Numero do documento: ', /data/document_number,
+              '&#10;&#10;Tipo do movimento: ', if(/data/transaction_type = 'entry', 'Entrada',
+                                               if(/data/transaction_type = 'disbursement', 'Saida',
+                                               if(/data/transaction_type = 'positive', 'Ajuste Positivo',
+                                               'Ajuste negativo'))),
+
+              '&#10;&#10;Quantidade: ', /data/units,
+              if(/data/transaction_type = 'entry', concat('&#10;&#10;', /data/expiry), ''),
+              '&#10;&#10;', if(/data/transaction_type = 'entry', 'Origem da entrada:',
+                            if(/data/transaction_type = 'disbursement', 'Destino da Saida:',
+                            'Origem/Descrição de ajuste:')),
+
+                            if(/data/transaction_type = 'entry', /data/entry_source,
+                            if(/data/transaction_type = 'disbursement', /data/disbursement_location,
+                            if(/data/transaction_type = 'positive', /data/positive_source,
+                            /data/negative_description))),
+
+              '&#10;&#10;Por favor confirme este movimento'
+            )"/></value>
+          </text>
+        </translation>
+
+        <translation lang="en" default="">
+
+          <!-- Transaction Type -->
+          <text id="transaction_type-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;What type of transaction is this?</value>
+          </text>
+          <text id="transaction_type-entry-label">
+            <value>Entry</value>
+          </text>
+          <text id="transaction_type-disbursement-label">
+            <value>Disbursement</value>
+          </text>
+          <text id="transaction_type-positive-label">
+            <value>Positive Adjustment</value>
+          </text>
+          <text id="transaction_type-negative-label">
+            <value>Negative Adjustment</value>
+          </text>
+          <text id="transaction_type-loss-label">
+            <value>Loss</value>
+          </text>
+		  <text id="document_number-label">
+		    <value>Número do documento</value>
+		  </text>
+		  
+          <!-- Entry -->
+          <text id="entry_units-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;How many units are being added?</value>
+          </text>
+          <text id="entry_source-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Origin of entry:</value>
+          </text>
+          <text id="entry_source-other-label">
+            <value>Other</value>
+          </text>
+          <text id="entry_source-dpm-label">
+            <value>Province (DPM)</value>
+          </text>
+		  <text id="entry_source_other-label">
+			<value>What is the origin of the entry?</value>
+		  </text>
+          <text id="expiry-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;What is the earliest expiration date of the items being added?</value>
+          </text>
+
+          <!-- Disbursement -->
+          <text id="disbursement_units-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;How many units are being disbursed?</value>
+          </text>
+          <text id="disbursement_location-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;What is this being disbursed to?</value>
+          </text>
+          <text id="disbursement_location-marracuene-label">
+            <value>C.S. Marracuene</value>
+          </text>
+          <text id="disbursement_location-mumemo-label">
+            <value>C.S. Mumemo</value>
+          </text>
+          <text id="disbursement_location-eduardomondlane-label">
+            <value>C.S. Eduardo Mondlane</value>
+          </text>
+          <text id="disbursement_location-machubo-label">
+            <value>C.S. Machubo</value>
+          </text>
+          <text id="disbursement_location-madremaclara-label">
+            <value>C.S. Michafutene</value>
+          </text>
+          <text id="disbursement_location-matalane-label">
+            <value>C.S. Matalane</value>
+          </text>
+          <text id="disbursement_location-ricatla-label">
+            <value>C.S. Ricatla</value>
+          </text>
+
+          <!-- Positive -->
+          <text id="positive_units-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;How many units are being added?</value>
+          </text>
+          <text id="positive_source-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;What is the origin of the positive adjustment?</value>
+          </text>
+		  
+          <!-- Negative -->
+          <text id="negative_units-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;How many units are being deducted?</value>
+          </text>
+          <text id="negative_description-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;What is the description of the negative adjustment?</value>
+          </text>
+		  
+          <!-- Loss -->
+          <text id="loss_units-label">
+            <!-- Claire, can you update this value? -->
+            <value><output ref="/data/product_name"/>&#10;&#10;How many units were lost?</value>
+          </text>
+          <text id="reason_for_loss-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;What is the reason for the loss?</value>
+          </text>
+          <text id="reason_for_loss-expiration-label">
+            <value>Expiration</value>
+          </text>
+          <text id="reason_for_loss-break-label">
+            <value>Broken</value>
+          </text>
+          <text id="reason_for_loss-misplaced-label">
+            <value>Missing</value>
+          </text>
+
+          <!-- Confirmation -->
+          <text id="confirmation-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Type of Movement: <output value="if(/data/transaction_type = 'entry', 'Entrada', if(/data/transaction_type = 'disbursement', 'Saida', 'Ajuste'))"/>&#10;Quantity: <output value="/data/units"/>&#10;&#10;Please confirm this movement.</value>
+          </text>
+        </translation>
+      </itext>
+
+    </model>
+  </h:head>
+
+  <h:body>
+
+    <!-- Transaction Type -->
+    <select1 ref="/data/transaction_type">
+      <label ref="jr:itext('transaction_type-label')"/>
+      <item>
+        <label ref="jr:itext('transaction_type-entry-label')"/>
+        <value>entry</value>
+      </item>
+      <item>
+        <label ref="jr:itext('transaction_type-disbursement-label')"/>
+        <value>disbursement</value>
+      </item>
+      <item>
+        <label ref="jr:itext('transaction_type-positive-label')"/>
+        <value>positive</value>
+      </item>
+      <item>
+        <label ref="jr:itext('transaction_type-negative-label')"/>
+        <value>negative</value>
+      </item>
+      <item>
+        <label ref="jr:itext('transaction_type-loss-label')"/>
+        <value>loss</value>
+      </item>
+    </select1>
+	<input ref="/data/document_number">
+		<label ref="jr:itext('document_number-label')"/>
+	</input>
+
+    <!-- Entry -->
+    <input ref="/data/entry_units">
+      <label ref="jr:itext('entry_units-label')"/>
+    </input>
+    <input ref="/data/expiry">
+      <label ref="jr:itext('expiry-label')"/>
+    </input>
+    <select1 ref="/data/entry_source">
+      <label ref="jr:itext('entry_source-label')"/>
+      <item>
+        <label ref="jr:itext('entry_source-dpm-label')"/>
+        <value>dpm</value>
+      </item>
+      <item>
+        <label ref="jr:itext('entry_source-other-label')"/>
+        <value>other</value>
+      </item>
+    </select1>
+	<input ref="/data/entry_source_other">
+		<label ref="jr:itext('entry_source_other-label')"/>
+	</input>
+
+    <!-- Disbursement -->
+    <input ref="/data/disbursement_units">
+      <label ref="jr:itext('disbursement_units-label')"/>
+    </input>
+    <select1 ref="/data/disbursement_location">
+      <label ref="jr:itext('disbursement_location-label')"/>
+      <item>
+        <label ref="jr:itext('disbursement_location-marracuene-label')"/>
+        <value>Marracuene</value>
+      </item>
+      <item>
+        <label ref="jr:itext('disbursement_location-mumemo-label')"/>
+        <value>Mumemo</value>
+      </item>
+      <item>
+        <label ref="jr:itext('disbursement_location-eduardomondlane-label')"/>
+        <value>Eduardo-Mondlane</value>
+      </item>
+      <item>
+        <label ref="jr:itext('disbursement_location-machubo-label')"/>
+        <value>Machubo</value>
+      </item>
+      <item>
+        <label ref="jr:itext('disbursement_location-madremaclara-label')"/>
+        <value>Michafutene</value>
+      </item>
+      <item>
+        <label ref="jr:itext('disbursement_location-matalane-label')"/>
+        <value>Matalane</value>
+      </item>
+      <item>
+        <label ref="jr:itext('disbursement_location-ricatla-label')"/>
+        <value>Ricatla</value>
+      </item>
+    </select1>
+
+    <!-- Positive -->
+    <input ref="/data/positive_units">
+      <label ref="jr:itext('positive_units-label')"/>
+    </input>
+    <input ref="/data/positive_source">
+      <label ref="jr:itext('positive_source-label')"/>
+    </input>
+	
+    <!-- Negative -->
+    <input ref="/data/negative_units">
+      <label ref="jr:itext('negative_units-label')"/>
+    </input>
+    <input ref="/data/negative_description">
+      <label ref="jr:itext('negative_description-label')"/>
+    </input>
+	
+    <!-- Loss -->
+    <input ref="/data/loss_units">
+      <label ref="jr:itext('loss_units-label')"/>
+    </input>
+    <select1 ref="/data/reason_for_loss">
+      <label ref="jr:itext('reason_for_loss-label')"/>
+      <item>
+        <label ref="jr:itext('reason_for_loss-expiration-label')"/>
+        <value>expiration</value>
+      </item>
+      <item>
+        <label ref="jr:itext('reason_for_loss-break-label')"/>
+        <value>break</value>
+      </item>
+      <item>
+        <label ref="jr:itext('reason_for_loss-misplaced-label')"/>
+        <value>misplaced</value>
+      </item>
+    </select1>
+
+    <!-- Confirmation -->
+    <trigger ref="/data/confirmation">
+      <label ref="jr:itext('confirmation-label')"/>
+    </trigger>
+
+  </h:body>
+</h:html>
