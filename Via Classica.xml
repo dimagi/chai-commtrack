@@ -200,10 +200,10 @@
 
         <translation lang="por" default="">
           <text id="kits-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade esperado nos kits:</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade esperada nos kits:</value>
           </text>
           <text id="initial_stock-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Saldo no Inicio do periodo: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;(Esta quantidade é o stock introduzido no início do período, ou seja, o inventário do mês passado)</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Saldo no Início do período: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;(Esta quantidade é o stock introduzido no início do período, ou seja, o inventário do mês passado)</value>
           </text>
           <text id="entries-label">
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Soma das Entradas: <output ref="/data/stock/product/calculated_entries"/>&#10;&#10;(Esta quantidade é a soma das entradas introduzidas na Ficha de Stock)</value>
@@ -212,22 +212,22 @@
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Soma das Saídas: <output ref="/data/stock/product/calculated_disbursements"/>&#10;&#10;(Esta quantidade é a soma das saídas introduzidas na Ficha de Stock)</value>
           </text>
           <text id="theoretical_inventory-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Inventário Teorico: <output value="/data/stock/product/calculated_theoretical_inventory"/>&#10;&#10;(SI + E - S - PA)</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Inventário Teórico: <output value="/data/stock/product/calculated_theoretical_inventory"/>&#10;&#10;(SI + E - S - PA)</value>
           </text>
           <text id="desired_stock-label">
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Total dos pedidos:  <output ref="/data/stock/product/calculated_desired_stock"/>&#10;&#10;(Saídas x 2) </value>
           </text>
           <text id="inventory-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Inventário do Stock: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10;(Esta quantidade é o stock existente da Ficha de Stock)</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Inventário do Stock: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10;(Esta quantidade é o stock existente na prateleira)</value>
           </text>
           <text id="difference-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Diferença/perdas: <output ref="/data/stock/product/calculated_difference"/>&#10;&#10;(inventario teoretcio- inventario real)</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Diferença/perdas: <output ref="/data/stock/product/calculated_difference"/>&#10;&#10;(inventário teorético - inventário real)</value>
           </text>
           <text id="amount_needed-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade a requistar: <output ref="/data/stock/product/calculated_amount_needed"/>&#10;&#10;(Saidas x2 - inventario)</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade a requisitar: <output ref="/data/stock/product/calculated_amount_needed"/>&#10;&#10;(Saidas x2 - inventario)</value>
           </text>
           <text id="requisition_amt-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade Pedida: <output value="/data/stock/product/calculated_requisition_amt"/>&#10;&#10;(Saidas x 2) - inventario - (numero esperado de kits)</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade Pedida: <output value="/data/stock/product/calculated_requisition_amt"/>&#10;&#10;(Saídas x 2) - inventário - (número esperado nos kits)</value>
           </text>
         </translation>
 
