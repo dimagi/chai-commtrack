@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:orx="http://openrosa.org/jr/xforms"
+        xmlns="http://www.w3.org/2002/xforms"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:vellum="http://commcarehq.org/xforms/vellum">
+    <h:head>
+        <h:title>Select Products</h:title>
+        <model>
+            <instance>
+                <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms"
+                      xmlns="http://openrosa.org/formdesigner/73BD6623-B13A-4C07-850E-583899531924"
+                      uiVersion="1"
+                      version="1"
+                      name="New Form">
+
+                    <selected_products />
+                    <num_products/>
+                    <cur_products/>
+
+                    <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="include-product">
+                        <entry index="" id="" quantity="" jr:template=""/>
+                    </balance>
+                </data>
+            </instance>
+            <instance id="products" src="jr://fixture/commtrack:products" />
+
+            <setvalue event="xforms-ready" ref="/data/balance/@entity-id" value="instance('commcaresession')/session/data/case_id_case_supply-point" />
+
+            <bind nodeset="/data/balance/@date" calculate="/data/meta/timeEnd"/>
+
+            <bind nodeset="/data/selected_products" />
+
+            <bind nodeset="/data/num_products" type="int" calculate="count-selected(/data/selected_products)"/>
+            <bind nodeset="/data/cur_products" calculate="count(/data/balance/entry )"/>
+
+            <setvalue event="jr-insert" ref="/data/balance/entry/@index" value="int(/data/cur_products)"/>
+
+            <bind nodeset="/data/balance/entry/@id" calculate="selected-at(/data/selected_products,../@index)"/>
+            <bind nodeset="/data/balance/entry/@quantity" required="true()" type="integer"/>
+
+            <itext>
+                <translation lang="por" default="">
+                    <text id="selected_products-label">
+                        <value>Select the products you'd like to appear in requisition forms</value>
+                    </text>
+                </translation>
+                <translation lang="en" default="">
+                    <text id="selected_products-label">
+                        <value>Select the products you'd like to appear in requisition forms</value>
+                    </text>
+                </translation>
+            </itext>
+
+        </model>
+    </h:head>
+    <h:body>
+        <select ref="/data/selected_products">
+            <label ref="jr:itext('selected_products-label')" />
+            <itemset nodeset="instance('products')/products/product">
+                 <label ref="name"/>
+                 <value ref="@id"/>
+            </itemset>
+        </select>
+    </h:body>
+</h:html>
