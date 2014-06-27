@@ -19,7 +19,7 @@
                     <num_products/>
                     <cur_products/>
 
-                    <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="include-product">
+                    <balance entity-id="" xmlns="http://commcarehq.org/ledger/v1" date="" section-id="product-supply">
                         <entry index="" id="" quantity="" jr:template=""/>
                     </balance>
                 </data>
@@ -31,6 +31,7 @@
             <bind nodeset="/data/balance/@date" calculate="/data/meta/timeEnd"/>
 
             <bind nodeset="/data/selected_products" />
+            <!-- <bind nodeset="/data/balance/entry" /> -->
 
             <bind nodeset="/data/num_products" type="int" calculate="count-selected(/data/selected_products)"/>
             <bind nodeset="/data/cur_products" calculate="count(/data/balance/entry )"/>
@@ -38,6 +39,7 @@
             <setvalue event="jr-insert" ref="/data/balance/entry/@index" value="int(/data/cur_products)"/>
 
             <bind nodeset="/data/balance/entry/@id" calculate="selected-at(/data/selected_products,../@index)"/>
+            <!-- <bind nodeset="/data/balance/entry/@quantity" calculate="selected(/data/selected_products,../@id)"/> -->
             <bind nodeset="/data/balance/entry/@quantity" required="true()" type="integer"/>
 
             <itext>
@@ -46,7 +48,7 @@
                         <value>Select the products you'd like to appear in requisition forms</value>
                     </text>
                 </translation>
-                <translation lang="en" default="">
+                <translation lang="en">
                     <text id="selected_products-label">
                         <value>Select the products you'd like to appear in requisition forms</value>
                     </text>
@@ -63,5 +65,13 @@
                  <value ref="@id"/>
             </itemset>
         </select>
+        <group>
+            <label>Product Stocks</label>
+            <repeat nodeset="/data/balance/entry" jr:count="/data/num_products">
+                <input ref="/data/balance/entry/@quantity">
+                    <label>Stock for Product: <output ref="instance('products')/products/product[@id=current()/../@id]/name"/></label>
+                </input>
+            </repeat>
+        </group>
     </h:body>
 </h:html>
