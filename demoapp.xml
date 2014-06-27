@@ -1,0 +1,91 @@
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns:orx="http://openrosa.org/jr/xforms"
+    xmlns="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:jr="http://openrosa.org/javarosa">
+    <h:head>
+        <h:title>New Form</h:title>
+        <model>
+            <instance>
+                <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms"
+                    xmlns="http://openrosa.org/formdesigner/55BD2D30-71BF-496C-A2B9-51D319D7D65D"
+                    uiVersion="1" version="33" name="New Form">
+                    <products />
+                    <orx:meta xmlns:cc="http://commcarehq.org/xforms">
+                        <orx:deviceID />
+                        <orx:timeStart />
+                        <orx:timeEnd />
+                        <orx:username />
+                        <orx:userID />
+                        <orx:instanceID />
+                        <cc:appVersion />
+                    </orx:meta>
+                    
+                    
+                    <num_products/>
+                    <cur_products/>
+                    
+                    <balance entity-id="" xmlns="http://commcarehq.org/ledger/v1" date="" section-id="product-supply">
+                        <entry index="" id="" quantity="" jr:template=""/>
+                      </balance>
+                </data>
+            </instance>
+            <instance id="commcaresession" src="jr://instance/session" />
+            <instance id="products" src="jr://fixture/commtrack:products" />
+            
+            <setvalue event="xforms-ready" ref="/data/balance/@entity-id" value="instance('commcaresession')/session/data/case_id" />
+            
+            <bind nodeset="/data/balance/@date" calculate="/data/meta/timeEnd"/>
+            
+            <bind nodeset="/data/products" />
+            
+            <bind nodeset="/data/num_products" type="int" calculate="count-selected(/data/products)"/>
+            <bind nodeset="/data/cur_products" calculate="count(/data/balance/entry )"/>
+            
+            <setvalue event="jr-insert" ref="/data/balance/entry/@index" value="int(/data/cur_products)"/>
+            
+            <bind nodeset="/data/balance/entry/@id" calculate="selected-at(/data/products,../@index)"/>
+            <bind nodeset="/data/balance/entry/@quantity" required="true()" type="integer"/>
+
+            <itext>
+                <translation lang="en" default="">
+                    <text id="products-label">
+                        <value>Please choose which products to include in this stock report</value>
+                    </text>
+                </translation>
+            </itext>
+            <setvalue event="xforms-ready" ref="/data/meta/deviceID"
+                value="instance('commcaresession')/session/context/deviceid" />
+            <setvalue event="xforms-ready" ref="/data/meta/timeStart"
+                value="now()" />
+            <bind nodeset="/data/meta/timeStart" type="xsd:dateTime" />
+            <setvalue event="xforms-revalidate" ref="/data/meta/timeEnd"
+                value="now()" />
+            <bind nodeset="/data/meta/timeEnd" type="xsd:dateTime" />
+            <setvalue event="xforms-ready" ref="/data/meta/username"
+                value="instance('commcaresession')/session/context/username" />
+            <setvalue event="xforms-ready" ref="/data/meta/userID"
+                value="instance('commcaresession')/session/context/userid" />
+            <setvalue event="xforms-ready" ref="/data/meta/instanceID"
+                value="uuid()" />
+            <setvalue event="xforms-ready" ref="/data/meta/appVersion"
+                value="instance('commcaresession')/session/context/appversion" />
+
+        </model>
+    </h:head>
+    <h:body>
+        <select ref="/data/products">
+            <label ref="jr:itext('products-label')" />
+            <itemset nodeset="instance('products')/products/product">
+                 <label ref="name"/>
+                 <value ref="@id"/>
+            </itemset>
+        </select>
+        <group>
+            <label>Product Stocks</label>
+            <repeat nodeset="/data/balance/entry" jr:count="/data/num_products">
+                <input ref="/data/balance/entry/@quantity">
+                    <label>Stock for Product: <output ref="instance('products')/products/product[@id=current()/../@id]/name"/></label>
+                </input>
+            </repeat>
+        </group>
+    </h:body>
+</h:html>
