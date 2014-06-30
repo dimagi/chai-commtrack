@@ -1,0 +1,105 @@
+# Calculate means the parent node is empty by default, but has a bind, xforms-ready is a setvalue
+# 'role' is optional and defaults to hidden-value
+
+form-title: "Monthly Inventory"
+form-xmlns: "http://openrosa.org/formdesigner/e12041b9ce7726b571cf79aaca581ed031c1427f"
+form-version: 1
+form-languages: ["por", "en"]  # first is default
+
+# <instance id="ledger" src="jr://instance/ledgerdb" />
+ledger: 
+  role: instance
+  src: "jr://instance/ledgerdb"
+
+# <instance id="products" src="jr://fixture/commtrack:products"/>
+products:
+  role: instance
+  src: "jr://fixture/commtrack:products"
+
+# <product_name/>
+# <bind nodeset="/data/product_name" calculate="instance('products')/products/product[@id=instance('commcaresession')/session/data/product_id]/name"/>
+product-name:
+  role: hidden-value
+  calculate: instance('products')/products/product[@id=instance('commcaresession')/session/data/product_id]/name
+
+inventory-amount:
+  role: input
+  type: ind
+  # <setvalue event="xforms-ready" ref="/data/inventory_amount" value="/data/calculated-stock"/>
+  xforms-ready: "/data/calculated-stock"
+  por: <output ref="/data/product_name"/>Inventário mensal: Stock existente <output ref="/data/calculated-stock"/>
+  en: <output ref="/data/product_name"/>Monthly Inventory <output ref="/data/calculated-stock"/>
+  # alternate string interpolation:
+  por: <product-name> Inventário mensal: Stock existente <calculated-stock>
+  en: <product_name> Monthly Inventory <calculated-stock>
+
+expiry:
+  role: input
+  type: "date"
+  relevant: "/data/inventory_amount != 0"
+  xforms-ready: "if(/data/calculated-expiry = date(0), today(), /data/calculated-expiry)"
+  por: <output ref="/data/product_name"/>Validade <output ref="if(/data/calculated-expiry = date(0), 'None', /data/calculated-expiry)"/>
+  en: <output ref="/data/product_name"/>Validity <output ref="if(/data/calculated-expiry = date(0), 'None', /data/calculated-expiry)"/>
+
+calculated-stock:
+  role: hidden-value
+  type: int
+  xforms-ready: "coalesce(instance('ledger')/ledgerdb/
+                          ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                          section[@section-id='stock']/
+                          entry[@id=instance('commcaresession')/session/data/product_id]
+                          , 0)"
+
+calculated-expiry:
+  role: hidden-value
+  type: date
+  xforms-ready: "date(coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                section[@section-id='expiration']/
+                                entry[@id=instance('commcaresession')/session/data/product_id]
+                                , 0))"
+
+# <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="stock">
+    # <entry id="" quantity=""/>
+# </balance>
+balance:
+  role: hidden-value
+  xmlns: "http://commcarehq.org/ledger/v1"
+  section-id: "stock"
+  entity-id:
+    calculate: "instance('commcaresession')/session/data/case_id_case_supply-point"
+  date:
+    calculate: "/data/meta/timeEnd"
+  entry:
+    id:
+      calculate: "instance('commcaresession')/session/data/product_id"
+    quantity:
+      calculate: "/data/inventory_amount"
+
+earliest-expiration:
+  role: hidden-value
+  relevant: "not(/data/inventory_amount = 0)"
+  xmlns: "http://commcarehq.org/ledger/v1"
+  section-id: "expiration"
+  entity-id:
+    calculate: "instance('commcaresession')/session/data/case_id_case_supply-point"
+  date:
+    calculate: "/data/meta/timeEnd"
+  entry:
+    id:
+      calculate: "instance('commcaresession')/session/data/product_id"
+    quantity:
+      calculate: "int(/data/expiry)"
+
+reset-expiration:
+  role: hidden-value
+  xmlns: "http://commcarehq.org/ledger/v1"
+  relevant: "/data/inventory_amount = 0"
+  entity-id:
+    calculate: "instance('commcaresession')/session/data/case_id_case_supply-point"
+  date:
+    calculate: "/data/meta/timeEnd"
+  entry:
+    id:
+      calculate: "instance('commcaresession')/session/data/product_id"
+    quantity: "0"
