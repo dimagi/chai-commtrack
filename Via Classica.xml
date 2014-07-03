@@ -192,9 +192,9 @@
       <bind nodeset="/data/stock/product/aggregate-disbursements/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/stock/product/aggregate-disbursements/balance/entry/@id" calculate="/data/stock/product/@id"/>
 
-      <bind nodeset="/data/stock/product/adjustments/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
-      <bind nodeset="/data/stock/product/adjustments/balance/@date" calculate="/data/meta/timeEnd"/>
-      <bind nodeset="/data/stock/product/adjustments/balance/entry/@id" calculate="/data/stock/product/@id"/>
+      <bind nodeset="/data/stock/product/aggregate-adjustments/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/stock/product/aggregate-adjustments/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/stock/product/aggregate-adjustments/balance/entry/@id" calculate="/data/stock/product/@id"/>
 
       <itext>
 
