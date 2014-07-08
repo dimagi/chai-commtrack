@@ -15,8 +15,7 @@
                       version="1"
                       name="New Form">
 
-                    <num_products/>
-                    <cur_products/>
+                    <supply-point/>
 
                     <stock>
                         <elements/>
@@ -35,6 +34,7 @@
                 </data>
             </instance>
             <instance id="products" src="jr://fixture/commtrack:products" />
+            <instance id="ledger" src="jr://instance/ledgerdb"/>
 
             <!-- iteration business -->
             <setvalue event="xforms-ready" ref="/data/stock/elements" value="join(' ',instance('products')/products/product/@id)"/>
@@ -43,11 +43,19 @@
             <bind nodeset="/data/stock/cur_element" calculate="count(/data/stock/product)"/>
             <bind nodeset="/data/stock/product/@id" calculate="selected-at(/data/stock/elements,../@index)"/>
 
-            <bind nodeset="/data/stock/selected_products"/>
+            <setvalue event="xforms-ready" ref="/data/supply-point" value="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+
+            <setvalue event="xforms-ready" ref="/data/stock/selected_products"
+                      value="join(' ', instance('ledger')/ledgerdb/
+                                       ledger[@entity-id=/data/supply-point]/
+                                       section[@section-id='is-relevant']/
+                                       entry[. = 1]/
+                                       @id)"/>
+
             <bind nodeset="/data/stock/product/itervar" relevant="false()"/>
 
             <!-- set relevance flag on each product -->
-            <bind nodeset="/data/stock/product/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+            <bind nodeset="/data/stock/product/balance/@entity-id" calculate="/data/supply-point"/>
             <bind nodeset="/data/stock/product/balance/@date" calculate="/data/meta/timeEnd"/>
             <bind nodeset="/data/stock/product/balance/entry/@id" calculate="/data/stock/product/@id"/>
             <!-- Quantity should be a boolean indicating whether or not this product has been selected -->
@@ -79,9 +87,7 @@
         <!-- This repeat group should never be displayed, it's just here for computations -->
         <group>
             <repeat nodeset="/data/stock/product" jr:count="/data/stock/num_elements">
-            <!-- <repeat nodeset="/data/balance/entry" jr:count="/data/num_products"> -->
                 <input ref="/data/stock/product/itervar"/>
-                <!-- <label>This is just here for iteration</label> -->
             </repeat>
         </group>
     </h:body>
