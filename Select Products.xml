@@ -15,31 +15,43 @@
                       version="1"
                       name="New Form">
 
-                    <selected_products />
                     <num_products/>
                     <cur_products/>
 
-                    <balance entity-id="" xmlns="http://commcarehq.org/ledger/v1" date="" section-id="is-relevant">
-                        <entry index="" id="" quantity="" jr:template=""/>
-                    </balance>
+                    <stock>
+                        <elements/>
+                        <num_elements/>
+                        <cur_element/>
+                        <selected_products/>
+
+                        <product id="" index="" jr:template="">
+                            <name/>
+                            <itervar/>
+                            <balance entity-id="" xmlns="http://commcarehq.org/ledger/v1" date="" section-id="is-relevant">
+                                <entry id="" quantity=""/>
+                            </balance>
+                        </product>
+                    </stock>
                 </data>
             </instance>
             <instance id="products" src="jr://fixture/commtrack:products" />
 
-            <setvalue event="xforms-ready" ref="/data/balance/@entity-id" value="instance('commcaresession')/session/data/case_id_case_supply-point" />
+            <!-- iteration business -->
+            <setvalue event="xforms-ready" ref="/data/stock/elements" value="join(' ',instance('products')/products/product/@id)"/>
+            <setvalue event="jr-insert" ref="/data/stock/product/@index" value="int(/data/stock/cur_element)"/>
+            <bind nodeset="/data/stock/num_elements" type="int" calculate="count-selected(/data/stock/elements)"/>
+            <bind nodeset="/data/stock/cur_element" calculate="count(/data/stock/product)"/>
+            <bind nodeset="/data/stock/product/@id" calculate="selected-at(/data/stock/elements,../@index)"/>
 
-            <bind nodeset="/data/balance/@date" calculate="/data/meta/timeEnd"/>
+            <bind nodeset="/data/stock/selected_products"/>
+            <bind nodeset="/data/stock/product/itervar" relevant="false()"/>
 
-            <bind nodeset="/data/selected_products" />
-            <!-- <bind nodeset="/data/balance/entry" /> -->
-
-            <bind nodeset="/data/num_products" type="int" calculate="count-selected(/data/selected_products)"/>
-            <bind nodeset="/data/cur_products" calculate="count(/data/balance/entry )"/>
-
-            <setvalue event="jr-insert" ref="/data/balance/entry/@index" value="int(/data/cur_products)"/>
-
-            <bind nodeset="/data/balance/entry/@id" calculate="selected-at(/data/selected_products, ../@index)"/>
-            <bind nodeset="/data/balance/entry/@quantity" calculate="selected(/data/selected_products, ../@id)"/>
+            <!-- set relevance flag on each product -->
+            <bind nodeset="/data/stock/product/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+            <bind nodeset="/data/stock/product/balance/@date" calculate="/data/meta/timeEnd"/>
+            <bind nodeset="/data/stock/product/balance/entry/@id" calculate="/data/stock/product/@id"/>
+            <!-- Quantity should be a boolean indicating whether or not this product has been selected -->
+            <bind nodeset="/data/stock/product/balance/entry/@quantity" calculate="selected(/data/stock/selected_products, ../@id)"/>
 
             <itext>
                 <translation lang="por" default="">
@@ -57,19 +69,19 @@
         </model>
     </h:head>
     <h:body>
-        <select ref="/data/selected_products">
+        <select ref="/data/stock/selected_products">
             <label ref="jr:itext('selected_products-label')" />
             <itemset nodeset="instance('products')/products/product">
                  <label ref="name"/>
                  <value ref="@id"/>
             </itemset>
         </select>
+        <!-- This repeat group should never be displayed, it's just here for computations -->
         <group>
-            <label>Product Stocks</label>
-            <repeat nodeset="/data/balance/entry" jr:count="/data/num_products">
-                <input ref="/data/balance/entry/@quantity">
-                    <label>Stock for Product: <output ref="instance('products')/products/product[@id=current()/../@id]/name"/></label>
-                </input>
+            <repeat nodeset="/data/stock/product" jr:count="/data/stock/num_elements">
+            <!-- <repeat nodeset="/data/balance/entry" jr:count="/data/num_products"> -->
+                <input ref="/data/stock/product/itervar"/>
+                <!-- <label>This is just here for iteration</label> -->
             </repeat>
         </group>
     </h:body>
