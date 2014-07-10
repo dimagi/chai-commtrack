@@ -16,6 +16,8 @@
               name="New Form">
 
           <supply-point/>
+          <no_products/>
+
           <stock>
             <elements/>
             <num_elements/>
@@ -103,6 +105,9 @@
       <bind nodeset="/data/stock/num_elements" type="int" calculate="count-selected(/data/stock/elements)"/>
       <bind nodeset="/data/stock/cur_element" calculate="count(/data/stock/product)"/>
       <bind nodeset="/data/stock/product/@id" calculate="selected-at(/data/stock/elements,../@index)"/>
+
+      <!-- If there are no selected products, just show an explanatory label -->
+      <bind nodeset="/data/no_products" relevant="/data/stock/num_elements = 0"/>
 
       <!-- product name -->
       <setvalue event="jr-insert" ref="/data/stock/product/name"
@@ -202,6 +207,10 @@
       <itext>
 
         <translation lang="por" default="">
+          <text id="no_products-label">
+            <!-- TODO Claire, update this text -->
+            <value>You have not selected any products.  Please use the "Select Products" form to choose products to include in this requisition form.</value>
+          </text>
           <text id="kits-label">
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade esperada nos kits:</value>
           </text>
@@ -235,6 +244,10 @@
         </translation>
 
         <translation lang="en">
+          <text id="no_products-label">
+            <!-- TODO Claire, update this text -->
+            <value>You have not selected any products.  Please use the "Select Products" form to choose products to include in this requisition form.</value>
+          </text>
           <text id="kits-label">
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantity hoped for in kits:</value>
           </text>
@@ -269,6 +282,10 @@
     </model>
   </h:head>
   <h:body>
+
+     <trigger ref="/data/no_products">
+       <label ref="jr:itext('no_products-label')"/>
+     </trigger>
 
      <group>
       <!-- TODO add label here to indicate that a new product is starting? -->
