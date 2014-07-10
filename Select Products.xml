@@ -37,7 +37,14 @@
             <instance id="ledger" src="jr://instance/ledgerdb"/>
 
             <!-- iteration business -->
-            <setvalue event="xforms-ready" ref="/data/stock/elements" value="join(' ',instance('products')/products/product/@id)"/>
+            <!-- Via Classica program id is
+                f5885951a77585dc8677fc82c5cc31db on ethan-chai
+            and
+                0aeab1e7918385d8a122c34b313b13ea on chai-moz
+            *** Note that this is being used twice in this file ***
+            -->
+            <setvalue event="xforms-ready" ref="/data/stock/elements"
+                      value="join(' ',instance('products')/products/product[program_id='f5885951a77585dc8677fc82c5cc31db']/@id)"/>
             <setvalue event="jr-insert" ref="/data/stock/product/@index" value="int(/data/stock/cur_element)"/>
             <bind nodeset="/data/stock/num_elements" type="int" calculate="count-selected(/data/stock/elements)"/>
             <bind nodeset="/data/stock/cur_element" calculate="count(/data/stock/product)"/>
@@ -79,7 +86,7 @@
     <h:body>
         <select ref="/data/stock/selected_products">
             <label ref="jr:itext('selected_products-label')" />
-            <itemset nodeset="instance('products')/products/product">
+            <itemset nodeset="instance('products')/products/product[program_id='f5885951a77585dc8677fc82c5cc31db']">
                  <label ref="name"/>
                  <value ref="@id"/>
             </itemset>

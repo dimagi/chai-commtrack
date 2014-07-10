@@ -15,6 +15,7 @@
               version="1"
               name="New Form">
 
+          <supply-point/>
           <stock>
             <elements/>
             <num_elements/>
@@ -88,14 +89,16 @@
       <instance id="ledger" src="jr://instance/ledgerdb"/>
       <instance id="products" src="jr://fixture/commtrack:products"/>
 
+      <!-- Look up supply point -->
+      <setvalue event="xforms-ready" ref="/data/supply-point" value="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+
       <!-- iteration business -->
-      <!-- Via Classica program id is
-          f5885951a77585dc8677fc82c5cc31db on ethan-chai
-      and
-          0aeab1e7918385d8a122c34b313b13ea on chai-moz
-      -->
       <setvalue event="xforms-ready" ref="/data/stock/elements"
-                value="join(' ',instance('products')/products/product[program_id='f5885951a77585dc8677fc82c5cc31db']/@id)"/>
+                value="join(' ', instance('ledger')/ledgerdb/
+                                 ledger[@entity-id=/data/supply-point]/
+                                 section[@section-id='is-relevant']/
+                                 entry[. = 1]/
+                                 @id)"/>
       <setvalue event="jr-insert" ref="/data/stock/product/@index" value="int(/data/stock/cur_element)"/>
       <bind nodeset="/data/stock/num_elements" type="int" calculate="count-selected(/data/stock/elements)"/>
       <bind nodeset="/data/stock/cur_element" calculate="count(/data/stock/product)"/>
@@ -111,7 +114,7 @@
       <!-- prepopulate initial stock value -->
       <setvalue event="jr-insert" ref="/data/stock/product/calculated_initial_stock"
                 value="coalesce(instance('ledger')/ledgerdb/
-                                ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                ledger[@entity-id=/data/supply-point]/
                                 section[@section-id='monthly-initial']/
                                 entry[@id=current()/../@id],
                                 0)" />
@@ -121,7 +124,7 @@
       <!-- prepopulate aggregate entries -->
       <setvalue event="jr-insert" ref="/data/stock/product/calculated_entries"
                 value="coalesce(instance('ledger')/ledgerdb/
-                                ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                ledger[@entity-id=/data/supply-point]/
                                 section[@section-id='entries']/
                                 entry[@id=current()/../@id],
                                 0)" />
@@ -131,7 +134,7 @@
       <!-- aggregate disbursements -->
       <setvalue event="jr-insert" ref="/data/stock/product/calculated_disbursements"
                 value="coalesce(instance('ledger')/ledgerdb/
-                                ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                ledger[@entity-id=/data/supply-point]/
                                 section[@section-id='disbursements']/
                                 entry[@id=current()/../@id],
                                 0)" />
@@ -152,7 +155,7 @@
       <!-- Current inventory -->
       <bind nodeset="/data/stock/product/calculated_inventory"
             calculate="coalesce(instance('ledger')/ledgerdb/
-                                ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/
+                                ledger[@entity-id=/data/supply-point]/
                                 section[@section-id='stock']/
                                 entry[@id=current()/../@id],
                                 0)" />
@@ -178,21 +181,21 @@
 
 
       <!-- reset monthly aggregates -->
-      <bind nodeset="/data/stock/product/monthly-initial/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/stock/product/monthly-initial/balance/@entity-id" calculate="/data/supply-point"/>
       <bind nodeset="/data/stock/product/monthly-initial/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/stock/product/monthly-initial/balance/entry/@id" calculate="/data/stock/product/@id"/>
       <!-- set monthly initial based on this form -->
       <bind nodeset="/data/stock/product/monthly-initial/balance/entry/@quantity" calculate="/data/stock/product/inventory"/>
 
-      <bind nodeset="/data/stock/product/aggregate-entries/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/stock/product/aggregate-entries/balance/@entity-id" calculate="/data/supply-point"/>
       <bind nodeset="/data/stock/product/aggregate-entries/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/stock/product/aggregate-entries/balance/entry/@id" calculate="/data/stock/product/@id"/>
 
-      <bind nodeset="/data/stock/product/aggregate-disbursements/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/stock/product/aggregate-disbursements/balance/@entity-id" calculate="/data/supply-point"/>
       <bind nodeset="/data/stock/product/aggregate-disbursements/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/stock/product/aggregate-disbursements/balance/entry/@id" calculate="/data/stock/product/@id"/>
 
-      <bind nodeset="/data/stock/product/aggregate-adjustments/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <bind nodeset="/data/stock/product/aggregate-adjustments/balance/@entity-id" calculate="/data/supply-point"/>
       <bind nodeset="/data/stock/product/aggregate-adjustments/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/stock/product/aggregate-adjustments/balance/entry/@id" calculate="/data/stock/product/@id"/>
 
