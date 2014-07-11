@@ -12,6 +12,46 @@
           <adjustments/>
           <stock/>
           <expiration/>
+
+          <supply_point/>
+          <product_id/>
+
+          <reset-initial>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="initial">
+              <entry id="" quantity=""/>
+            </balance>
+          </reset-initial>
+
+          <reset-entries>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="entries">
+              <entry id="" quantity=""/>
+            </balance>
+          </reset-entries>
+
+          <reset-disbursements>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="disbursements">
+              <entry id="" quantity=""/>
+            </balance>
+          </reset-disbursements>
+
+          <reset-adjustments>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="adjustments">
+              <entry id="" quantity=""/>
+            </balance>
+          </reset-adjustments>
+
+          <reset-stock>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="stock">
+              <entry id="" quantity=""/>
+            </balance>
+          </reset-stock>
+
+          <reset-expiration>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="expiration">
+              <entry id="" quantity=""/>
+            </balance>
+          </reset-expiration>
+
         </data>
       </instance>
       <bind nodeset="/data/to-update" required="true()"/>
@@ -21,6 +61,82 @@
       <bind nodeset="/data/adjustments" type="xsd:int" relevant="selected(/data/to-update, 'adjustments')" required="true()"/>
       <bind nodeset="/data/stock" type="xsd:int" relevant="selected(/data/to-update, 'stock')" required="true()"/>
       <bind nodeset="/data/expiration" type="xsd:date" relevant="selected(/data/to-update, 'expiration')" required="true()"/>
+
+      <setvalue event="xforms-ready" ref="/data/supply_point" value="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+      <setvalue event="xforms-ready" ref="/data/product_id" value="instance('commcaresession')/session/data/product_id"/>
+
+      <setvalue event="xforms-ready" ref="/data/initial"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply_point]/
+                                section[@section-id='initial']/
+                                entry[@id=/data/product_id]
+                                , 0)"/>
+      <bind nodeset="/data/reset-initial" vellum:ignore="retain" relevant="selected(/data/to-update, 'initial')"/>
+      <bind nodeset="/data/reset-initial/balance/@entity-id" calculate="/data/supply_point"/>
+      <bind nodeset="/data/reset-initial/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/reset-initial/balance/entry/@id" calculate="/data/product_id"/>
+      <bind nodeset="/data/reset-initial/balance/entry/@quantity" calculate="/data/initial"/>
+
+      <setvalue event="xforms-ready" ref="/data/entries"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply_point]/
+                                section[@section-id='entries']/
+                                entry[@id=/data/product_id]
+                                , 0)"/>
+      <bind nodeset="/data/reset-entries" vellum:ignore="retain" relevant="selected(/data/to-update, 'entries')"/>
+      <bind nodeset="/data/reset-entries/balance/@entity-id" calculate="/data/supply_point"/>
+      <bind nodeset="/data/reset-entries/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/reset-entries/balance/entry/@id" calculate="/data/product_id"/>
+      <bind nodeset="/data/reset-entries/balance/entry/@quantity" calculate="/data/entries"/>
+
+      <setvalue event="xforms-ready" ref="/data/disbursements"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply_point]/
+                                section[@section-id='disbursements']/
+                                entry[@id=/data/product_id]
+                                , 0)"/>
+      <bind nodeset="/data/reset-disbursements" vellum:ignore="retain" relevant="selected(/data/to-update, 'disbursements')"/>
+      <bind nodeset="/data/reset-disbursements/balance/@entity-id" calculate="/data/supply_point"/>
+      <bind nodeset="/data/reset-disbursements/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/reset-disbursements/balance/entry/@id" calculate="/data/product_id"/>
+      <bind nodeset="/data/reset-disbursements/balance/entry/@quantity" calculate="/data/disbursements"/>
+
+      <setvalue event="xforms-ready" ref="/data/adjustments"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply_point]/
+                                section[@section-id='adjustments']/
+                                entry[@id=/data/product_id]
+                                , 0)"/>
+      <bind nodeset="/data/reset-adjustments" vellum:ignore="retain" relevant="selected(/data/to-update, 'adjustments')"/>
+      <bind nodeset="/data/reset-adjustments/balance/@entity-id" calculate="/data/supply_point"/>
+      <bind nodeset="/data/reset-adjustments/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/reset-adjustments/balance/entry/@id" calculate="/data/product_id"/>
+      <bind nodeset="/data/reset-adjustments/balance/entry/@quantity" calculate="/data/adjustments"/>
+
+      <setvalue event="xforms-ready" ref="/data/stock"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply_point]/
+                                section[@section-id='stock']/
+                                entry[@id=/data/product_id]
+                                , 0)"/>
+      <bind nodeset="/data/reset-stock" vellum:ignore="retain" relevant="selected(/data/to-update, 'stock')"/>
+      <bind nodeset="/data/reset-stock/balance/@entity-id" calculate="/data/supply_point"/>
+      <bind nodeset="/data/reset-stock/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/reset-stock/balance/entry/@id" calculate="/data/product_id"/>
+      <bind nodeset="/data/reset-stock/balance/entry/@quantity" calculate="/data/stock"/>
+
+      <setvalue event="xforms-ready" ref="/data/expiration"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply_point]/
+                                section[@section-id='expiration']/
+                                entry[@id=/data/product_id]
+                                , 0)"/>
+      <bind nodeset="/data/reset-expiration" vellum:ignore="retain" relevant="selected(/data/to-update, 'expiration')"/>
+      <bind nodeset="/data/reset-expiration/balance/@entity-id" calculate="/data/supply_point"/>
+      <bind nodeset="/data/reset-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/reset-expiration/balance/entry/@id" calculate="/data/product_id"/>
+      <bind nodeset="/data/reset-expiration/balance/entry/@quantity" calculate="/data/expiration"/>
+
       <itext>
         <translation lang="por" default="">
           <text id="to-update-label">
