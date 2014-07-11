@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns:orx="http://openrosa.org/jr/xforms" xmlns="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa" xmlns:vellum="http://commcarehq.org/xforms/vellum">
+  <h:head>
+    <h:title>New Form</h:title>
+    <model>
+      <instance>
+        <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms" xmlns="http://openrosa.org/formdesigner/1C6144D8-8A88-417B-89C6-2041BF61D5F4" uiVersion="1" version="1" name="New Form">
+          <to-update/>
+          <initial/>
+          <entries/>
+          <disbursements/>
+          <adjustments/>
+          <stock/>
+          <expiration/>
+        </data>
+      </instance>
+      <bind nodeset="/data/to-update" required="true()"/>
+      <bind nodeset="/data/initial" type="xsd:int" relevant="selected(/data/to-update, 'initial')" required="true()"/>
+      <bind nodeset="/data/entries" type="xsd:int" relevant="selected(/data/to-update, 'entries')" required="true()"/>
+      <bind nodeset="/data/disbursements" type="xsd:int" relevant="selected(/data/to-update, 'disbursements')" required="true()"/>
+      <bind nodeset="/data/adjustments" type="xsd:int" relevant="selected(/data/to-update, 'adjustments')" required="true()"/>
+      <bind nodeset="/data/stock" type="xsd:int" relevant="selected(/data/to-update, 'stock')" required="true()"/>
+      <bind nodeset="/data/expiration" type="xsd:date" relevant="selected(/data/to-update, 'expiration')" required="true()"/>
+      <itext>
+        <translation lang="por" default="">
+          <text id="to-update-label">
+            <value>Which aggregates would you like to update?</value>
+          </text>
+          <text id="to-update-initial-label">
+            <value>Initial stock</value>
+          </text>
+          <text id="to-update-entries-label">
+            <value>Total entries</value>
+          </text>
+          <text id="to-update-disbursements-label">
+            <value>Total disbursements</value>
+          </text>
+          <text id="to-update-adjustments-label">
+            <value>Total adjustments</value>
+          </text>
+          <text id="to-update-stock-label">
+            <value>Current stock</value>
+          </text>
+          <text id="to-update-expiration-label">
+            <value>Expiration date</value>
+          </text>
+          <text id="initial-label">
+            <value>What was the stock at the beginning of the month?</value>
+          </text>
+          <text id="entries-label">
+            <value>How many units have been entered?</value>
+          </text>
+          <text id="disbursements-label">
+            <value>How many units have been disbursed?</value>
+          </text>
+          <text id="adjustments-label">
+            <value>How many units have been adjusted?</value>
+          </text>
+          <text id="stock-label">
+            <value>What is the current stock?</value>
+          </text>
+          <text id="expiration-label">
+            <value>What is the earliest expiration date?</value>
+          </text>
+        </translation>
+        <translation lang="en">
+          <text id="to-update-label">
+            <value>Which aggregates would you like to update?</value>
+          </text>
+          <text id="to-update-initial-label">
+            <value>Initial stock</value>
+          </text>
+          <text id="to-update-entries-label">
+            <value>Total entries</value>
+          </text>
+          <text id="to-update-disbursements-label">
+            <value>Total disbursements</value>
+          </text>
+          <text id="to-update-adjustments-label">
+            <value>Total adjustments</value>
+          </text>
+          <text id="to-update-stock-label">
+            <value>Current stock</value>
+          </text>
+          <text id="to-update-expiration-label">
+            <value>Expiration date</value>
+          </text>
+          <text id="initial-label">
+            <value>What was the stock at the beginning of the month?</value>
+          </text>
+          <text id="entries-label">
+            <value>How many units have been entered?</value>
+          </text>
+          <text id="disbursements-label">
+            <value>How many units have been disbursed?</value>
+          </text>
+          <text id="adjustments-label">
+            <value>How many units have been adjusted?</value>
+          </text>
+          <text id="stock-label">
+            <value>What is the current stock?</value>
+          </text>
+          <text id="expiration-label">
+            <value>What is the earliest expiration date?</value>
+          </text>
+        </translation>
+      </itext>
+    </model>
+  </h:head>
+  <h:body>
+    <select ref="/data/to-update">
+      <label ref="jr:itext('to-update-label')"/>
+      <item>
+        <label ref="jr:itext('to-update-initial-label')"/>
+        <value>initial</value>
+      </item>
+      <item>
+        <label ref="jr:itext('to-update-entries-label')"/>
+        <value>entries</value>
+      </item>
+      <item>
+        <label ref="jr:itext('to-update-disbursements-label')"/>
+        <value>disbursements</value>
+      </item>
+      <item>
+        <label ref="jr:itext('to-update-adjustments-label')"/>
+        <value>adjustments</value>
+      </item>
+      <item>
+        <label ref="jr:itext('to-update-stock-label')"/>
+        <value>stock</value>
+      </item>
+      <item>
+        <label ref="jr:itext('to-update-expiration-label')"/>
+        <value>expiration</value>
+      </item>
+    </select>
+    <input ref="/data/initial">
+      <label ref="jr:itext('initial-label')"/>
+    </input>
+    <input ref="/data/entries">
+      <label ref="jr:itext('entries-label')"/>
+    </input>
+    <input ref="/data/disbursements">
+      <label ref="jr:itext('disbursements-label')"/>
+    </input>
+    <input ref="/data/adjustments">
+      <label ref="jr:itext('adjustments-label')"/>
+    </input>
+    <input ref="/data/stock">
+      <label ref="jr:itext('stock-label')"/>
+    </input>
+    <input ref="/data/expiration">
+      <label ref="jr:itext('expiration-label')"/>
+    </input>
+  </h:body>
+</h:html>
