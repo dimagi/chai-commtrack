@@ -11,6 +11,7 @@
           <disbursements/>
           <adjustments/>
           <stock/>
+          <calculated-expiration/>
           <expiration/>
 
           <supply_point/>
@@ -54,6 +55,8 @@
 
         </data>
       </instance>
+      <instance id="ledger" src="jr://instance/ledgerdb" />
+
       <bind nodeset="/data/to-update" required="true()"/>
       <bind nodeset="/data/initial" type="xsd:int" relevant="selected(/data/to-update, 'initial')" required="true()"/>
       <bind nodeset="/data/entries" type="xsd:int" relevant="selected(/data/to-update, 'entries')" required="true()"/>
@@ -125,12 +128,14 @@
       <bind nodeset="/data/reset-stock/balance/entry/@id" calculate="/data/product_id"/>
       <bind nodeset="/data/reset-stock/balance/entry/@quantity" calculate="/data/stock"/>
 
+      <setvalue event="xforms-ready" ref="/data/calculated-expiration"
+                value="date(coalesce(instance('ledger')/ledgerdb/
+                                     ledger[@entity-id=/data/supply_point]/
+                                     section[@section-id='expiration']/
+                                     entry[@id=/data/product_id]
+                                     , 0))"/>
       <setvalue event="xforms-ready" ref="/data/expiration"
-                value="coalesce(instance('ledger')/ledgerdb/
-                                ledger[@entity-id=/data/supply_point]/
-                                section[@section-id='expiration']/
-                                entry[@id=/data/product_id]
-                                , 0)"/>
+                value="if(/data/calculated-expiration = date(0), today(), /data/calculated-expiration)"/>
       <bind nodeset="/data/reset-expiration" vellum:ignore="retain" relevant="selected(/data/to-update, 'expiration')"/>
       <bind nodeset="/data/reset-expiration/balance/@entity-id" calculate="/data/supply_point"/>
       <bind nodeset="/data/reset-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
