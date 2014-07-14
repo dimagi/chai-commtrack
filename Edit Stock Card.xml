@@ -5,7 +5,8 @@
     <model>
       <instance>
         <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms" xmlns="http://openrosa.org/formdesigner/1C6144D8-8A88-417B-89C6-2041BF61D5F4" uiVersion="1" version="1" name="New Form">
-          <to_update/>
+          <product_name/>
+		  <to-update/>
           <initial/>
           <entries/>
           <disbursements/>
@@ -16,7 +17,6 @@
 
           <supply_point/>
           <product_id/>
-          <product_name/>
 
           <reset-initial>
             <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="initial">
@@ -58,18 +58,21 @@
       </instance>
       <instance id="ledger" src="jr://instance/ledgerdb" />
       <instance id="products" src="jr://fixture/commtrack:products"/>
+	  
+      <bind nodeset="/data/product_name"
+            calculate="instance('products')/products/product[@id=instance('commcaresession')/session/data/product_id]/name"/>
 
-      <bind nodeset="/data/to_update" required="true()"/>
-      <bind nodeset="/data/initial" type="xsd:int" relevant="selected(/data/to_update, 'initial')" required="true()"/>
-      <bind nodeset="/data/entries" type="xsd:int" relevant="selected(/data/to_update, 'entries')" required="true()"/>
-      <bind nodeset="/data/disbursements" type="xsd:int" relevant="selected(/data/to_update, 'disbursements')" required="true()"/>
-      <bind nodeset="/data/adjustments" type="xsd:int" relevant="selected(/data/to_update, 'adjustments')" required="true()"/>
-      <bind nodeset="/data/stock" type="xsd:int" relevant="selected(/data/to_update, 'stock')" required="true()"/>
-      <bind nodeset="/data/expiration" type="xsd:date" relevant="selected(/data/to_update, 'expiration')" required="true()"/>
+	  
+      <bind nodeset="/data/to-update" required="true()"/>
+      <bind nodeset="/data/initial" type="xsd:int" relevant="selected(/data/to-update, 'initial')" required="true()"/>
+      <bind nodeset="/data/entries" type="xsd:int" relevant="selected(/data/to-update, 'entries')" required="true()"/>
+      <bind nodeset="/data/disbursements" type="xsd:int" relevant="selected(/data/to-update, 'disbursements')" required="true()"/>
+      <bind nodeset="/data/adjustments" type="xsd:int" relevant="selected(/data/to-update, 'adjustments')" required="true()"/>
+      <bind nodeset="/data/stock" type="xsd:int" relevant="selected(/data/to-update, 'stock')" required="true()"/>
+      <bind nodeset="/data/expiration" type="xsd:date" relevant="selected(/data/to-update, 'expiration')" required="true()"/>
 
       <setvalue event="xforms-ready" ref="/data/supply_point" value="instance('commcaresession')/session/data/case_id_case_supply-point"/>
       <setvalue event="xforms-ready" ref="/data/product_id" value="instance('commcaresession')/session/data/product_id"/>
-      <setvalue event="xforms-ready" ref="/data/product_name" value="instance('products')/products/product[@id=/data/product_id]/name"/>
 
       <setvalue event="xforms-ready" ref="/data/initial"
                 value="coalesce(instance('ledger')/ledgerdb/
@@ -77,7 +80,7 @@
                                 section[@section-id='initial']/
                                 entry[@id=/data/product_id]
                                 , 0)"/>
-      <bind nodeset="/data/reset-initial" vellum:ignore="retain" relevant="selected(/data/to_update, 'initial')"/>
+      <bind nodeset="/data/reset-initial" vellum:ignore="retain" relevant="selected(/data/to-update, 'initial')"/>
       <bind nodeset="/data/reset-initial/balance/@entity-id" calculate="/data/supply_point"/>
       <bind nodeset="/data/reset-initial/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/reset-initial/balance/entry/@id" calculate="/data/product_id"/>
@@ -89,7 +92,7 @@
                                 section[@section-id='entries']/
                                 entry[@id=/data/product_id]
                                 , 0)"/>
-      <bind nodeset="/data/reset-entries" vellum:ignore="retain" relevant="selected(/data/to_update, 'entries')"/>
+      <bind nodeset="/data/reset-entries" vellum:ignore="retain" relevant="selected(/data/to-update, 'entries')"/>
       <bind nodeset="/data/reset-entries/balance/@entity-id" calculate="/data/supply_point"/>
       <bind nodeset="/data/reset-entries/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/reset-entries/balance/entry/@id" calculate="/data/product_id"/>
@@ -101,7 +104,7 @@
                                 section[@section-id='disbursements']/
                                 entry[@id=/data/product_id]
                                 , 0)"/>
-      <bind nodeset="/data/reset-disbursements" vellum:ignore="retain" relevant="selected(/data/to_update, 'disbursements')"/>
+      <bind nodeset="/data/reset-disbursements" vellum:ignore="retain" relevant="selected(/data/to-update, 'disbursements')"/>
       <bind nodeset="/data/reset-disbursements/balance/@entity-id" calculate="/data/supply_point"/>
       <bind nodeset="/data/reset-disbursements/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/reset-disbursements/balance/entry/@id" calculate="/data/product_id"/>
@@ -113,7 +116,7 @@
                                 section[@section-id='adjustments']/
                                 entry[@id=/data/product_id]
                                 , 0)"/>
-      <bind nodeset="/data/reset-adjustments" vellum:ignore="retain" relevant="selected(/data/to_update, 'adjustments')"/>
+      <bind nodeset="/data/reset-adjustments" vellum:ignore="retain" relevant="selected(/data/to-update, 'adjustments')"/>
       <bind nodeset="/data/reset-adjustments/balance/@entity-id" calculate="/data/supply_point"/>
       <bind nodeset="/data/reset-adjustments/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/reset-adjustments/balance/entry/@id" calculate="/data/product_id"/>
@@ -125,7 +128,7 @@
                                 section[@section-id='stock']/
                                 entry[@id=/data/product_id]
                                 , 0)"/>
-      <bind nodeset="/data/reset-stock" vellum:ignore="retain" relevant="selected(/data/to_update, 'stock')"/>
+      <bind nodeset="/data/reset-stock" vellum:ignore="retain" relevant="selected(/data/to-update, 'stock')"/>
       <bind nodeset="/data/reset-stock/balance/@entity-id" calculate="/data/supply_point"/>
       <bind nodeset="/data/reset-stock/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/reset-stock/balance/entry/@id" calculate="/data/product_id"/>
@@ -139,7 +142,7 @@
                                      , 0))"/>
       <setvalue event="xforms-ready" ref="/data/expiration"
                 value="if(/data/calculated-expiration = date(0), today(), /data/calculated-expiration)"/>
-      <bind nodeset="/data/reset-expiration" vellum:ignore="retain" relevant="selected(/data/to_update, 'expiration')"/>
+      <bind nodeset="/data/reset-expiration" vellum:ignore="retain" relevant="selected(/data/to-update, 'expiration')"/>
       <bind nodeset="/data/reset-expiration/balance/@entity-id" calculate="/data/supply_point"/>
       <bind nodeset="/data/reset-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/reset-expiration/balance/entry/@id" calculate="/data/product_id"/>
@@ -147,66 +150,66 @@
 
       <itext>
         <translation lang="por" default="">
-          <text id="to_update-label">
-            <value>Which aggregates would you like to update?</value>
+          <text id="to-update-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;Que informação quería mudar?</value>
           </text>
-          <text id="to_update-initial-label">
-            <value>Initial stock</value>
+          <text id="to-update-initial-label">
+            <value>Saldo Inicial</value>
           </text>
-          <text id="to_update-entries-label">
-            <value>Total entries</value>
+          <text id="to-update-entries-label">
+            <value>Soma das entradas</value>
           </text>
-          <text id="to_update-disbursements-label">
-            <value>Total disbursements</value>
+          <text id="to-update-disbursements-label">
+            <value>Soma das saídas</value>
           </text>
-          <text id="to_update-adjustments-label">
-            <value>Total adjustments</value>
+          <text id="to-update-adjustments-label">
+            <value>Soma dos ajustes</value>
           </text>
-          <text id="to_update-stock-label">
-            <value>Current stock</value>
+          <text id="to-update-stock-label">
+            <value>Sock existente</value>
           </text>
-          <text id="to_update-expiration-label">
-            <value>Expiration date</value>
+          <text id="to-update-expiration-label">
+            <value>Validade</value>
           </text>
           <text id="initial-label">
-            <value>What was the stock at the beginning of the month?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Que deve ser o saldo incial do período?</value>
           </text>
           <text id="entries-label">
-            <value>How many units have been entered?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Que deve ser a soma das entradas deste período?</value>
           </text>
           <text id="disbursements-label">
-            <value>How many units have been disbursed?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Que deve ser a soma das saídas deste período?</value>
           </text>
           <text id="adjustments-label">
-            <value>How many units have been adjusted?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Que deve ser a soma dos ajustes deste período?</value>
           </text>
           <text id="stock-label">
-            <value>What is the current stock?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Que deve ser o stock existente?</value>
           </text>
           <text id="expiration-label">
-            <value>What is the earliest expiration date?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;Que deve ser a validade de este producto?</value>
           </text>
         </translation>
         <translation lang="en">
-          <text id="to_update-label">
+          <text id="to-update-label">
             <value>Which aggregates would you like to update?</value>
           </text>
-          <text id="to_update-initial-label">
+          <text id="to-update-initial-label">
             <value>Initial stock</value>
           </text>
-          <text id="to_update-entries-label">
+          <text id="to-update-entries-label">
             <value>Total entries</value>
           </text>
-          <text id="to_update-disbursements-label">
+          <text id="to-update-disbursements-label">
             <value>Total disbursements</value>
           </text>
-          <text id="to_update-adjustments-label">
+          <text id="to-update-adjustments-label">
             <value>Total adjustments</value>
           </text>
-          <text id="to_update-stock-label">
+          <text id="to-update-stock-label">
             <value>Current stock</value>
           </text>
-          <text id="to_update-expiration-label">
+          <text id="to-update-expiration-label">
             <value>Expiration date</value>
           </text>
           <text id="initial-label">
@@ -232,30 +235,30 @@
     </model>
   </h:head>
   <h:body>
-    <select ref="/data/to_update">
-      <label ref="jr:itext('to_update-label')"/>
+    <select ref="/data/to-update">
+      <label ref="jr:itext('to-update-label')"/>
       <item>
-        <label ref="jr:itext('to_update-initial-label')"/>
+        <label ref="jr:itext('to-update-initial-label')"/>
         <value>initial</value>
       </item>
       <item>
-        <label ref="jr:itext('to_update-entries-label')"/>
+        <label ref="jr:itext('to-update-entries-label')"/>
         <value>entries</value>
       </item>
       <item>
-        <label ref="jr:itext('to_update-disbursements-label')"/>
+        <label ref="jr:itext('to-update-disbursements-label')"/>
         <value>disbursements</value>
       </item>
       <item>
-        <label ref="jr:itext('to_update-adjustments-label')"/>
+        <label ref="jr:itext('to-update-adjustments-label')"/>
         <value>adjustments</value>
       </item>
       <item>
-        <label ref="jr:itext('to_update-stock-label')"/>
+        <label ref="jr:itext('to-update-stock-label')"/>
         <value>stock</value>
       </item>
       <item>
-        <label ref="jr:itext('to_update-expiration-label')"/>
+        <label ref="jr:itext('to-update-expiration-label')"/>
         <value>expiration</value>
       </item>
     </select>
