@@ -6,14 +6,14 @@
         xmlns:jr="http://openrosa.org/javarosa"
         xmlns:vellum="http://commcarehq.org/xforms/vellum">
     <h:head>
-        <h:title>Select Products</h:title>
+        <h:title>Selecionar Productos</h:title>
         <model>
             <instance>
                 <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms"
                       xmlns="http://openrosa.org/formdesigner/73BD6623-B13A-4C07-850E-583899531924"
                       uiVersion="1"
                       version="1"
-                      name="New Form">
+                      name="Selecionar Productos">
 
                     <supply-point/>
 
