@@ -40,8 +40,12 @@
           <!-- Loss -->
           <loss_units/>
           <reason_for_loss/>
-
-          <!-- Confirmation -->
+		  
+		  <!-- requests -->
+		  <request_units/>
+		  <request_location/>
+          
+		  <!-- Confirmation -->
           <confirmation />
 
           <!-- CommTrack -->
@@ -108,7 +112,10 @@
       <bind nodeset="/data/loss_units" type="xsd:int" relevant="/data/transaction_type = 'loss'" required="true()"/>
       <bind nodeset="/data/reason_for_loss" relevant="/data/transaction_type = 'loss'" required="true()" />
       <bind nodeset="/data/confirmation" required="true()" />
-
+	  
+	  <bind nodeset="/data/request_units" type="xsd:int" relevant="/data/transaction_type = 'request'" required="true()"/>
+	  <bind nodeset="/data/request_location" relevant="/data/transaction_type = 'request'" required="true()"/>
+	  
       <!-- CommTrack -->
       <bind nodeset="/data/product_name"
             calculate="instance('products')/products/product[@id=instance('commcaresession')/session/data/product_id]/name"/>
@@ -145,7 +152,8 @@
                        if(/data/transaction_type = 'positive', /data/positive_units,
                        if(/data/transaction_type = 'negative', /data/negative_units,
                        if(/data/transaction_type = 'loss', /data/loss_units,
-                       0)))))"/>
+					   if(/data/transaction_type = 'request', /data/request_units,
+                       0))))))"/>
       <bind nodeset="/data/receiving/transfer/entry/@quantity" calculate="/data/units"/>
       <bind nodeset="/data/disbursing/transfer/entry/@quantity" calculate="/data/units"/>
       <bind nodeset="/data/aggregate-monthly/transfer/entry/@quantity" calculate="/data/units"/>
@@ -154,9 +162,9 @@
       <bind nodeset="/data/aggregate-monthly/transfer/@dest" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
       <bind nodeset="/data/aggregate-monthly/transfer/@section-id"
             calculate="if(/data/transaction_type = 'entry', 'entries',
-                       if(/data/transaction_type = 'disbursement', 'disbursements',
+                       if(/data/transaction_type = 'disbursement', 'disbursements', if(/data/transaction_type = 'request', 'requests',
                        'adjustments'
-                       ))"/>
+                       )))"/>
 
       <!-- Product expiration date business -->
       <bind nodeset="/data/earliest-expiration/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
@@ -222,6 +230,9 @@
           <text id="transaction_type-loss-label">
             <value>Perda</value>
           </text>
+          <text id="transaction_type-request-label">
+            <value>Pedido</value>
+          </text>
 		  <text id="document_number-label">
 		    <value>Número do documento</value>
 		  </text>
@@ -274,6 +285,9 @@
           <text id="disbursement_location-ricatla-label">
             <value>C.S. Ricatla</value>
           </text>
+		  <text id="disbursement_location-mali-label">
+            <value>C.S. Mali</value>
+          </text>
 		  
 
           <!-- Positive -->
@@ -308,6 +322,37 @@
             <value>Extravio</value>
           </text>
 
+		  <!-- Request -->
+		  <text id="request_units-label">
+			<value> <output ref="/data/product_name"/>&#10;&#10;Quantidade do pedido?</value>
+		  </text>
+		  <text id="request_location-label">
+			<value> <output ref="/data/product_name"/>&#10;&#10;Locação a pedir?</value>
+		  </text>
+		  <text id="request_location-marracuene-label">
+            <value>C.S. Marracuene</value>
+          </text>
+          <text id="request_location-mumemo-label">
+            <value>C.S. Mumemo</value>
+          </text>
+          <text id="request_location-eduardomondlane-label">
+            <value>C.S. Eduardo Mondlane</value>
+          </text>
+          <text id="request_location-machubo-label">
+            <value>C.S. Machubo</value>
+          </text>
+          <text id="request_location-madremaclara-label">
+            <value>C.S. Michafutene</value>
+          </text>
+          <text id="request_location-matalane-label">
+            <value>C.S. Matalane</value>
+          </text>
+          <text id="request_location-ricatla-label">
+            <value>C.S. Ricatla</value>
+          </text>
+          <text id="request_location-mali-label">
+            <value>C.S. Mali</value>
+          </text>
           <!-- Confirmation -->
 		  <text id="confirmation-label">
             <value><output ref="concat(
@@ -354,6 +399,9 @@
           </text>
           <text id="transaction_type-loss-label">
             <value>Loss</value>
+          </text>
+		  <text id="transaction_type-request-label">
+            <value>Request</value>
           </text>
 		  <text id="document_number-label">
 		    <value>Número do documento</value>
@@ -407,7 +455,10 @@
           <text id="disbursement_location-ricatla-label">
             <value>C.S. Ricatla</value>
           </text>
-
+          <text id="disbursement_location-mali-label">
+            <value>C.S. Mali</value>
+          </text>
+		  
           <!-- Positive -->
           <text id="positive_units-label">
             <value><output ref="/data/product_name"/>&#10;&#10;How many units are being added?</value>
@@ -441,7 +492,39 @@
           <text id="reason_for_loss-misplaced-label">
             <value>Missing</value>
           </text>
-
+		 
+		 <!-- Request -->
+		  <text id="request_units-label">
+			<value> <output ref="/data/product_name"/>&#10;&#10;Quantity of request?</value>
+		  </text>
+		  <text id="request_location-label">
+			<value> <output ref="/data/product_name"/>&#10;&#10;Location making the request?</value>
+		  </text>
+		  <text id="request_location-marracuene-label">
+            <value>C.S. Marracuene</value>
+          </text>
+          <text id="request_location-mumemo-label">
+            <value>C.S. Mumemo</value>
+          </text>
+          <text id="request_location-eduardomondlane-label">
+            <value>C.S. Eduardo Mondlane</value>
+          </text>
+          <text id="request_location-machubo-label">
+            <value>C.S. Machubo</value>
+          </text>
+          <text id="request_location-madremaclara-label">
+            <value>C.S. Michafutene</value>
+          </text>
+          <text id="request_location-matalane-label">
+            <value>C.S. Matalane</value>
+          </text>
+          <text id="request_location-ricatla-label">
+            <value>C.S. Ricatla</value>
+          </text>
+          <text id="request_location-mali-label">
+            <value>C.S. Mali</value>
+          </text>
+		  
           <!-- Confirmation -->
           <text id="confirmation-label">
             <value><output ref="/data/product_name"/>&#10;&#10;Type of Movement: <output value="if(/data/transaction_type = 'entry', 'Entrada', if(/data/transaction_type = 'disbursement', 'Saida', 'Ajuste'))"/>&#10;Quantity: <output value="/data/units"/>&#10;&#10;Please confirm this movement.</value>
@@ -477,6 +560,10 @@
         <label ref="jr:itext('transaction_type-loss-label')"/>
         <value>loss</value>
       </item>
+	  <item>
+		<label ref="jr:itext('transaction_type-request-label')"/>
+		<value>request</value>
+	  </item>
     </select1>
 	<input ref="/data/document_number">
 		<label ref="jr:itext('document_number-label')"/>
@@ -538,6 +625,10 @@
         <label ref="jr:itext('disbursement_location-ricatla-label')"/>
         <value>Ricatla</value>
       </item>
+      <item>  
+		<label ref="jr:itext('disbursement_location-mali-label')"/>
+        <value>Mali</value>
+      </item>
     </select1>
 
     <!-- Positive -->
@@ -575,7 +666,45 @@
         <value>misplaced</value>
       </item>
     </select1>
-
+    <!-- request -->
+    <input ref="/data/request_units">
+      <label ref="jr:itext('request_units-label')"/>
+    </input>
+    <select1 ref="/data/request_location">
+      <label ref="jr:itext('request_location-label')"/>
+      <item>
+        <label ref="jr:itext('request_location-marracuene-label')"/>
+        <value>Marracuene</value>
+      </item>
+      <item>
+        <label ref="jr:itext('request_location-mumemo-label')"/>
+        <value>Mumemo</value>
+      </item>
+      <item>
+        <label ref="jr:itext('request_location-eduardomondlane-label')"/>
+        <value>Eduardo-Mondlane</value>
+      </item>
+      <item>
+        <label ref="jr:itext('request_location-machubo-label')"/>
+        <value>Machubo</value>
+      </item>
+      <item>
+        <label ref="jr:itext('request_location-madremaclara-label')"/>
+        <value>Michafutene</value>
+      </item>
+      <item>
+        <label ref="jr:itext('request_location-matalane-label')"/>
+        <value>Matalane</value>
+      </item>
+      <item>
+        <label ref="jr:itext('request_location-ricatla-label')"/>
+        <value>Ricatla</value>
+      </item>
+	  <item>
+        <label ref="jr:itext('request_location-mali-label')"/>
+        <value>Mali</value>
+      </item>
+    </select1>
     <!-- Confirmation -->
     <trigger ref="/data/confirmation">
       <label ref="jr:itext('confirmation-label')"/>
