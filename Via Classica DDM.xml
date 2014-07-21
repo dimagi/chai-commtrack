@@ -41,6 +41,7 @@
               <theoretical_inventory/>
 
               <!-- exits * 2 -->
+              <requests/>
               <calculated_desired_stock/>
               <desired_stock/>
 
@@ -156,15 +157,16 @@
       <bind nodeset="/data/stock/product/theoretical_inventory" type="xsd:int" required="true()"/>
 
       <!-- Desired stock level -->
-      <bind nodeset="/data/stock/product/calculated_desired_stock" calculate="2 * /data/stock/product/requests"/>
-      <bind nodeset="/data/stock/product/desired_stock" type="xsd:int" required="true()"/>
-      <setvalue event="jr-insert" ref="/data/stock/product/calculated_desired_stock"
+      <setvalue event="jr-insert" ref="/data/stock/product/requests"
                 value="coalesce(instance('ledger')/ledgerdb/
                                 ledger[@entity-id=/data/supply-point]/
                                 section[@section-id='requests']/
                                 entry[@id=current()/../@id],
                                 0)" />
-      <setvalue event="jr-insert" ref="/data/stock/product/requests" value="/data/stock/product/calculated_desired_stock"/>
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_desired_stock" value="2 * /data/stock/product/requests"/>
+      <setvalue event="jr-insert" ref="/data/stock/product/desired_stock" value="/data/stock/product/calculated_desired_stock"/>
+      <bind nodeset="/data/stock/product/desired_stock" type="xsd:int" required="true()"/>
+
       <!-- Current inventory -->
       <bind nodeset="/data/stock/product/calculated_inventory"
             calculate="coalesce(instance('ledger')/ledgerdb/
