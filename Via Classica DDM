@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:orx="http://openrosa.org/jr/xforms"
+        xmlns="http://www.w3.org/2002/xforms"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:vellum="http://commcarehq.org/xforms/vellum">
+  <h:head>
+    <h:title>Via Classica Requisition</h:title>
+    <model>
+      <instance>
+        <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms"
+              xmlns="http://openrosa.org/formdesigner/8F7A24EB-6234-41A5-A7C3-0205E341CAFB"
+              uiVersion="1"
+              version="1"
+              name="New Form">
+
+          <supply-point/>
+          <no_products/>
+
+          <stock>
+            <elements/>
+            <num_elements/>
+            <cur_element/>
+            <product id="" index="" jr:template="">
+              <name/>
+
+              <kits/>
+
+              <calculated_initial_stock/>
+              <initial_stock/>
+
+              <calculated_entries/>
+              <entries/>
+
+              <calculated_disbursements/>
+              <disbursements/>
+
+              <!-- initial_stock + entries - exits (doesn't account for adjustments) -->
+              <calculated_theoretical_inventory/>
+              <theoretical_inventory/>
+
+              <!-- exits * 2 -->
+              <calculated_desired_stock/>
+              <desired_stock/>
+
+              <calculated_inventory/>
+              <inventory/>
+
+              <!-- Does the user need to do this? -->
+              <!-- difference/adjustments (theoretical_inventory - inventory) -->
+              <calculated_difference/>
+              <difference/>
+
+              <!-- Does the user need to do this? -->
+              <!-- amount needed (exits * 2 - inventory) -->
+              <calculated_amount_needed/>
+              <amount_needed/>
+
+              <!-- exits * 2 - inventory - kits -->
+              <calculated_requisition_amt/>
+              <requisition_amt/>
+
+              <!-- Transfers to reset monthly aggregates -->
+              <monthly-initial>
+                <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="monthly-initial">
+                  <entry id="" quantity=""/>
+                </balance>
+              </monthly-initial>
+              <aggregate-entries>
+                <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="entries">
+                  <entry id="" quantity="0"/>
+                </balance>
+              </aggregate-entries>
+              <aggregate-disbursements>
+                <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="disbursements">
+                  <entry id="" quantity="0"/>
+                </balance>
+              </aggregate-disbursements>
+              <aggregate-adjustments>
+                <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="adjustments">
+                  <entry id="" quantity="0"/>
+                </balance>
+              </aggregate-adjustments>
+              <aggregate-request>
+                <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="requests">
+                  <entry id="" quantity="0"/>
+                </balance>
+              </aggregate-request>
+            </product>
+          </stock>
+
+        </data>
+      </instance>
+      <instance id="ledger" src="jr://instance/ledgerdb"/>
+      <instance id="products" src="jr://fixture/commtrack:products"/>
+
+      <!-- Look up supply point -->
+      <setvalue event="xforms-ready" ref="/data/supply-point" value="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+
+      <!-- iteration business -->
+      <setvalue event="xforms-ready" ref="/data/stock/elements"
+                value="join(' ', instance('ledger')/ledgerdb/
+                                 ledger[@entity-id=/data/supply-point]/
+                                 section[@section-id='is-relevant']/
+                                 entry[. = 1]/
+                                 @id)"/>
+      <setvalue event="jr-insert" ref="/data/stock/product/@index" value="int(/data/stock/cur_element)"/>
+      <bind nodeset="/data/stock/num_elements" type="int" calculate="count-selected(/data/stock/elements)"/>
+      <bind nodeset="/data/stock/cur_element" calculate="count(/data/stock/product)"/>
+      <bind nodeset="/data/stock/product/@id" calculate="selected-at(/data/stock/elements,../@index)"/>
+
+      <!-- If there are no selected products, just show an explanatory label -->
+      <bind nodeset="/data/no_products" relevant="/data/stock/num_elements = 0"/>
+
+      <!-- product name -->
+      <setvalue event="jr-insert" ref="/data/stock/product/name"
+                value="instance('products')/products/product[@id=current()/../@id]/name"/>
+
+      <!-- Amount in kits -->
+      <bind nodeset="/data/stock/product/kits" type="xsd:int" required="true()"/>
+
+      <!-- prepopulate initial stock value -->
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_initial_stock"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply-point]/
+                                section[@section-id='monthly-initial']/
+                                entry[@id=current()/../@id],
+                                0)" />
+      <setvalue event="jr-insert" ref="/data/stock/product/initial_stock" value="/data/stock/product/calculated_initial_stock"/>
+      <bind nodeset="/data/stock/product/initial_stock" type="xsd:int" required="true()"/>
+
+      <!-- prepopulate aggregate entries -->
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_entries"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply-point]/
+                                section[@section-id='entries']/
+                                entry[@id=current()/../@id],
+                                0)" />
+      <setvalue event="jr-insert" ref="/data/stock/product/entries" value="/data/stock/product/calculated_entries"/>
+      <bind nodeset="/data/stock/product/entries" type="xsd:int" required="true()"/>
+
+      <!-- aggregate disbursements -->
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_disbursements"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply-point]/
+                                section[@section-id='disbursements']/
+                                entry[@id=current()/../@id],
+                                0)" />
+      <setvalue event="jr-insert" ref="/data/stock/product/disbursements" value="/data/stock/product/calculated_disbursements"/>
+      <bind nodeset="/data/stock/product/disbursements" type="xsd:int" required="true()"/>
+
+      <!-- Theoretical invetory (initial_stock + entries - exits) -->
+      <bind nodeset="/data/stock/product/calculated_theoretical_inventory"
+            calculate="/data/stock/product/initial_stock + /data/stock/product/entries - /data/stock/product/disbursements" />
+      <bind nodeset="/data/stock/product/theoretical_inventory" type="xsd:int" required="true()"/>
+
+      <!-- Desired stock level -->
+      <bind nodeset="/data/stock/product/calculated_desired_stock" calculate="2 * /data/stock/product/requests"/>
+      <bind nodeset="/data/stock/product/desired_stock" type="xsd:int" required="true()"/>
+      <setvalue event="jr-insert" ref="/data/stock/product/calculated_desired_stock"
+                value="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply-point]/
+                                section[@section-id='requests']/
+                                entry[@id=current()/../@id],
+                                0)" />
+      <setvalue event="jr-insert" ref="/data/stock/product/requests" value="/data/stock/product/calculated_desired_stock"/>
+      <!-- Current inventory -->
+      <bind nodeset="/data/stock/product/calculated_inventory"
+            calculate="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply-point]/
+                                section[@section-id='stock']/
+                                entry[@id=current()/../@id],
+                                0)" />
+      <setvalue event="jr-insert" ref="/data/stock/product/inventory" value="/data/stock/product/calculated_inventory"/>
+      <bind nodeset="/data/stock/product/inventory" type="xsd:int" required="true()"/>
+
+      <!-- difference/adjustments (theoretical_inventory - inventory) -->
+      <bind nodeset="/data/stock/product/calculated_difference"
+            calculate="/data/stock/product/theoretical_inventory - /data/stock/product/inventory" />
+      <bind nodeset="/data/stock/product/difference" type="xsd:int" required="true()"/>
+
+      <!-- amount needed (desired_stock - inventory) -->
+      <bind nodeset="/data/stock/product/calculated_amount_needed"
+            calculate="/data/stock/product/desired_stock - /data/stock/product/inventory" />
+      <bind nodeset="/data/stock/product/amount_needed" type="xsd:int" required="true()"/>
+
+      <!-- requisition amount (amount_needed - kits) -->
+      <bind nodeset="/data/stock/product/calculated_requisition_amt"
+            calculate="max((/data/stock/product/amount_needed - /data/stock/product/kits), 0)"/>
+      <!-- There is no appropriate event for this yet :( -->
+      <!-- <setvalue event="jr-insert" ref="/data/stock/product/requisition_amt" value="/data/stock/product/calculated_requisition_amt"/> -->
+      <bind nodeset="/data/stock/product/requisition_amt" type="xsd:int" required="true()"/>
+
+
+      <!-- reset monthly aggregates -->
+      <bind nodeset="/data/stock/product/monthly-initial/balance/@entity-id" calculate="/data/supply-point"/>
+      <bind nodeset="/data/stock/product/monthly-initial/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/stock/product/monthly-initial/balance/entry/@id" calculate="/data/stock/product/@id"/>
+      <!-- set monthly initial based on this form -->
+      <bind nodeset="/data/stock/product/monthly-initial/balance/entry/@quantity" calculate="/data/stock/product/inventory"/>
+
+      <bind nodeset="/data/stock/product/aggregate-entries/balance/@entity-id" calculate="/data/supply-point"/>
+      <bind nodeset="/data/stock/product/aggregate-entries/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/stock/product/aggregate-entries/balance/entry/@id" calculate="/data/stock/product/@id"/>
+
+      <bind nodeset="/data/stock/product/aggregate-disbursements/balance/@entity-id" calculate="/data/supply-point"/>
+      <bind nodeset="/data/stock/product/aggregate-disbursements/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/stock/product/aggregate-disbursements/balance/entry/@id" calculate="/data/stock/product/@id"/>
+
+      <bind nodeset="/data/stock/product/aggregate-adjustments/balance/@entity-id" calculate="/data/supply-point"/>
+      <bind nodeset="/data/stock/product/aggregate-adjustments/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/stock/product/aggregate-adjustments/balance/entry/@id" calculate="/data/stock/product/@id"/>
+
+      <itext>
+
+        <translation lang="por" default="">
+          <text id="no_products-label">
+            <!-- TODO Claire, update this text -->
+            <value>You have not selected any products.  Please use the "Select Products" form to choose products to include in this requisition form.</value>
+          </text>
+          <text id="kits-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade esperada nos kits:</value>
+          </text>
+          <text id="initial_stock-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Saldo no Início do período: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;(Esta quantidade é o stock introduzido no início do período, ou seja, o inventário do mês passado)</value>
+          </text>
+          <text id="entries-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Soma das Entradas: <output ref="/data/stock/product/calculated_entries"/>&#10;&#10;(Esta quantidade é a soma das entradas introduzidas na Ficha de Stock)</value>
+          </text>
+          <text id="disbursements-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Soma das Saídas: <output ref="/data/stock/product/calculated_disbursements"/>&#10;&#10;(Esta quantidade é a soma das saídas introduzidas na Ficha de Stock)</value>
+          </text>
+          <text id="theoretical_inventory-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Inventário Teórico: <output value="/data/stock/product/calculated_theoretical_inventory"/>&#10;&#10;(SI + E - S - PA)</value>
+          </text>
+          <text id="desired_stock-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Total dos pedidos:  <output ref="/data/stock/product/calculated_desired_stock"/>&#10;&#10;(Saídas x 2) </value>
+          </text>
+          <text id="inventory-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Inventário do Stock: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10;(Esta quantidade é o stock existente na prateleira)</value>
+          </text>
+          <text id="difference-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Diferença/perdas: <output ref="/data/stock/product/calculated_difference"/>&#10;&#10;(inventário teorético - inventário real)</value>
+          </text>
+          <text id="amount_needed-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade a requisitar: <output ref="/data/stock/product/calculated_amount_needed"/>&#10;&#10;(Saidas x2 - inventario)</value>
+          </text>
+          <text id="requisition_amt-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade Pedida: <output value="/data/stock/product/calculated_requisition_amt"/>&#10;&#10;(Saídas x 2) - inventário - (número esperado nos kits)</value>
+          </text>
+        </translation>
+
+        <translation lang="en">
+          <text id="no_products-label">
+            <!-- TODO Claire, update this text -->
+            <value>You have not selected any products.  Please use the "Select Products" form to choose products to include in this requisition form.</value>
+          </text>
+          <text id="kits-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantity hoped for in kits:</value>
+          </text>
+          <text id="initial_stock-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Stock at the begining of period: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;(This is the inventory at the end of the last period)</value>
+          </text>
+          <text id="entries-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Sum of entries: <output ref="/data/stock/product/calculated_entries"/>&#10;&#10;(This is the sum of entries recorded on the stock card)</value>
+          </text>
+          <text id="disbursements-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Sum of disbursemets: <output ref="/data/stock/product/calculated_disbursements"/>&#10;&#10; (This is the sum of exits on the stock card)</value>
+          </text>
+          <text id="theoretical_inventory-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Theoretical inventory: <output value="/data/stock/product/calculated_theoretical_inventory"/>&#10;&#10;(SI + Ent - dis)</value>
+          </text>
+          <text id="desired_stock-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Total asked for:  <output ref="/data/stock/product/calculated_desired_stock"/>&#10;&#10;(Exits x 2) </value>
+          </text>
+          <text id="inventory-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Actual inventory: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10;(Stock counted in inventory check)</value>
+          </text>
+          <text id="difference-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Difference <output ref="/data/stock/product/calculated_difference"/>&#10;&#10;(theoretical inventory- real inventory)</value>
+          </text>
+          <text id="requisition_amt-label">
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantity of the requisition: <output value="/data/stock/product/calculated_requisition_amt"/>&#10;&#10;(Exits x 2) - inventory - (number hoped for in kits)</value>
+          </text>
+        </translation>
+
+      </itext>
+
+    </model>
+  </h:head>
+  <h:body>
+
+     <trigger ref="/data/no_products">
+       <label ref="jr:itext('no_products-label')"/>
+     </trigger>
+
+     <group>
+      <!-- TODO add label here to indicate that a new product is starting? -->
+      <repeat nodeset="/data/stock/product" jr:count="/data/stock/num_elements">
+        <input ref="/data/stock/product/kits">
+          <label ref="jr:itext('kits-label')"/>
+        </input>
+        <input ref="/data/stock/product/initial_stock">
+          <label ref="jr:itext('initial_stock-label')"/>
+        </input>
+        <input ref="/data/stock/product/entries">
+          <label ref="jr:itext('entries-label')"/>
+        </input>
+        <input ref="/data/stock/product/disbursements">
+          <label ref="jr:itext('disbursements-label')"/>
+        </input>
+        <input ref="/data/stock/product/theoretical_inventory">
+          <label ref="jr:itext('theoretical_inventory-label')"/>
+        </input>
+        <input ref="/data/stock/product/desired_stock">
+          <label ref="jr:itext('desired_stock-label')"/>
+        </input>
+        <input ref="/data/stock/product/inventory">
+          <label ref="jr:itext('inventory-label')"/>
+        </input>
+        <input ref="/data/stock/product/difference">
+          <label ref="jr:itext('difference-label')"/>
+        </input>
+        <input ref="/data/stock/product/amount_needed">
+          <label ref="jr:itext('amount_needed-label')"/>
+        </input>
+        <input ref="/data/stock/product/requisition_amt">
+          <label ref="jr:itext('requisition_amt-label')"/>
+        </input>
+      </repeat>
+    </group>
+
+ </h:body>
+</h:html>
