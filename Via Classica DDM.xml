@@ -13,7 +13,7 @@
               xmlns="http://openrosa.org/formdesigner/8F7A24EB-6234-41A5-A7C3-0205E341CAFB"
               uiVersion="1"
               version="1"
-              name="New Form">
+              name="Requisisao Balancete">
 
           <supply-point/>
           <no_products/>
@@ -24,8 +24,6 @@
             <cur_element/>
             <product id="" index="" jr:template="">
               <name/>
-
-              <kits/>
 
               <calculated_initial_stock/>
               <initial_stock/>
@@ -118,8 +116,6 @@
       <setvalue event="jr-insert" ref="/data/stock/product/name"
                 value="instance('products')/products/product[@id=current()/../@id]/name"/>
 
-      <!-- Amount in kits -->
-      <bind nodeset="/data/stock/product/kits" type="xsd:int" required="true()"/>
 
       <!-- prepopulate initial stock value -->
       <setvalue event="jr-insert" ref="/data/stock/product/calculated_initial_stock"
@@ -189,7 +185,7 @@
 
       <!-- requisition amount (amount_needed - kits) -->
       <bind nodeset="/data/stock/product/calculated_requisition_amt"
-            calculate="max((/data/stock/product/amount_needed - /data/stock/product/kits), 0)"/>
+            calculate="max((/data/stock/product/amount_needed, 0)"/>
       <!-- There is no appropriate event for this yet :( -->
       <!-- <setvalue event="jr-insert" ref="/data/stock/product/requisition_amt" value="/data/stock/product/calculated_requisition_amt"/> -->
       <bind nodeset="/data/stock/product/requisition_amt" type="xsd:int" required="true()"/>
@@ -218,11 +214,7 @@
 
         <translation lang="por" default="">
           <text id="no_products-label">
-            <!-- TODO Claire, update this text -->
-            <value>You have not selected any products.  Please use the "Select Products" form to choose products to include in this requisition form.</value>
-          </text>
-          <text id="kits-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade esperada nos kits:</value>
+            <value>Não tem selecionado nenhum producto. Por favor, regresar ao formulario "selecionar productos" para augmentar productos a este requisisão</value>
           </text>
           <text id="initial_stock-label">
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Saldo no Início do período: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;(Esta quantidade é o stock introduzido no início do período, ou seja, o inventário do mês passado)</value>
@@ -237,7 +229,7 @@
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Inventário Teórico: <output value="/data/stock/product/calculated_theoretical_inventory"/>&#10;&#10;(SI + E - S - PA)</value>
           </text>
           <text id="desired_stock-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Total dos pedidos:  <output ref="/data/stock/product/calculated_desired_stock"/>&#10;&#10;(Saídas x 2) </value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Total dos pedidos:  <output ref="/data/stock/product/requests"/>&#10;&#10;(Pedidos x 2) </value>
           </text>
           <text id="inventory-label">
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Inventário do Stock: <output ref="/data/stock/product/calculated_inventory"/>&#10;&#10;(Esta quantidade é o stock existente na prateleira)</value>
@@ -246,20 +238,16 @@
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Diferença/perdas: <output ref="/data/stock/product/calculated_difference"/>&#10;&#10;(inventário teorético - inventário real)</value>
           </text>
           <text id="amount_needed-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade a requisitar: <output ref="/data/stock/product/calculated_amount_needed"/>&#10;&#10;(Saidas x2 - inventario)</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade a requisitar: <output ref="/data/stock/product/calculated_amount_needed"/>&#10;&#10;(pedidos x2 - inventario)</value>
           </text>
           <text id="requisition_amt-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade Pedida: <output value="/data/stock/product/calculated_requisition_amt"/>&#10;&#10;(Saídas x 2) - inventário - (número esperado nos kits)</value>
+            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantidade Pedida: <output value="/data/stock/product/calculated_requisition_amt"/>&#10;&#10;(O DDM não usa kits então a quantidade da pedida e pedidos x 2 - inventário) </value>
           </text>
         </translation>
 
         <translation lang="en">
           <text id="no_products-label">
-            <!-- TODO Claire, update this text -->
             <value>You have not selected any products.  Please use the "Select Products" form to choose products to include in this requisition form.</value>
-          </text>
-          <text id="kits-label">
-            <value><output ref="/data/stock/product/name"/>&#10;&#10;Quantity hoped for in kits:</value>
           </text>
           <text id="initial_stock-label">
             <value><output ref="/data/stock/product/name"/>&#10;&#10;Stock at the begining of period: <output ref="/data/stock/product/calculated_initial_stock"/>&#10;&#10;(This is the inventory at the end of the last period)</value>
@@ -300,9 +288,6 @@
      <group>
       <!-- TODO add label here to indicate that a new product is starting? -->
       <repeat nodeset="/data/stock/product" jr:count="/data/stock/num_elements">
-        <input ref="/data/stock/product/kits">
-          <label ref="jr:itext('kits-label')"/>
-        </input>
         <input ref="/data/stock/product/initial_stock">
           <label ref="jr:itext('initial_stock-label')"/>
         </input>
