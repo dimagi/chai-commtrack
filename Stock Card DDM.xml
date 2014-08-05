@@ -6,11 +6,11 @@
         xmlns:jr="http://openrosa.org/javarosa">
 
   <h:head>
-    <h:title>Stock Card</h:title>
+    <h:title>Stock Card DDM</h:title>
     <model>
       <instance>
         <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms"
-              xmlns="http://openrosa.org/formdesigner/D48F4F44-56D1-49AA-AA9C-8EBD8B199FAE"
+              xmlns="http://openrosa.org/formdesigner/HD8101DE-FI7F-ORHK-2KS6-1GY3RPIJ7D8K"
               uiVersion="1" version="1" name="Stock Card">
 
           <product_name/>
