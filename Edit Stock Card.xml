@@ -151,7 +151,14 @@
       <itext>
         <translation lang="por" default="">
           <text id="to-update-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Que informação quería mudar?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;
+				Stock existente: <output ref="/data/stock"/>&#10;
+				Saldo inicial: <output ref="/data/initial"/>&#10;
+				Soma das entradas: <output ref="/data/entries"/>&#10;
+				Soma das saídas: <output ref="/data/disbursements"/>&#10;
+				Soma dos ajustes: <output ref="/data/disbursements"/>&#10;
+				Validade: <output ref="/data/expiration"/>&#10;&#10;
+			Que informação quería mudar?</value>
           </text>
           <text id="to-update-initial-label">
             <value>Saldo Inicial</value>
@@ -172,27 +179,34 @@
             <value>Validade</value>
           </text>
           <text id="initial-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Que deve ser o saldo incial do período?</value>
+            <value><output ref="/data/product_name"/>: <output ref="/data/initial"/> &#10;&#10;Que deve ser o saldo incial do período?</value>
           </text>
           <text id="entries-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Que deve ser a soma das entradas deste período?</value>
+            <value><output ref="/data/product_name"/>: <output ref="/data/entries"/>&#10;&#10;Que deve ser a soma das entradas deste período?</value>
           </text>
           <text id="disbursements-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Que deve ser a soma das saídas deste período?</value>
+            <value><output ref="/data/product_name"/>: <output ref="/data/disbursements"/>&#10;&#10;Que deve ser a soma das saídas deste período?</value>
           </text>
           <text id="adjustments-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Que deve ser a soma dos ajustes deste período?</value>
+            <value><output ref="/data/product_name"/>: <output ref="/data/adjustments"/>&#10;&#10;Que deve ser a soma dos ajustes deste período?</value>
           </text>
           <text id="stock-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Que deve ser o stock existente?</value>
+            <value><output ref="/data/product_name"/>: <output ref="/data/stock"/>&#10;&#10;Que deve ser o stock existente?</value>
           </text>
           <text id="expiration-label">
-            <value><output ref="/data/product_name"/>&#10;&#10;Que deve ser a validade de este producto?</value>
+            <value><output ref="/data/product_name"/>: <output ref="/data/expiration"/>&#10;&#10;Que deve ser a validade de este producto?</value>
           </text>
         </translation>
         <translation lang="en">
           <text id="to-update-label">
-            <value>Which aggregates would you like to update?</value>
+            <value><output ref="/data/product_name"/>&#10;&#10;
+				Stock existente: <output ref="/data/stock"/>&#10;
+				Saldo inicial: <output ref="/data/initial"/>&#10;
+				Soma das entradas: <output ref="/data/entries"/>&#10;
+				Soma das saídas: <output ref="/data/disbursements"/>&#10;
+				Soma dos ajustes: <output ref="/data/disbursements"/>&#10;
+				Validade: <output ref="/data/expiration"/>&#10;&#10;
+            Which aggregates would you like to update? </value>
           </text>
           <text id="to-update-initial-label">
             <value>Initial stock</value>
