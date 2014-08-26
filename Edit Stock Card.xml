@@ -146,7 +146,7 @@
       <bind nodeset="/data/reset-expiration/balance/@entity-id" calculate="/data/supply_point"/>
       <bind nodeset="/data/reset-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/reset-expiration/balance/entry/@id" calculate="/data/product_id"/>
-      <bind nodeset="/data/reset-expiration/balance/entry/@quantity" calculate="/data/expiration"/>
+      <bind nodeset="/data/reset-expiration/balance/entry/@quantity" calculate="int(/data/expiration)"/>
 
       <itext>
         <translation lang="por" default="">
