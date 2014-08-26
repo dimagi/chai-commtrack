@@ -68,6 +68,12 @@
             </transfer>
           </disbursing>
 
+          <inventory-reset>
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="stock">
+              <entry id="" quantity=""/>
+            </balance>
+          </inventory-reset>
+
           <aggregate-monthly>
             <transfer xmlns="http://commcarehq.org/ledger/v1" dest="" date="" section-id="">
               <entry id="" quantity=""/>
@@ -126,12 +132,14 @@
 
       <bind nodeset="/data/receiving/transfer/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/disbursing/transfer/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/inventory-reset/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/aggregate-monthly/transfer/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/earliest-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/reset-expiration/balance/@date" calculate="/data/meta/timeEnd"/>
 
       <bind nodeset="/data/receiving/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/disbursing/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
+      <bind nodeset="/data/inventory-reset/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/aggregate-monthly/transfer/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/earliest-expiration/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
       <bind nodeset="/data/reset-expiration/balance/entry/@id" calculate="instance('commcaresession')/session/data/product_id"/>
@@ -149,16 +157,22 @@
       <bind nodeset="/data/disbursing" relevant="/data/is-deduction"/>
       <bind nodeset="/data/disbursing/transfer/@src" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
 
+      <bind nodeset="/data/inventory-reset"
+            relevant="/data/transaction_type = 'inventory'"/>
+      <bind nodeset="/data/inventory-reset/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
+
       <!-- What is the magnitude of the change? -->
       <bind nodeset="/data/units"
             calculate="if(/data/transaction_type = 'entry', /data/entry_units,
                        if(/data/transaction_type = 'disbursement', /data/disbursement_units,
+                       if(/data/transaction_type = 'inventory', /data/inventory_amount,
                        if(/data/transaction_type = 'positive', /data/positive_units,
                        if(/data/transaction_type = 'negative', /data/negative_units,
                        if(/data/transaction_type = 'loss', /data/loss_units,
-                       0)))))"/>
+                       0))))))"/>
       <bind nodeset="/data/receiving/transfer/entry/@quantity" calculate="/data/units"/>
       <bind nodeset="/data/disbursing/transfer/entry/@quantity" calculate="/data/units"/>
+      <bind nodeset="/data/inventory-reset/balance/entry/@quantity" calculate="/data/units"/>
       <bind nodeset="/data/aggregate-monthly/transfer/entry/@quantity" calculate="/data/units"/>
 
       <!-- Monthly aggregate info for requisition form -->
@@ -357,9 +371,10 @@
               '&#10;&#10;Numero do documento: ', /data/document_number,
               '&#10;&#10;Tipo do movimento: ', if(/data/transaction_type = 'entry', 'Entrada',
                                                if(/data/transaction_type = 'disbursement', 'Saída',
+                                               if(/data/transaction_type = 'inventory', 'Inventário',
                                                if(/data/transaction_type = 'positive', 'Ajuste Positivo',
                                                if(/data/transaction_type = 'negative', 'Ajuste negativo',
-                                               'Inventário')))),
+                                               'Inventário'))))),
 
               '&#10;&#10;Quantidade: ', /data/units,
               if(/data/transaction_type = 'entry', concat('&#10;&#10;', /data/expiry), ''),
@@ -693,7 +708,7 @@
       </item>
     </select1>
 
-    <!--Inventory -->
+    <!-- Inventory -->
     <select1 ref="/data/inventory_type">
       <label ref="jr:itext('inventory_type-label')"/>
       <item>
