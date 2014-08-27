@@ -6,6 +6,7 @@
       <instance>
         <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms" xmlns="http://openrosa.org/formdesigner/1C6144D8-8A88-417B-89C6-2041BF61D5F4" uiVersion="1" version="1" name="New Form">
           <product_name/>
+		  <current_values/>
 		  <to-update/>
           <initial/>
           <entries/>
@@ -62,6 +63,7 @@
       <bind nodeset="/data/product_name"
             calculate="instance('products')/products/product[@id=instance('commcaresession')/session/data/product_id]/name"/>
 
+	  <bind nodeset="/data/current_values"/>    
 	  
       <bind nodeset="/data/to-update" required="true()"/>
       <bind nodeset="/data/initial" type="xsd:int" relevant="selected(/data/to-update, 'initial')" required="true()"/>
@@ -150,15 +152,42 @@
 
       <itext>
         <translation lang="por" default="">
-          <text id="to-update-label">
+          <text id="current_values-label">
             <value><output ref="/data/product_name"/>&#10;&#10;
-				Stock existente: <output ref="/data/stock"/>&#10;
-				Saldo inicial: <output ref="/data/initial"/>&#10;
-				Soma das entradas: <output ref="/data/entries"/>&#10;
-				Soma das saídas: <output ref="/data/disbursements"/>&#10;
-				Soma dos ajustes: <output ref="/data/disbursements"/>&#10;
-				Validade: <output ref="/data/expiration"/>&#10;&#10;
-			Que informação quería mudar?</value>
+				Stock existente: <output ref="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply_point]/
+                                section[@section-id='stock']/
+                                entry[@id=/data/product_id]
+                                , 0)"/>&#10;
+				Saldo inicial: <output ref="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply_point]/
+                                section[@section-id='initial']/
+                                entry[@id=/data/product_id]
+                                , 0)"/>&#10;
+				Soma das entradas: <output ref="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply_point]/
+                                section[@section-id='entries']/
+                                entry[@id=/data/product_id]
+                                , 0)"/>&#10;
+				Soma das saídas: <output ref="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply_point]/
+                                section[@section-id='disbursements']/
+                                entry[@id=/data/product_id]
+                                , 0)"/>&#10;
+				Soma dos ajustes: <output ref="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply_point]/
+                                section[@section-id='adjustments']/
+                                entry[@id=/data/product_id]
+                                , 0)"/>&#10;
+				Validade: <output ref="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply_point]/
+                                section[@section-id='expiration']/
+                                entry[@id=/data/product_id]
+                                , 0)"/>&#10;&#10;</value>		
+          </text>
+		  <text id="to-update-label">
+            <value><output ref="/data/product_name"/>&#10;&#10;
+			Que informação quería mudar?&#10;</value>		
           </text>
           <text id="to-update-initial-label">
             <value>Saldo Inicial</value>
@@ -249,6 +278,9 @@
     </model>
   </h:head>
   <h:body>
+	<trigger ref="/data/current_values">
+	  <label ref="jr:itext('current_values-label')"/>
+	</trigger>
     <select ref="/data/to-update">
       <label ref="jr:itext('to-update-label')"/>
       <item>
