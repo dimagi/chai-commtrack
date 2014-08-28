@@ -19,6 +19,7 @@
             <cur_element/>
             <product id="" index="" jr:template="">
               <name/>
+              <fnm/>
 
               <calculated_initial_stock/>
               <initial_stock/>
@@ -117,6 +118,10 @@
       <!-- product name -->
       <setvalue event="jr-insert" ref="/data/stock/product/name"
                 value="instance('products')/products/product[@id=current()/../@id]/name"/>
+
+      <!--fnm -->
+      <setvalue event="jr-insert" ref="/data/stock/product/fnm"
+                value="instance('products')/products/product[@id=current()/../@id]/product_data/fnm"/>
 
       <!-- current stock level: -->
         <!-- "coalesce(instance('ledger')/ledgerdb/ledger[@entity-id=instance('commcaresession')/session/data/case_id_case_supply-point]/section[@section-id='stock']/entry[@id=instance('commcaresession')/session/data/product_id], 0)" -->
