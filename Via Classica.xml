@@ -13,7 +13,7 @@
               xmlns="http://openrosa.org/formdesigner/8F7A24EB-6234-41A5-A7C3-0205E341CAFB"
               uiVersion="1"
               version="1"
-              name="New Form">
+              name="Requisição Balancete">
 
           <supply-point/>
           <no_products/>
@@ -24,6 +24,7 @@
             <cur_element/>
             <product id="" index="" jr:template="">
               <name/>
+              <fnm/>
 
               <kits/>
 
@@ -112,6 +113,10 @@
       <!-- product name -->
       <setvalue event="jr-insert" ref="/data/stock/product/name"
                 value="instance('products')/products/product[@id=current()/../@id]/name"/>
+
+      <!--fnm -->
+      <setvalue event="jr-insert" ref="/data/stock/product/fnm"
+                value="instance('products')/products/product[@id=current()/../@id]/product_data/fnm"/>
 
       <!-- Amount in kits -->
       <bind nodeset="/data/stock/product/kits" type="xsd:int" required="true()"/>
