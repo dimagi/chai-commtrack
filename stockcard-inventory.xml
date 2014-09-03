@@ -374,20 +374,23 @@
                                                if(/data/transaction_type = 'inventory', 'Inventário',
                                                if(/data/transaction_type = 'positive', 'Ajuste Positivo',
                                                if(/data/transaction_type = 'negative', 'Ajuste negativo',
-                                               'Inventário'))))),
+                                               if(/data/transaction_type = 'loss', 'Perda',
+                                               '')))))),
 
               '&#10;&#10;Quantidade: ', /data/units,
               if(/data/transaction_type = 'entry', concat('&#10;&#10;', /data/expiry), ''),
-              '&#10;&#10;', if(/data/transaction_type = 'entry', 'Origem da entrada:',
-                            if(/data/transaction_type = 'disbursement', 'Destino da Saída:',
-                            if(/data/transaction_type = 'inventory', 'Tipo do inventário:',
-                            'Origem/Descrição de ajuste:'))),
+              '&#10;&#10;', if(/data/transaction_type = 'entry', 'Origem da entrada: ',
+                            if(/data/transaction_type = 'disbursement', 'Destino da Saída: ',
+                            if(/data/transaction_type = 'inventory', 'Tipo do inventário: ',
+                            if(/data/transaction_type = 'loss', 'Razão para a perda: ',
+                            'Origem/Descrição de ajuste: ')))),
 
                             if(/data/transaction_type = 'entry', /data/entry_source,
                             if(/data/transaction_type = 'disbursement', /data/disbursement_location,
-                            if(/data/transaction_type = 'positive', /data/positive_source,
                             if(/data/transaction_type = 'inventory', /data/inventory_type,
-                            /data/negative_description)))),
+                            if(/data/transaction_type = 'positive', /data/positive_source,
+                            if(/data/transaction_type = 'negative', /data/negative_description,
+                            /data/reason_for_loss))))),
 
               '&#10;&#10;Por favor confirme este movimento'
             )"/></value>
@@ -696,15 +699,15 @@
       <label ref="jr:itext('reason_for_loss-label')"/>
       <item>
         <label ref="jr:itext('reason_for_loss-expiration-label')"/>
-        <value>expiration</value>
+        <value>expiracao</value>
       </item>
       <item>
         <label ref="jr:itext('reason_for_loss-break-label')"/>
-        <value>break</value>
+        <value>rompido</value>
       </item>
       <item>
         <label ref="jr:itext('reason_for_loss-misplaced-label')"/>
-        <value>misplaced</value>
+        <value>extravio</value>
       </item>
     </select1>
 
