@@ -20,7 +20,7 @@
           <product_id/>
 
           <reset-initial>
-            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="initial">
+            <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="monthly-initial">
               <entry id="" quantity=""/>
             </balance>
           </reset-initial>
