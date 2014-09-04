@@ -208,7 +208,11 @@
             <value>Validade</value>
           </text>
           <text id="initial-label">
-            <value><output ref="/data/product_name"/>: <output ref="/data/monthly-initial"/> &#10;&#10;Que deve ser o saldo incial do período?</value>
+            <value><output ref="/data/product_name"/>: <output ref="coalesce(instance('ledger')/ledgerdb/
+                                ledger[@entity-id=/data/supply_point]/
+                                section[@section-id='monthly-initial']/
+                                entry[@id=/data/product_id]
+                                , 0)"/> &#10;&#10;Que deve ser o saldo incial do período?</value>
           </text>
           <text id="entries-label">
             <value><output ref="/data/product_name"/>: <output ref="/data/entries"/>&#10;&#10;Que deve ser a soma das entradas deste período?</value>
