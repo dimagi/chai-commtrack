@@ -79,7 +79,7 @@
       <setvalue event="xforms-ready" ref="/data/initial"
                 value="coalesce(instance('ledger')/ledgerdb/
                                 ledger[@entity-id=/data/supply_point]/
-                                section[@section-id='initial']/
+                                section[@section-id='monthly-initial']/
                                 entry[@id=/data/product_id]
                                 , 0)"/>
       <bind nodeset="/data/reset-initial" vellum:ignore="retain" relevant="selected(/data/to-update, 'initial')"/>
