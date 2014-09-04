@@ -161,7 +161,7 @@
                                 , 0)"/>&#10;
 				Saldo inicial: <output ref="coalesce(instance('ledger')/ledgerdb/
                                 ledger[@entity-id=/data/supply_point]/
-                                section[@section-id='initial']/
+                                section[@section-id='monthly-initial']/
                                 entry[@id=/data/product_id]
                                 , 0)"/>&#10;
 				Soma das entradas: <output ref="coalesce(instance('ledger')/ledgerdb/
