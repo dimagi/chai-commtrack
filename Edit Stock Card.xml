@@ -202,7 +202,7 @@
             <value>Soma dos ajustes</value>
           </text>
           <text id="to-update-stock-label">
-            <value>Sock existente</value>
+            <value>Stock existente</value>
           </text>
           <text id="to-update-expiration-label">
             <value>Validade</value>
