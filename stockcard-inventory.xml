@@ -180,8 +180,9 @@
       <bind nodeset="/data/aggregate-monthly/transfer/@section-id"
             calculate="if(/data/transaction_type = 'entry', 'entries',
                        if(/data/transaction_type = 'disbursement', 'disbursements',
-                       'adjustments'
-                       ))"/>
+                       if(/data/transaction_type = 'negative' or 'positive' or 'loss', 'adjustments',
+                       inventory
+                       )))"/>
 
       <!-- Product expiration date business -->
       <bind nodeset="/data/earliest-expiration/balance/@entity-id" calculate="instance('commcaresession')/session/data/case_id_case_supply-point"/>
