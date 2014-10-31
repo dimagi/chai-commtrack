@@ -190,7 +190,7 @@
 
       <!-- requisition amount (amount_needed - kits) -->
       <bind nodeset="/data/stock/product/calculated_requisition_amt"
-            calculate="max((/data/stock/product/amount_needed, 0)"/>
+            calculate="max(/data/stock/product/amount_needed, 0)"/>
       <!-- There is no appropriate event for this yet :( -->
       <!-- <setvalue event="jr-insert" ref="/data/stock/product/requisition_amt" value="/data/stock/product/calculated_requisition_amt"/> -->
       <bind nodeset="/data/stock/product/requisition_amt" type="xsd:int" required="true()"/>
