@@ -82,11 +82,11 @@
                   <entry id="" quantity="0"/>
                 </balance>
               </aggregate-adjustments>
-              <aggregate-request>
+              <aggregate-requests>
                 <balance xmlns="http://commcarehq.org/ledger/v1" entity-id="" date="" section-id="requests">
                   <entry id="" quantity="0"/>
                 </balance>
-              </aggregate-request>
+              </aggregate-requests>
             </product>
           </stock>
 
@@ -214,6 +214,10 @@
       <bind nodeset="/data/stock/product/aggregate-adjustments/balance/@entity-id" calculate="/data/supply-point"/>
       <bind nodeset="/data/stock/product/aggregate-adjustments/balance/@date" calculate="/data/meta/timeEnd"/>
       <bind nodeset="/data/stock/product/aggregate-adjustments/balance/entry/@id" calculate="/data/stock/product/@id"/>
+
+      <bind nodeset="/data/stock/product/aggregate-requests/balance/@entity-id" calculate="/data/supply-point"/>
+      <bind nodeset="/data/stock/product/aggregate-requests/balance/@date" calculate="/data/meta/timeEnd"/>
+      <bind nodeset="/data/stock/product/aggregate-requests/balance/entry/@id" calculate="/data/stock/product/@id"/>
 
       <itext>
 
