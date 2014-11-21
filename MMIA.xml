@@ -85,7 +85,8 @@
           <AZT60_3TC_NVP_3DFC/>
           <AZT60_3TC_EFV_2DFC/>
           <AZT_3TC_ABC_ped/>
-          <AZT_ddI400_LPV_r/>
+          <AZT60_3TC_LPV_r_peds/>
+          <ABC_3TC_LPV_r_peds/>
           <ABC_3TC_EFV/>
           <types_of_patients/>
           <new_patients/>
@@ -109,7 +110,7 @@
           9d38ba4aadc20b631f03cae340111895 on chai-moz
       -->
       <setvalue event="xforms-ready" ref="/data/stock/elements"
-          value="join(' ',instance('products')/products/product[program_id='8e3938a57d5a57aed7111ba80504103d']/@id)"/>
+          value="join(' ',instance('products')/products/product[program_id='9d38ba4aadc20b631f03cae340111895']/@id)"/>
       <setvalue event="jr-insert" ref="/data/stock/product/@index" value="int(/data/stock/cur_element)"/>
       <bind nodeset="/data/stock/num_elements" type="int" calculate="count-selected(/data/stock/elements)"/>
       <bind nodeset="/data/stock/cur_element" calculate="count(/data/stock/product)"/>
@@ -228,7 +229,8 @@
       <bind nodeset="/data/AZT60_3TC_NVP_3DFC" type="xsd:int" required="true()"/>
       <bind nodeset="/data/AZT60_3TC_EFV_2DFC" type="xsd:int" required="true()"/>
       <bind nodeset="/data/AZT_3TC_ABC_ped" type="xsd:int" required="true()"/>
-      <bind nodeset="/data/AZT_ddI400_LPV_r" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/AZT60_3TC_LPV_r_peds" type="xsd:int" required="true()"/>
+      <bind nodeset="/data/ABC_3TC_LPV_r_peds" type="xsd:int" required="true()"/>
       <bind nodeset="/data/ABC_3TC_EFV" type="xsd:int" required="true()"/>
       <bind nodeset="/data/types_of_patients"/>
       <bind nodeset="/data/new_patients" type="xsd:int"/>
@@ -321,13 +323,16 @@
             <value>AZT 60+3TC+EFV (2DFC + EFV)</value>
           </text>
           <text id="AZT_3TC_ABC_ped-label">
-            <value>AZT+3TC+ABC (2DFC +ABC)</value>
+            <value>AZT60+3TC+ABC (2DFC +ABC)</value>
           </text>
-          <text id="AZT_ddI400_LPV_r-label">
-            <value>ABC+3TC+LPV/r</value>
+          <text id="AZT60_3TC_LPV_r_peds-label">
+            <value>AZT 60+3TC+LPV/r (2DFC + LPV/r)</value>
+          </text>
+          <text id="ABC_3TC_LPV_r_peds-label">
+            <value>ABC+3TC+LPV/r (Baby)</value>
           </text>
           <text id="ABC_3TC_EFV-label">
-            <value>ABC+3TC+EFV</value>
+            <value>ABC+3TC+EFV (Baby)</value>
           </text>
           <text id="types_of_patients-label">
             <value>Types of patients</value>
@@ -431,16 +436,19 @@
             <value>AZT60+3TC+NVP (3DFC)</value>
           </text>
           <text id="AZT60_3TC_EFV_2DFC-label">
-            <value>AZT 60+3TC+EFV (2DFC + EFV)</value>
+            <value>AZT60+3TC+EFV (2DFC + EFV)</value>
           </text>
           <text id="AZT_3TC_ABC_ped-label">
-            <value>AZT+3TC+ABC (2DFC +ABC)</value>
+            <value>AZT60 +3TC+ABC (2DFC +ABC)</value>
           </text>
-          <text id="AZT_ddI400_LPV_r-label">
-            <value>ABC+3TC+LPV/r</value>
+          <text id="AZT60_3TC_LPV_r_peds-label">
+            <value>AZT60+3TC+LPV/r (2DFC + LPV/r)</value>
+          </text>
+          <text id="ABC_3TC_LPV_r_peds-label">
+            <value>ABC+3TC+LPV/r (Baby)</value>
           </text>
           <text id="ABC_3TC_EFV-label">
-            <value>ABC+3TC+EFV</value>
+            <value>ABC+3TC+EFV (Baby)</value>
           </text>
           <text id="types_of_patients-label">
             <value>Tipos de doentes: &#10;&#10;Continue a proxima pagina e digite os valores de LRDA</value>
@@ -556,8 +564,11 @@
     <input ref="/data/AZT_3TC_ABC_ped">
       <label ref="jr:itext('AZT_3TC_ABC_ped-label')"/>
     </input>
-    <input ref="/data/AZT_ddI400_LPV_r">
-      <label ref="jr:itext('AZT_ddI400_LPV_r-label')"/>
+    <input ref="/data/AZT60_3TC_LPV_r_peds">
+      <label ref="jr:itext('AZT60_3TC_LPV_r_peds-label')"/>
+    </input>
+    <input ref="/data/ABC_3TC_LPV_r_peds">
+      <label ref="jr:itext('ABC_3TC_LPV_r_peds-label')"/>
     </input>
     <input ref="/data/ABC_3TC_EFV">
       <label ref="jr:itext('ABC_3TC_EFV-label')"/>
